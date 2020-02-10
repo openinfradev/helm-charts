@@ -1,0 +1,25 @@
+elasticsearchOperator:
+  enabled: true
+
+  namespace: elastic-system
+
+  createCustomResource: true
+
+  rbac:
+    create: true
+
+  image:
+    repository: docker.elastic.co/eck/eck-operator
+    tag: 1.0.0
+
+  resources:
+    limits:
+      cpu: 1
+      memory: 150Mi
+    requests:
+      cpu: 100m
+      memory: 50Mi
+
+customResources:
+  elasticsearch:
+    
