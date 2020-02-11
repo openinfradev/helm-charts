@@ -1,4 +1,6 @@
+{{- if and .Values.elasticsearchOperator.enabled .Values.elasticsearchOperator.createCustomResource }}
 apiVersion: v1
 kind: Namespace
 metadata:
   name: {{ default .Release.Namespace .Values.elasticsearchOperator.namespace }}
+{{- end }}
