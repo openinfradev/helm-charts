@@ -42,12 +42,12 @@ spec:
         apiVersion:
           description: 'APIVersion defines the versioned schema of this representation
             of an object. Servers should convert recognized schemas to the latest
-            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources'
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
           type: string
         kind:
           description: 'Kind is a string value representing the REST resource this
             object represents. Servers may infer this from the endpoint the client
-            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
           type: string
         metadata:
           type: object
@@ -138,6 +138,21 @@ spec:
                             and ExternalTrafficPolicy is set to Local.
                           format: int32
                           type: integer
+                        ipFamily:
+                          description: ipFamily specifies whether this Service has
+                            a preference for a particular IP family (e.g. IPv4 vs.
+                            IPv6).  If a specific IP family is requested, the clusterIP
+                            field will be allocated from that family, if it is available
+                            in the cluster.  If no IP family is requested, the cluster's
+                            primary IP family will be used. Other IP fields (loadBalancerIP,
+                            loadBalancerSourceRanges, externalIPs) and controllers
+                            which allocate external load-balancers should use the
+                            same IP family.  Endpoints for this Service will be of
+                            this family.  This field is immutable after creation.
+                            Assigning a ServiceIPFamily not available in the cluster
+                            (e.g. IPv6 in IPv4 only cluster) is an error condition
+                            and will fail during clusterIP assignment.
+                          type: string
                         loadBalancerIP:
                           description: 'Only applies to Service Type: LoadBalancer
                             LoadBalancer will get created with the IP specified in
@@ -165,9 +180,10 @@ spec:
                               name:
                                 description: The name of this port within the service.
                                   This must be a DNS_LABEL. All ports within a ServiceSpec
-                                  must have unique names. This maps to the 'Name'
-                                  field in EndpointPort objects. Optional if only
-                                  one ServicePort is defined on this service.
+                                  must have unique names. When considering the endpoints
+                                  for a Service, this must match the 'name' field
+                                  in the EndpointPort. Optional if only one ServicePort
+                                  is defined on this service.
                                 type: string
                               nodePort:
                                 description: 'The port on each node on which this
@@ -367,11 +383,17 @@ spec:
               description: KibanaHealth expresses the status of the Kibana instances.
               type: string
           type: object
-  version: v1beta1
+  version: v1
   versions:
-  - name: v1beta1
+  - name: v1
     served: true
     storage: true
+  - name: v1beta1
+    served: true
+    storage: false
+  - name: v1alpha1
+    served: false
+    storage: false
 status:
   acceptedNames:
     kind: ""
