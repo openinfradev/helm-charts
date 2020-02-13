@@ -33,7 +33,7 @@ customResource:
       # username: elastic
       password: tacoword
 
-    javaOpts: "-Xms4g -Xmx4g"
+    javaOpts: "-Xms256m -Xmx256m"
 
     ## Elasticsearch Version
     version: 7.5.1
@@ -94,6 +94,11 @@ customResource:
     enabled: true
     version: 7.4.2
     image: docker.elastic.co/kibana/kibana
+    ## container resources
+    # resources:
+    #   limits:
+    #     cpu:
+    #     memory:
     ## http setting for Kibana instance
     http:
       service:
