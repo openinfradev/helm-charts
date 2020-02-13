@@ -4,6 +4,7 @@ nameOverride: taco
 elasticsearchOperator:
   enabled: true
 
+  createNamespace: true
   namespace: elastic-system
 
   createCustomResource: true
