@@ -33,6 +33,8 @@ customResource:
       # username: elastic
       password: tacoword
 
+    javaOpts: "-Xms4g -Xmx4g"
+
     ## Elasticsearch Version
     version: 7.5.1
     image: docker.elastic.co/elasticsearch/elasticsearch
@@ -68,6 +70,12 @@ customResource:
     #       # provide your own certificate
     #       secretName: my-cert
  
+    ## podTemplates
+    # podTemplate:
+    #   spec:
+    #     volumes:
+    #     - name: elasticsearch-data
+    #       emptyDir: {}
     ## Storage definition for Elasticsearch instance.
     ## Must be set
     ##
