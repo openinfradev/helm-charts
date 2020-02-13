@@ -5,6 +5,6 @@
 
 {{/* Generate basic labels */}}
 {{- define "elasticsearch-operator.labels" }}
-release {{ .Release.Name | quote }}
+release: {{ .Release.Name | quote }}
 heritage: {{ .Release.Service | quote }}
 {{- end }}

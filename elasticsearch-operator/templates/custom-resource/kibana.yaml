@@ -4,14 +4,16 @@ kind: Kibana
 metadata:
   name: {{ template "elasticsearch-operator.name" . }}-kibana-dashboard
 spec:
-  version: {{ .Values.customResource.kibana.version }}
+  version: {{ default "7.4.2" .Values.customResource.kibana.version }}
 {{- if .Values.customResource.kibana.image }}
   image: {{ .Values.customResource.kibana.image }}:{{ .Values.customResource.kibana.version }}
 {{- end }}
   count: 1
   elasticsearchRef:
     name: {{ template "elasticsearch-operator.name" . }}-elasticsearch
+{{- if .Values.customResource.kibana.http }}
 {{ toYaml .Values.customResource.kibana.http | indent 2 }}
+{{- end }}
   podTemplate:
     metadata:
       creationTimestamp: null

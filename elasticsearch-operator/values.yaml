@@ -33,6 +33,8 @@ customResource:
       # username: elastic
       password: tacoword
 
+    javaOpts: "-Xms256m -Xmx256m"
+
     ## Elasticsearch Version
     version: 7.5.1
     image: docker.elastic.co/elasticsearch/elasticsearch
@@ -68,6 +70,12 @@ customResource:
     #       # provide your own certificate
     #       secretName: my-cert
  
+    ## podTemplates
+    # podTemplate:
+    #   spec:
+    #     volumes:
+    #     - name: elasticsearch-data
+    #       emptyDir: {}
     ## Storage definition for Elasticsearch instance.
     ## Must be set
     ##
@@ -86,6 +94,11 @@ customResource:
     enabled: true
     version: 7.4.2
     image: docker.elastic.co/kibana/kibana
+    ## container resources
+    # resources:
+    #   limits:
+    #     cpu:
+    #     memory:
     ## http setting for Kibana instance
     http:
       service:
