@@ -48,7 +48,11 @@ customResource:
       node.store.allow_mmap: false
 
     ## http setting for Elasticsearch
-    # http:
+    http:
+      ports:
+      - name: elasticsearch
+        targetPort: 9200
+        port: 9200
     #   service:
     #     spec:
     #       # expose this cluster Service with a LoadBalancer
@@ -67,15 +71,15 @@ customResource:
     ## Storage definition for Elasticsearch instance.
     ## Must be set
     ##
-    # volumeClaimTemplates:
-    # - metadata:
-    #     name: elasticsearch-data
-    #   spec:
-    #     accessModes: ["ReadWriteOnce"]
-    #     resources:
-    #       requests:
-    #         storage: 500Gi
-    #     storageClassName: gluster
+    volumeClaimTemplates:
+      - metadata:
+          name: elasticsearch-data
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 5Gi
+          storageClassName: rbd
     #   selector: {}
 
   kibana:
@@ -83,14 +87,19 @@ customResource:
     version: 7.4.2
     image: docker.elastic.co/kibana/kibana
     ## http setting for Kibana instance
-    # http:
-    #   service:
-    #     metadata:
-    #       creationTimestamp: null
-    #     spec:
-    #       type: NodePort
-    #   tls:
-    #     certificate: {}
-    #     selfSignedCertificate:
-    #       disabled: true
+    http:
+      service:
+        metadata:
+          creationTimestamp: null
+    #    spec:
+    #      type: NodePort
+      ports:
+      - name: kibana-dashboard-kb-http
+        nodePort: 30001
+        targetPort: 5601
+        port: 5601
+    #  tls:
+    #    certificate: {}
+    #    selfSignedCertificate:
+    #      disabled: true
 

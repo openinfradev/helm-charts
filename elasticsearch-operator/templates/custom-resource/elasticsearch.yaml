@@ -5,13 +5,13 @@ metadata:
   name: {{ template "elasticsearch-operator.name" . }}-elasticsearch
 spec:
   version: {{ .Values.customResource.elasticsearch.version }}
-  image: {{ .Values.customResource.elasticsearch.image }}
+  image: {{ .Values.customResource.elasticsearch.image }}:{{ .Values.customResource.elasticsearch.version }}
   nodeSets:
   - name: default
     count: {{ .Values.customResource.elasticsearch.count }}
 {{ toYaml .Values.customResource.elasticsearch.config | indent 4 }}
     volumeClaimTemplates:
-{{ toYaml .Values.customResource.elasticsearch.volumeClaimTemplate | indent 4 }}
+{{ toYaml .Values.customResource.elasticsearch.volumeClaimTemplates | indent 4 }}
         # this changes the kernel setting on the node to allow ES to use mmap
         # if you uncomment this init container you will likely also want to remove the
         # "node.store.allow_mmap: false" setting above
