@@ -9,7 +9,8 @@ spec:
   nodeSets:
   - name: default
     count: {{ .Values.customResource.elasticsearch.count }}
-{{ toYaml .Values.customResource.elasticsearch.config | indent 4 }}
+    config:
+{{ toYaml .Values.customResource.elasticsearch.config | indent 6 }}
 {{- if .Values.customResource.elasticsearch.podTempate }}
     podTemplate:
 {{ toYaml .Values.customResource.elasticsearch.podTempate | indent 4 }}
