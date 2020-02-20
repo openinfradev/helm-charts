@@ -102,15 +102,13 @@ customResource:
     ## http setting for Kibana instance
     http:
       service:
-        metadata:
-          creationTimestamp: null
-    #    spec:
-    #      type: NodePort
-      ports:
-      - name: kibana-dashboard-kb-http
-        nodePort: 30001
-        targetPort: 5601
-        port: 5601
+        spec:
+          type: NodePort
+          ports:
+          - name: kibana-dashboard-kb-http
+            nodePort: 30001
+            targetPort: 5601
+            port: 5601
     #  tls:
     #    certificate: {}
     #    selfSignedCertificate:
