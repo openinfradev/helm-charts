@@ -12,7 +12,8 @@ spec:
   elasticsearchRef:
     name: {{ template "elasticsearch-operator.name" . }}-elasticsearch
 {{- if .Values.customResource.kibana.http }}
-{{ toYaml .Values.customResource.kibana.http | indent 2 }}
+  http:
+{{ toYaml .Values.customResource.kibana.http | indent 4 }}
 {{- end }}
   podTemplate:
     metadata:
