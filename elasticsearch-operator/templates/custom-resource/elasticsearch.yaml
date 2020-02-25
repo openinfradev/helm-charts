@@ -6,6 +6,10 @@ metadata:
 spec:
   version: {{ .Values.customResource.elasticsearch.version }}
   image: {{ .Values.customResource.elasticsearch.image }}:{{ .Values.customResource.elasticsearch.version }}
+{{- if .Values.customResource.elasticsearch.nodeSelector }}
+  nodeSelector:
+{{ toYaml .Values.customResource.elasticsearch.nodeSelector | indent 4 }}
+{{- end }}
   nodeSets:
   - name: default
     count: {{ .Values.customResource.elasticsearch.count }}

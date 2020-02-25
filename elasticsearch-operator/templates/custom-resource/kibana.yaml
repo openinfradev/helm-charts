@@ -8,6 +8,10 @@ spec:
 {{- if .Values.customResource.kibana.image }}
   image: {{ .Values.customResource.kibana.image }}:{{ .Values.customResource.kibana.version }}
 {{- end }}
+{{- if .Values.customResource.kibana.nodeSelector }}
+  nodeSelector:
+{{ toYaml .Values.customResource.kibana.nodeSelector | indent 4 }}
+{{- end }}
   count: 1
   elasticsearchRef:
     name: {{ template "elasticsearch-operator.name" . }}-elasticsearch

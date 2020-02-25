@@ -7,6 +7,10 @@ metadata:
   labels:
     control-plane: elastic-operator
 spec:
+{{- if .Values.elasticsearchOperator.nodeSelector }}
+  nodeSelector:
+{{ toYaml .Values.elasticsearchOperator.nodeSelector | indent 4 }}
+{{- end }}
   selector:
     matchLabels:
       control-plane: elastic-operator
