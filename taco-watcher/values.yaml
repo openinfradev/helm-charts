@@ -1,0 +1,75 @@
+replicaCount: 1
+
+image:
+  repository: sktdev/taco-watcher
+  tag: 0.1.0
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: NodePort
+  port: 9000
+  targetPort: 9000
+  nodePort:  31001
+
+resources: 
+  storageClassName: rbd
+
+  limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+    storage: 100Mi
+  requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+    storage: 100Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+config:
+  username: taco
+  password: password
+
+  service:
+    port: 9000
+    proxyportlist: "9001-9009"
+  log:
+    level: LOG_DEBUG
+    max:
+      fileSize: 64
+      history: 3
+  ldap:
+    loginUse: no
+    server:
+      ip: "218.36.252.193"
+      port: 32182
+    ssl:
+      enable: no
+      certValidationSkip: yes
+    userDnPattern: "cn={0},dc=cluster,dc=local"
+    connTimeout: 5
+    readTimeout:
+  security:
+    sessionTimeout: 6
+  kibana:
+    authkey: elastic:tacoword
+  grafana: 
+    authkey: admin:password
+  prometheus:
+    ruleUrl: /apis/monitoring.coreos.com/v1/namespaces/fed/prometheusrule
+  loggingfilter:
+    url: /apis/logging.banzaicloud.io/v1beta1/namespaces/fed/flows
+  extra:
+    config: |-
+
+    sql: |-
+  
+
+            
