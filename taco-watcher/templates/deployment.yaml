@@ -57,7 +57,7 @@ spec:
           claimName: {{ template "taco-watcher.fullname" . }}-pvc
       - name: log-volume
         hostPath:
-          path: /home/ubuntu
+          path: /tmp
           type: Directory
       securityContext:
         runAsUser: 1000
