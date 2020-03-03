@@ -1,8 +1,10 @@
 replicaCount: 1
 
 image:
-  repository: sktdev/taco-watcher
-  tag: 0.1.0
+  repository: yjkim1ntels/taco-mon
+  tag: latest 
+#  repository: sktdev/taco-watcher
+#  tag: 0.1.0
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -11,9 +13,11 @@ fullnameOverride: ""
 
 service:
   type: NodePort
-  port: 9000
-  targetPort: 9000
-  nodePort:  31001
+  port: 32000
+  targetPort: 32000
+  nodePort:  32000
+  proxy_from: 32001
+  proxy_to: 32009
 
 resources: 
   storageClassName: rbd
@@ -38,8 +42,8 @@ config:
   password: password
 
   service:
-    port: 9000
-    proxyportlist: "9001-9009"
+    port: 32000
+    proxyportlist: "32001-32009"
   log:
     level: LOG_DEBUG
     max:
