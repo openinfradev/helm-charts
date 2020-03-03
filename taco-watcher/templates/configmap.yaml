@@ -49,8 +49,6 @@ data:
       PRIMARY KEY(prop_key)
     );
 
-    INSERT INTO properties VALUES ('db_revision', '1');
-    INSERT INTO properties VALUES ('theme_type', 'light');
 
     CREATE TABLE IF NOT EXISTS user (
       id TEXT NOT NULL,
@@ -58,7 +56,6 @@ data:
       PRIMARY KEY (id)
     );
 
-    INSERT INTO user VALUES ('taco', 'password');
 
     CREATE TABLE cluster (
       id TEXT NOT NULL,
@@ -102,9 +99,13 @@ data:
       PRIMARY KEY (id)
     );
 
+{{- if .Values.config.initDB }}
+    INSERT INTO properties VALUES ('db_revision', '1');
+    INSERT INTO properties VALUES ('theme_type', 'light');
+    INSERT INTO user VALUES ({{ default "taco" .Values.config.username | squote }}, {{ default "password" .Values.config.password  | squote}});
     INSERT INTO default_menu VALUES (1, 0, 'Cluster Management', 1, '/setcluster', 'icon-setting');
     INSERT INTO default_menu VALUES (2, 0, 'Prometheus Rule', 2, '/prometheusrule', 'icon-alarm');
-
+{{- end }}
    {{- with .Values.config.extra.sql }}
      {{- toYaml . | nindent 4 }}
    {{- end }}
