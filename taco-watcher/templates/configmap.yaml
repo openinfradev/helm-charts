@@ -1,0 +1,186 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "taco-watcher.fullname" . }}
+  labels:
+    app: {{ template "taco-watcher.name" . }}
+    chart: {{ template "taco-watcher.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+  tacomo.conf: |-
+     [system]
+     service.port={{ .Values.config.service.port }}
+     service.proxyportlist={{ .Values.config.service.proxyportlist }}
+     [logs]
+     log.level={{ .Values.config.log.level }}
+     log.path=/home/tacomo/tacomo-webserver/logs
+     log.max.file.size={{ .Values.config.log.max.fileSize }}
+     log.max.history={{ .Values.config.log.max.history }}
+     [ldap]
+     ldap.login.use={{ .Values.config.ldap.loginUse }}
+     ldap.server.ip={{ .Values.config.ldap.server.ip }}
+     ldap.server.port={{ .Values.config.ldap.server.port }}
+     ldap.ssl.enable={{ .Values.config.ldap.ssl.enable }}
+     ldap.ssl.cert.validation.skip={{ .Values.config.ldap.ssl.certValidationSkip }}
+     ldap.user.dn.pattern={{ .Values.config.ldap.userDnPattern }}
+     ldap.conn.timeout={{ .Values.config.ldap.connTimeout }}
+     ldap.read.timeout={{ .Values.config.ldap.readTimeout }}
+     [security]
+     security.session.timeout={{ .Values.config.security.sessionTimeout }}
+     [kibana]
+     kibana.authkey={{ .Values.config.kibana.authkey }}
+     [grafana]
+     grafana.authkey={{ .Values.config.grafana.authkey }}
+     [kubernetes]
+     k8s.api.prometheusrule.url={{ .Values.config.prometheus.ruleUrl }}
+     k8s.api.loggingfilter.url={{ .Values.config.loggingfilter.url }}
+
+    {{- with .Values.config.extra.config }}
+      {{- toYaml . | nindent 5 }}
+    {{- end }}
+  prometheusrule.json: |-
+    {
+      "apiVersion" : "monitoring.coreos.com/v1",
+      "kind" : "PrometheusRule",
+      "metadata" : {
+        "annotations":{ 
+          "prometheus-operator-validated":"true"
+        },
+        "name" : "",
+        "namespace" : "mon"
+      },
+      "spec" : {
+        "groups" : [ {
+          "name" : "",
+          "rules" : [ {
+            "alert" : "",
+            "annotations" : {
+              "message" : ""
+            },
+            "expr" : "",
+            "for" : "",
+            "labels" : {
+              "severity" : ""
+            }
+          } ]
+        } ]
+      }
+    }
+
+  loggingfilter.json: |-
+    {
+      "apiVersion" : "logging.banzaicloud.io/v1beta1",
+      "kind" : "Flow",
+      "metadata" : {
+        "name" : "",
+        "namespace" : "mon"
+      },
+      "spec" : {
+        "filters":[ {
+          "parser" : {
+            "parse" : {
+              "type" : "nginx"
+            },
+            "remove_key_name_field" : true
+          }
+        },
+        {
+          "tag_normaliser" : {
+            "format" : "${namespace_name}.${pod_name}.${container_name}"
+          }
+        },
+        {
+          "grep" : {
+            "and" : [ {
+              "regexp" : [ {
+                "key" : "",
+                "pattern" : ""
+              } ]
+            },
+            {
+              "exclude" : [ {
+                "key" : "",
+                "pattern" : ""
+              } ]
+            } ]
+          }
+        } ],
+        "outputRefs" : [
+          "es-output"
+        ],
+        "selectors" : {
+          "app":"nginx"
+        }
+      }
+    }
+
+  tacomodb_1.sql: |-
+    CREATE TABLE IF NOT EXISTS properties (
+      prop_key TEXT NOT NULL,
+      prop_value TEXT DEFAULT NULL,
+      PRIMARY KEY(prop_key)
+    );
+
+
+    CREATE TABLE IF NOT EXISTS user (
+      id TEXT NOT NULL,
+      passwd TEXT NOT NULL,
+      PRIMARY KEY (id)
+    );
+
+
+    CREATE TABLE cluster (
+      id TEXT NOT NULL,
+      kibana_url TEXT DEFAULT NULL,
+      grafana_url TEXT DEFAULT NULL,
+      k8s_url TEXT DEFAULT NULL,
+      k8s_token TEXT DEFAULT NULL,
+      is_main INTEGER NOT NULL DEFAULT 0,
+      main_page_type TEXT DEFAULT NULL,
+      main_page_link TEXT DEFAULT NULL,
+      k8s_page_type TEXT DEFAULT NULL,
+      k8s_page_link TEXT DEFAULT NULL,
+      openstack_page_type TEXT DEFAULT NULL,
+      openstack_page_link TEXT DEFAULT NULL,
+      ceph_page_type TEXT DEFAULT NULL,
+      ceph_page_link TEXT DEFAULT NULL,
+      PRIMARY KEY (id)
+    );
+
+    CREATE TABLE cluster_menu (
+      cluster_id TEXT NOT NULL,
+      id INTEGER NOT NULL,
+      parent_id INTEGER NOT NULL,
+      name TEXT NOT NULL,
+      seq INTEGER NOT NULL,
+      link TEXT DEFAULT NULL,
+      url_type TEXT DEFAULT NULL,
+      popup_type TEXT DEFAULT NULL,
+      PRIMARY KEY (cluster_id, id),
+      CONSTRAINT fk_cluster FOREIGN KEY (cluster_id)
+       REFERENCES cluster (id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE default_menu (
+      id INTEGER NOT NULL,
+      parent_id INTEGER NOT NULL,
+      name TEXT NOT NULL,
+      seq INTEGER NOT NULL,
+      link TEXT NOT NULL,
+      icon TEXT DEFAULT NULL,
+      PRIMARY KEY (id)
+    );
+
+{{- if .Values.config.initDB }}
+    INSERT INTO properties VALUES ('db_revision', '1');
+    INSERT INTO properties VALUES ('theme_type', 'light');
+    INSERT INTO user VALUES ({{ default "taco" .Values.config.username | squote }}, {{ default "password" .Values.config.password  | squote}});
+    INSERT INTO default_menu VALUES (1, 0, 'Cluster Management', 1, '/setcluster', 'icon-setting');
+    INSERT INTO default_menu VALUES (2, 0, 'Prometheus Rule', 2, '/prometheusrule', 'icon-alarm');
+{{- end }}
+   {{- with .Values.config.extra.sql }}
+     {{- toYaml . | nindent 4 }}
+   {{- end }}
+
+
