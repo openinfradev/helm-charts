@@ -33,6 +33,12 @@ spec:
         - name: conf
           mountPath: /home/tacomo/tacomo-webserver/conf/tacomo.conf
           subPath: tacomo.conf
+        - name: conf
+          mountPath: /home/tacomo/tacomo-webserver/conf/loggingfilter.json
+          subPath: loggingfilter.json
+        - name: conf
+          mountPath: /home/tacomo/tacomo-webserver/conf/prometheusrule.json 
+          subPath: prometheusrule.json 
         - name: sql
           mountPath: /home/tacomo/tacomo-webserver/sql/tacomodb_1.sql
           subPath: tacomodb_1.sql

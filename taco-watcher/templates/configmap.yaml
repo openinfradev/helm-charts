@@ -39,8 +39,81 @@ data:
     {{- with .Values.config.extra.config }}
       {{- toYaml . | nindent 5 }}
     {{- end }}
+  prometheusrule.json: |-
+    {
+      "apiVersion" : "monitoring.coreos.com/v1",
+      "kind" : "PrometheusRule",
+      "metadata" : {
+        "annotations":{ 
+          "prometheus-operator-validated":"true"
+        },
+        "name" : "",
+        "namespace" : "mon"
+      },
+      "spec" : {
+        "groups" : [ {
+          "name" : "",
+          "rules" : [ {
+            "alert" : "",
+            "annotations" : {
+              "message" : ""
+            },
+            "expr" : "",
+            "for" : "",
+            "labels" : {
+              "severity" : ""
+            }
+          } ]
+        } ]
+      }
+    }
 
-
+  loggingfilter.json: |-
+    {
+      "apiVersion" : "logging.banzaicloud.io/v1beta1",
+      "kind" : "Flow",
+      "metadata" : {
+        "name" : "",
+        "namespace" : "mon"
+      },
+      "spec" : {
+        "filters":[ {
+          "parser" : {
+            "parse" : {
+              "type" : "nginx"
+            },
+            "remove_key_name_field" : true
+          }
+        },
+        {
+          "tag_normaliser" : {
+            "format" : "${namespace_name}.${pod_name}.${container_name}"
+          }
+        },
+        {
+          "grep" : {
+            "and" : [ {
+              "regexp" : [ {
+                "key" : "",
+                "pattern" : ""
+              } ]
+            },
+            {
+              "exclude" : [ {
+                "key" : "",
+                "pattern" : ""
+              } ]
+            } ]
+          }
+        } ],
+        "outputRefs" : [
+          "es-output"
+        ],
+        "selectors" : {
+          "app":"nginx"
+        }
+      }
+    }
 
   tacomodb_1.sql: |-
     CREATE TABLE IF NOT EXISTS properties (
