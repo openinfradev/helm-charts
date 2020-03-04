@@ -1,10 +1,9 @@
 replicaCount: 1
 
 image:
-  repository: yjkim1ntels/taco-mon
   tag: latest 
-#  repository: sktdev/taco-watcher
-#  tag: 0.1.0
+  repository: sktdev/taco-watcher
+  tag: 1.0.1
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
