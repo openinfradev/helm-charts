@@ -180,7 +180,7 @@ data:
     INSERT INTO default_menu VALUES (2, 0, 'Prometheus Rule', 2, '/prometheusrule', 'icon-alarm');
 {{- end }}
    {{- with .Values.config.extra.sql }}
-     {{- toYaml . | nindent 4 }}
+     {{- . | nindent 4 }}
    {{- end }}
 
 
