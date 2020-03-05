@@ -8,7 +8,6 @@ elasticsearchOperator:
   namespace: elastic-system
 
   createCustomResource: true
-  cleanupCustomResource: true
 
   hyperkubeImage:
     repository: k8s.gcr.io/hyperkube
