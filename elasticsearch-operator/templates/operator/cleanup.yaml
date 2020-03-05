@@ -1,4 +1,4 @@
-{{- if and .Values.elasticsearchOperator.enabled .Values.elasticsearchOperator.cleanupCustomResource }}
+{{- if and .Values.elasticsearchOperator.enabled .Values.elasticsearchOperator.createCustomResource }}
 apiVersion: batch/v1
 kind: Job
 metadata:
