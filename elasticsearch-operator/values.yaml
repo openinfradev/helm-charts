@@ -8,6 +8,12 @@ elasticsearchOperator:
   namespace: elastic-system
 
   createCustomResource: true
+  cleanupCustomResource: true
+
+  hyperkubeImage:
+    repository: k8s.gcr.io/hyperkube
+    tag: v1.12.1
+    pullPolicy: IfNotPresent
 
   rbac:
     create: true
