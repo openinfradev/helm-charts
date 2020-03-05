@@ -12,7 +12,7 @@ elasticsearchOperator:
 
   hyperkubeImage:
     repository: k8s.gcr.io/hyperkube
-    tag: v1.12.1
+    tag: v1.15.3
     pullPolicy: IfNotPresent
 
   rbac:
