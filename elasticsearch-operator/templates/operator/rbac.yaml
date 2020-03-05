@@ -119,6 +119,52 @@ rules:
   - delete
 ---
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: elastic-operator-cleanup-role
+rules:
+- apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - get
+  - delete
+- apiGroups:
+  - elasticsearch.k8s.elastic.co
+  resources:
+  - elasticsearches
+  verbs:
+  - get
+  - delete
+  - list
+- apiGroups:
+  - objectbucket.io
+  resources:
+  - objectbucketclaims
+  - objectbuckets
+  verbs:
+  - get
+  - list
+  - delete
+- apiGroups:
+  - kibana.k8s.elastic.co
+  resources:
+  - kibanas
+  verbs:
+  - get
+  - delete
+  - list
+- apiGroups:
+  - apm.k8s.elastic.co
+  resources:
+  - apmservers
+  verbs:
+  - get
+  - delete
+  - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: elastic-operator
@@ -131,9 +177,29 @@ subjects:
   name: elastic-operator
   namespace: {{ default .Release.Namespace .Values.elasticsearchOperator.namespace }}
 ---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: elastic-operator-cleanup-crb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: elastic-operator-cleanup-role
+subjects:
+- kind: ServiceAccount
+  name: elastic-operator-cleanup
+  namespace: {{ .Release.Namespace }}
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: elastic-operator
   namespace: {{ default .Release.Namespace .Values.elasticsearchOperator.namespace }}
+---
+# Service account for the cleanup job.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: elastic-operator-cleanup
+  namespace: {{ .Release.Namespace }}
 {{- end }}
