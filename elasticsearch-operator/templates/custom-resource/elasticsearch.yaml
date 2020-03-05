@@ -6,6 +6,9 @@ metadata:
 spec:
   version: {{ .Values.customResource.elasticsearch.version }}
   image: {{ .Values.customResource.elasticsearch.image }}:{{ .Values.customResource.elasticsearch.version }}
+{{- if not .Values.customResource.elasticsearch.podDisruptionBudget.enabled }}
+  podDisruptionBudget: {}
+{{- end }}
   nodeSets:
   - name: default
     count: {{ .Values.customResource.elasticsearch.count }}

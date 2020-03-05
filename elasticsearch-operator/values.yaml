@@ -55,6 +55,10 @@ customResource:
       node.ingest: true
       node.store.allow_mmap: false
 
+    ## empty {} means podDisruptionBudget disabled
+    podDisruptionBudget:
+      enabled: false
+
     ## http setting for Elasticsearch
     http:
       ports:
