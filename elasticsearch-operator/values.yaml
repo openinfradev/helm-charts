@@ -9,6 +9,11 @@ elasticsearchOperator:
 
   createCustomResource: true
 
+  hyperkubeImage:
+    repository: k8s.gcr.io/hyperkube
+    tag: v1.15.3
+    pullPolicy: IfNotPresent
+
   rbac:
     create: true
 
@@ -48,6 +53,10 @@ customResource:
       node.data: true
       node.ingest: true
       node.store.allow_mmap: false
+
+    ## empty {} means podDisruptionBudget disabled
+    podDisruptionBudget:
+      enabled: false
 
     ## http setting for Elasticsearch
     http:
