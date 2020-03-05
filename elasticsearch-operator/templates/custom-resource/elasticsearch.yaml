@@ -10,6 +10,9 @@ spec:
   nodeSelector:
 {{ toYaml .Values.customResource.elasticsearch.nodeSelector | indent 4 }}
 {{- end }}
+{{- if not .Values.customResource.elasticsearch.podDisruptionBudget.enabled }}
+  podDisruptionBudget: {}
+{{- end }}
   nodeSets:
   - name: default
     count: {{ .Values.customResource.elasticsearch.count }}
