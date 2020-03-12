@@ -53,6 +53,10 @@ spec:
           items:
           - key: tacomo.conf
             path: tacomo.conf
+          - key: loggingfilter.json
+            path: loggingfilter.json
+          - key: prometheusrule.json 
+            path: prometheusrule.json 
       - name: sql
         configMap:
           name: {{ template "taco-watcher.fullname" . }}

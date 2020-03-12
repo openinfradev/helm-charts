@@ -68,7 +68,7 @@ config:
   grafana: 
     authkey: admin:password
   prometheus:
-    ruleUrl: /apis/monitoring.coreos.com/v1/namespaces/fed/prometheusrule
+    ruleUrl: /apis/monitoring.coreos.com/v1/namespaces/fed/prometheusrules
   loggingfilter:
     url: /apis/logging.banzaicloud.io/v1beta1/namespaces/fed/flows
   extra:
