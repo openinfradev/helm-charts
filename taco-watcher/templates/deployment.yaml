@@ -29,6 +29,14 @@ spec:
         - name: http
           containerPort: {{ .Values.service.targetPort }}
           protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.service.targetPort }} 
+        readinessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.service.targetPort }} 
         volumeMounts:
         - name: conf
           mountPath: /home/tacomo/tacomo-webserver/conf/tacomo.conf
