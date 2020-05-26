@@ -19,7 +19,7 @@ elasticsearchOperator:
 
   image:
     repository: docker.elastic.co/eck/eck-operator
-    tag: 1.0.0
+    tag: 1.1.1
 
   resources:
     limits:
