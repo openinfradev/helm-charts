@@ -56,19 +56,19 @@ spec:
           volumeMounts:
           - name: env
             mountPath: /fluentbit-operator
-{{- if .Values.fluentbitOperator.manageCrds }}            
-          - name: fluentbit-bin
-            readOnly: true
-            mountPath: /tmp/pre-stop-hook-script.sh
-            subPath: pre-stop-hook-script.sh
-          lifecycle:
-            preStop:
-              exec:
-                command:
-                  - bash
-                  - '-c'
-                  - /tmp/pre-stop-hook-script.sh
-{{- end}}
+# {{- if .Values.fluentbitOperator.manageCrds }}            
+#           - name: fluentbit-bin
+#             readOnly: true
+#             mountPath: /tmp/pre-stop-hook-script.sh
+#             subPath: pre-stop-hook-script.sh
+#           lifecycle:
+#             preStop:
+#               exec:
+#                 command:
+#                   - bash
+#                   - '-c'
+#                   - /tmp/pre-stop-hook-script.sh
+# {{- end}}
           # securityContext:
           #   allowPrivilegeEscalation: false
           #   readOnlyRootFilesystem: true

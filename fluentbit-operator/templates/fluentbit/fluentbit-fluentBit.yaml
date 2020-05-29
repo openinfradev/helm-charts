@@ -13,4 +13,9 @@ spec:
     emptyDir: {}
   fluentBitConfigName: fluent-bit-config
   containerLogRealPath: /var/lib/docker/containers
+  tolerations:
+  - key: node-role.kubernetes.io/master
+    operator: Exists
+  - key: node-role.kubernetes.io/node
+    operator: Exists
 {{- end}}

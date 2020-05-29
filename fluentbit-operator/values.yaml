@@ -106,12 +106,11 @@ fluentbitOperator:
   # ## Deploy CRDs used by Fluentbit Operator.
   # ##
   # createCustomResource: true
-  createCustomResource: true 
 
   # ## Attempt to clean up CRDs created by Fluentbit Operator.
   # ##
   # cleanupCustomResource: false
-  cleanupCustomResource: true
+
   ## Labels to add to the operator pod
   ##
   podLabels: {}
