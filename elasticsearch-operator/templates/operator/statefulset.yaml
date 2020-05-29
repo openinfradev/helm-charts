@@ -24,7 +24,7 @@ spec:
       containers:
       - image: "{{ .Values.elasticsearchOperator.image.repository }}:{{ .Values.elasticsearchOperator.image.tag }}"
         name: elasticsearch-manager
-        args: ["manager", "--operator-roles", "all", "--log-verbosity=0"]
+        args: ["manager", "--enable-webhook", "--log-verbosity=0"]
         env:
           - name: OPERATOR_NAMESPACE
             valueFrom:
