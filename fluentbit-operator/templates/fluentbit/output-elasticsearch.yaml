@@ -1,0 +1,69 @@
+---
+{{- if and .Values.fluentbit.enabled }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: elasticsearch-user-info
+  namespace: {{ $.Release.Namespace }}
+type: Opaque
+data:
+  username: ZWxhc3RpYw==
+  password: dGFjb3dvcmQ=
+---
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Output
+metadata:
+  name: elasticsearch-lma
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    app.kubernetes.io/version: v0.0.1
+spec:
+  match: "kube.*"
+  es: 
+    logstashFormat: true
+    host: "taco-elasticsearch-es-http.lma.svc.cluster.local"
+    port: 9200
+    type: "fluent"
+    httpUser: 
+      valueFrom:
+        secretKeyRef:
+          name: elasticsearch-user-info
+          key: username
+    httpPassword: 
+      valueFrom: 
+        secretKeyRef:
+          name: elasticsearch-user-info
+          key: password
+    tls: 
+      verify: false
+---
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Output
+metadata:
+  name: elasticsearch-lma-syslog
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    app.kubernetes.io/version: v0.0.1
+spec:
+  match: "syslog.*"
+  es: 
+    logstashFormat: true
+    logstashPrefix: syslog
+    host: "taco-elasticsearch-es-http.lma.svc.cluster.local"
+    port: 9200
+    type: "syslog"
+    httpUser: 
+      valueFrom:
+        secretKeyRef:
+          name: elasticsearch-user-info
+          key: username
+    httpPassword: 
+      valueFrom: 
+        secretKeyRef:
+          name: elasticsearch-user-info
+          key: password
+    tls: 
+      verify: false
+{{- end}}
