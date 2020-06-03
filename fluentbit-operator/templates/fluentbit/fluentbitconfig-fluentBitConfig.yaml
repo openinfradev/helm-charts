@@ -6,7 +6,7 @@ metadata:
   namespace: {{ $.Release.Namespace }}
   labels:
     app.kubernetes.io/name: fluent-bit
-    app.kubernetes.io/version: v1.3.7
+    app.kubernetes.io/version: v1.4.5
 spec:
   service:
     parsersFile: parsers.conf

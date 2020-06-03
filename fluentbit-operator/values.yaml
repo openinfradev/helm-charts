@@ -79,7 +79,6 @@ fluentbitOperator:
   ## Only used if service.type is 'NodePort'
   ##
     nodePort: 30080
-
     nodePortTls: 30443
 
   ## Additional ports to open for Fluentbit service
@@ -216,7 +215,7 @@ fluentbitOperator:
   ##
   image:
     repository: siim/fluentbit-operator
-    tag: v0.0.1
+    tag: v0.1.0
     pullPolicy: IfNotPresent
 
   ## Configmap-reload image to use for reloading configmaps
@@ -294,8 +293,8 @@ fluentbit:
     ## Image of Fluentbit.
     ##
     image:
-      repository: quay.io/fluentbit/fluentbit
-      tag: v2.17.2
+      repository: siim/fluent-bit-for-operator
+      tag: 1.4.5
 
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/

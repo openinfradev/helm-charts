@@ -6,9 +6,9 @@ metadata:
   namespace: {{ $.Release.Namespace }}
   labels:
     app.kubernetes.io/name: fluent-bit
-    app.kubernetes.io/version: v1.3.7
+    app.kubernetes.io/version: v1.4.5
 spec:
-  image: kubespheredev/fluent-bit:v1.3.7
+  image: siim/fluent-bit-for-operator:1.4.5
   positionDB:
     emptyDir: {}
   fluentBitConfigName: fluent-bit-config
