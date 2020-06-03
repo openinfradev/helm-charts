@@ -49,4 +49,23 @@ spec:
       rules:
       - add:
           cluster: siim-dev
+---
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Filter
+metadata:
+  name: alerts
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    app.kubernetes.io/version: v0.0.1
+spec:
+  match: "*"
+  filters:
+  - rewriteTag:
+      rules: 
+      - key: "$log" 
+        regex: "*warn*" 
+        newTag: matched.$TAG 
+        keep: "false"
+      emitterName: alertrule_match
 {{- end}}

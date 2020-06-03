@@ -66,4 +66,33 @@ spec:
           key: password
     tls: 
       verify: false
+---
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Output
+metadata:
+  name: elasticsearch-lma-alert
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    app.kubernetes.io/version: v0.0.1
+spec:
+  match: "matched.*"
+  es: 
+    logstashFormat: true
+    logstashPrefix: abnormal
+    host: "taco-elasticsearch-es-http.lma.svc.cluster.local"
+    port: 9200
+    type: "abnormal"
+    httpUser: 
+      valueFrom:
+        secretKeyRef:
+          name: elasticsearch-user-info
+          key: username
+    httpPassword: 
+      valueFrom: 
+        secretKeyRef:
+          name: elasticsearch-user-info
+          key: password
+    tls: 
+      verify: false
 {{- end}}
