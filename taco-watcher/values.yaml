@@ -18,16 +18,12 @@ service:
   proxy_from: 32001
   proxy_to: 32009
 
-resources: 
+volume:
   storageClassName: rbd
 
   limits:
-  #   cpu: 100m
-  #   memory: 128Mi
     storage: 100Mi
   requests:
-  #   cpu: 100m
-  #   memory: 128Mi
     storage: 100Mi
 
 nodeSelector: {}
