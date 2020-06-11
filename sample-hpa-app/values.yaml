@@ -1,0 +1,8 @@
+replicas: 
+  min: 2
+  max: 10
+
+service:
+  type: NodePort
+  nodePort: 31030
+
