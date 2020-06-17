@@ -24,8 +24,8 @@ spec:
     {{- end }}
       containers:
         - name: kubectl
-          image: "{{ .Values.fluentbitOperator.hyperkubeImage.repository }}:{{ .Values.fluentbitOperator.hyperkubeImage.tag }}"
-          imagePullPolicy: "{{ .Values.fluentbitOperator.hyperkubeImage.pullPolicy }}"
+          image: "{{ .Values.image.hyperkube.repository }}:{{ .Values.image.hyperkube.tag }}"
+          imagePullPolicy: "{{ .Values.image.hyperkube.pullPolicy }}"
           command:
           - /bin/sh
           - -c

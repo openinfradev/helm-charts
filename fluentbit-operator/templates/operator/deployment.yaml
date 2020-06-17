@@ -32,7 +32,8 @@ spec:
     {{- end }}
       initContainers:
         - name: setenv
-          image: 'docker:19.03'
+          image: "{{ .Values.image.init.repository }}:{{ .Values.image.init.tag }}"
+          imagePullPolicy: "{{ .Values.image.init.pullPolicy }}"          
           command: 
           - sh
           - '-c'
@@ -49,14 +50,14 @@ spec:
             subPath: init-fluent-bit-env.sh
       containers:
         - name: {{ template "fluentbit-operator.name" . }}
-          image: "{{ .Values.fluentbitOperator.image.repository }}:{{ .Values.fluentbitOperator.image.tag }}"
-          imagePullPolicy: "{{ .Values.fluentbitOperator.image.pullPolicy }}"
+          image: "{{ .Values.image.operator.repository }}:{{ .Values.image.operator.tag }}"
+          imagePullPolicy: "{{ .Values.image.operator.pullPolicy }}"
           resources:
 {{ toYaml .Values.fluentbitOperator.resources | indent 12 }}
           volumeMounts:
           - name: env
             mountPath: /fluentbit-operator
-# {{- if .Values.fluentbitOperator.manageCrds }}            
+# {{- if .Values.fluentbitOperator.createCustomResource }}            
 #           - name: fluentbit-bin
 #             readOnly: true
 #             mountPath: /tmp/pre-stop-hook-script.sh
