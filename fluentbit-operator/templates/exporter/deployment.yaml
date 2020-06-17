@@ -1,0 +1,26 @@
+{{- if .Values.logExporter.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "fluentbit-operator.fullname" . }}-exporter
+  labels:
+    app: {{ template "fluentbit-operator.name" . }}-exporter
+  annotations:
+    prometheus.io/scrape: 'true'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "fluentbit-operator.name" . }}-exporter
+  template:
+    metadata:
+      labels:
+        app: {{ template "fluentbit-operator.name" . }}-exporter      
+    spec:
+      containers:
+      - name: exporter
+        image: {{ .Values.image.exporter.repository }}:{{ .Values.image.exporter.tag }}
+        imagePullPolicy: "{{ .Values.image.exporter.pullPolicy }}"
+        ports:
+        - containerPort: 2112
+{{- end }}

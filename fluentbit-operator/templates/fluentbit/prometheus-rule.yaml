@@ -1,0 +1,24 @@
+{{- if and .Values.fluentbit.enabled .Values.fluentbit.alerts.makeAlertRule -}}
+---
+kind: PrometheusRule
+apiVersion: monitoring.coreos.com/v1
+metadata:
+  annotations:
+    prometheus-operator-validated: 'true'
+  name: {{ template "fluentbit-operator.fullname" . }}-alert
+  namespace:  {{ $.Release.Namespace }}
+spec:
+  groups:
+    - name: log-based-alert
+{{- range $key, $value := .Values.fluentbit.alerts.rules }}
+      rules:
+        - alert: log-has-{{- $value}}
+          annotations:
+            message: 'log alert'
+            summary: >-
+              generated
+          expr: taco_logging_system_alert == 1
+          labels:
+            severity: page
+{{- end}}
+{{- end}}

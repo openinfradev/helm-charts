@@ -1,0 +1,16 @@
+{{- if .Values.logExporter.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fluentbit-operator.name" . }}-exporter
+  annotations:
+    prometheus.io/scrape: 'true'
+spec:
+  selector:
+    app: {{ template "fluentbit-operator.name" . }}-exporter
+  ports:
+    - protocol: TCP
+      port: 2112
+      targetPort: 2112
+{{- end }}

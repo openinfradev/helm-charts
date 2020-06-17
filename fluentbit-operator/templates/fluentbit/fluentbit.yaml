@@ -8,9 +8,13 @@ metadata:
     app.kubernetes.io/name: fluent-bit
     app.kubernetes.io/version: v1.4.5
 spec:
-  image: siim/fluent-bit-for-operator:1.4.5
+  image: "{{ .Values.image.fluentbit.repository }}:{{ .Values.image.fluentbit.tag }}"
+
+#siim/fluent-bit-for-operator:1.4.6
   positionDB:
-    emptyDir: {}
+    hostPath:
+      path: /var/log/flb_kube.db
+      type: FileOrCreate
   fluentBitConfigName: fluent-bit-config
   containerLogRealPath: /var/lib/docker/containers
   tolerations:

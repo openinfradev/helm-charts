@@ -11,7 +11,8 @@ spec:
   tail: 
     bufferChunkSize: 1M
     bufferMaxSize: 1M
-    memBufLimit: 5MB
+    db: /fluent-bit/tail
+    memBufLimit: 20MB
     parser: docker
     path: /var/log/containers/*.log
     tag: kube.*
@@ -28,6 +29,7 @@ spec:
   tail: 
     bufferChunkSize: 1M
     bufferMaxSize: 1M
+    db: /fluent-bit/tail
     memBufLimit: 5MB
     parser: syslog-rfc5424
     path: /var/log/syslog
@@ -45,6 +47,7 @@ spec:
   tail: 
     bufferChunkSize: 1M
     bufferMaxSize: 1M
+    db: /fluent-bit/tail
     memBufLimit: 5MB
     parser: syslog-rfc5424
     path: /var/log/messages

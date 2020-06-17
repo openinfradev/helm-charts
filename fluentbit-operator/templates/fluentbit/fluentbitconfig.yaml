@@ -10,6 +10,7 @@ metadata:
 spec:
   service:
     parsersFile: parsers.conf
+    # logLevel: debug
   inputSelector:
     matchLabels:
       logging.kubesphere.io/enabled: "true"

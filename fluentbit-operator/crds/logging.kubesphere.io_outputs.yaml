@@ -1,3 +1,5 @@
+
+---
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
@@ -402,6 +404,40 @@ spec:
                           type: object
                       type: object
                   type: object
+              type: object
+            http:
+              description: Forward defines Http Output configuration.
+              properties:
+                format:
+                  description: Specify the data format to be used in the HTTP request
+                    body, by default it uses msgpack. Other supported formats are
+                    json, json_stream and json_lines and gelf.
+                  enum:
+                  - msgpack
+                  - json
+                  - json_stream
+                  - json_lines
+                  - gelf
+                  type: string
+                host:
+                  description: IP address or hostname of the target HTTP Server
+                  type: string
+                hostPasswd:
+                  description: Basic Auth Password. Requires HTTP_User to be set
+                  type: string
+                hostUser:
+                  description: Basic Auth Username
+                  type: string
+                port:
+                  description: TCP Port of the target service.
+                  format: int32
+                  maximum: 65535
+                  minimum: 1
+                  type: integer
+                uri:
+                  description: 'Specify an optional HTTP URI for the target web server,
+                    e.g: /something'
+                  type: string
               type: object
             kafka:
               description: Kafka defines Kafka Output configuration.
