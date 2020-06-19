@@ -17,9 +17,11 @@ spec:
       type: FileOrCreate
   fluentBitConfigName: fluent-bit-config
   containerLogRealPath: /var/lib/docker/containers
+{{- if and .Values.fluentbit.fluentbitSpec.tolerations}}
   tolerations:
-  - key: node-role.kubernetes.io/master
-    operator: Exists
-  - key: node-role.kubernetes.io/node
-    operator: Exists
+{{- range $i, $toleration :=  .Values.fluentbit.fluentbitSpec.tolerations }}
+  - key: {{- $toleration.key}} 
+    operator: {{- $toleration.operator}} 
+{{- end}}
+{{- end}}
 {{- end}}

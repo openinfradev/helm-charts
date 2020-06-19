@@ -168,7 +168,7 @@ fluentbitOperator:
 ##
 fluentbit:
 
-  enabled: true
+  enabled: false
 
   ## Annotations for Fluentbit
   ##
@@ -186,7 +186,11 @@ fluentbit:
     ## Tolerations for use with node taints
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
     ##
-    tolerations: []
+    tolerations: 
+    - key: node-role.kubernetes.io/master
+      operator: Exists
+    - key: node-role.kubernetes.io/node
+      operator: Exists
     #  - key: "key"
     #    operator: "Equal"
     #    value: "value"
@@ -298,6 +302,33 @@ fluentbit:
     ## Default rulset to send exporter
     ## format is "level: keyword"   for example "critical: error"
     ## VERY VERY VERY IMPORTANT ==> At least one tuple should be defined
+  
+  targetLogs:
+  - name: dockerlog
+    tag: kube.*
+    path: /var/log/containers/*.log
+    type: fluent
+  - name: syslog
+    tag: syslog.*
+    path: /var/log/syslog
+    type: syslog
+    indexPrefix: syslog
+  # - name: journal
+  #   tag: journal.*
+  #   path: /var/log/journal
+  outputs:
+    es: 
+      enabled: false
+      username: ZWxhc3RpYw==
+      password: dGFjb3dvcmQ=
+      host: taco-elasticsearch-es-http.lma.svc.cluster.local
+      port: 9200
+    kafka:
+      enabled: false
+    http:
+      enabled: false
+
+
   alerts:
     rules:
       critical: error
