@@ -11,12 +11,24 @@ metadata:
     app.kubernetes.io/version: v0.0.1
 spec:
   tail: 
-    bufferChunkSize: 2M
-    bufferMaxSize: 2M
     db: /fluent-bit/tail
-    memBufLimit: 20MB
-    parser: syslog-rfc5424
+{{- if and $input.bufferChunkSize }}
+    bufferChunkSize: {{ $input.bufferChunkSize }}
+{{- else}}
+    bufferChunkSize: 1M
+{{- end}}
+{{- if and $input.bufferMaxSize }}
+    bufferMaxSize: {{ $input.bufferMaxSize }}
+{{- else}}
+    bufferMaxSize: 1M
+{{- end}}
+{{- if and $input.memBufLimit }}
+    memBufLimit: {{ $input.memBufLimit }}
+{{- else}}
+    memBufLimit: 5M
+{{- end}}
+    parser: {{ $input.parser }}
     path: {{ $input.path }}
-    tag: {{ $input.tag }}
+    tag: "{{ $input.tag }}"
 {{- end }}
 {{- end }}

@@ -1,66 +1,83 @@
 {{- if and .Values.fluentbit.enabled }}
-{{- if and .Values.fluentbit.outputs.es.enabled }}
+{{- $envAll := . }}
+{{- if and $envAll.Values.fluentbit.outputs.es.enabled }}
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ template "fluentbit-operator.fullname" . }}-es-user
-  namespace: {{ $.Release.Namespace }}
+  name: {{ template "fluentbit-operator.fullname" $envAll  }}-es-secret
+  namespace: {{ $envAll.Release.Namespace }}
 type: Opaque
 data:
   username: {{ .Values.fluentbit.outputs.es.username }}
   password: {{ .Values.fluentbit.outputs.es.password }}
+{{- range $i, $input := $envAll.Values.fluentbit.targetLogs }}
 ---
-{{- range $i, $input := .Values.fluentbit.targetLogs }}
 apiVersion: logging.kubesphere.io/v1alpha2
 kind: Output
 metadata:
-  name: {{ template "fluentbit-operator.fullname" . }}-es-{{ $input.name }}
-  namespace: {{ $.Release.Namespace }}
+  name: {{ template "fluentbit-operator.fullname" $envAll  }}-es-{{ $input.name }}
+  namespace: {{ $envAll.Release.Namespace }}
   labels:
     logging.kubesphere.io/enabled: "true"
     app.kubernetes.io/version: v0.0.1
 spec:
-  match: {{ $input.tag }}
+  match: "{{ $input.tag }}"
   es: 
     logstashFormat: true
 {{- if and $input.indexPrefix }}
-    logstashPrefix: {{.Values.fluentbit.outputs.es.host }}
+    logstashPrefix: {{ $input.indexPrefix }}
 {{- end}}
-    host: {{ .Values.fluentbit.outputs.es.host }}
-    port: {{ .Values.fluentbit.outputs.es.port }}
+    host: {{ $envAll.Values.fluentbit.outputs.es.host }}
+    port: {{ $envAll.Values.fluentbit.outputs.es.port }}
     type: {{ $input.type }}
     httpUser: 
       valueFrom:
         secretKeyRef:
-          name: {{ template "fluentbit-operator.fullname" . }}-es-user
+          name: {{ template "fluentbit-operator.fullname" $envAll }}-es-secret
           key: username
     httpPassword: 
       valueFrom: 
         secretKeyRef:
-          name: {{ template "fluentbit-operator.fullname" . }}-es-user
+          name: {{ template "fluentbit-operator.fullname" $envAll  }}-es-secret
           key: password
     tls: 
       verify: false
 {{- end }}
-{{- if and .Values.fluentbit.outputs.http.enabled }}
+{{- if and $envAll.Values.fluentbit.outputs.http.enabled }}
 ---
 apiVersion: logging.kubesphere.io/v1alpha2
 kind: Output
 metadata:
-  name: {{ template "fluentbit-operator.fullname" . }}-exporter
+  name: {{ template "fluentbit-operator.fullname" $envAll }}-exporter
   namespace: {{ $.Release.Namespace }}
   labels:
     logging.kubesphere.io/enabled: "true"
     app.kubernetes.io/version: v0.0.1
 spec:
-  match: "matched.*"
+  match: "m_*"
   http:
-    host: {{ template "fluentbit-operator.name" . }}-exporter.{{ $.Release.Namespace }}.svc.{{.Values.global.base_cluster_url }}
+    host: {{ template "fluentbit-operator.name" $envAll  }}-exporter.{{ $envAll.Release.Namespace }}.svc.{{ $envAll.Values.global.base_cluster_url }}
     port: 2112
     uri: "/logs"
     format: json
 {{- end }}
 {{- end }}
-
+{{- if and $envAll.Values.fluentbit.outputs.kafka.enabled }}
+---
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Output
+metadata:
+  name: {{ template "fluentbit-operator.fullname" $envAll  }}-kafka
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    app.kubernetes.io/version: v0.0.1
+spec:
+  match: "kube*"
+  kafka:
+    brokers: {{ $envAll.Values.fluentbit.outputs.kafka.broker }}
+    topics: {{ $envAll.Values.fluentbit.outputs.kafka.topics }}
+    format: json
+{{- end }}
 {{- end }}

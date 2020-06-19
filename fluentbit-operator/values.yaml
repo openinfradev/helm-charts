@@ -308,11 +308,16 @@ fluentbit:
     tag: kube.*
     path: /var/log/containers/*.log
     type: fluent
+    parser: docker
+    memBufLimit: 20MB
+    bufferChunkSize: 2M
+    bufferMaxSize: 5M
   - name: syslog
-    tag: syslog.*
+    tag: kubenode.*
     path: /var/log/syslog
     type: syslog
     indexPrefix: syslog
+    parser: syslog-rfc5424
   # - name: journal
   #   tag: journal.*
   #   path: /var/log/journal
@@ -325,9 +330,10 @@ fluentbit:
       port: 9200
     kafka:
       enabled: false
+      broker: my-kafka-0.my-kafka-headless.lma.svc.cluster.local:9092,
+      topics: taco
     http:
       enabled: false
-
 
   alerts:
     rules:

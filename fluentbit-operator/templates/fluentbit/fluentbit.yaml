@@ -20,8 +20,8 @@ spec:
 {{- if and .Values.fluentbit.fluentbitSpec.tolerations}}
   tolerations:
 {{- range $i, $toleration :=  .Values.fluentbit.fluentbitSpec.tolerations }}
-  - key: {{- $toleration.key}} 
-    operator: {{- $toleration.operator}} 
+  - key: {{ $toleration.key}} 
+    operator: {{ $toleration.operator}} 
 {{- end}}
 {{- end}}
 {{- end}}
