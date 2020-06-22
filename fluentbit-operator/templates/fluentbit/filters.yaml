@@ -36,7 +36,7 @@ spec:
 {{- range $key, $value := .Values.fluentbit.alerts.rules }}
       - key: "$log"
         regex: "(.*{{$value}}.*)"  #"(.*error.*)"
-        newTag: matched.{{$key}}.$TAG
+        newTag: m_{{$key}}.$TAG
         keep: true
 {{- end }}
       emitterName: alertrule_match
@@ -51,7 +51,7 @@ metadata:
     logging.kubesphere.io/enabled: "true"
     app.kubernetes.io/version: v0.0.1
 spec:
-  match: "matched.*"
+  match: "m_*"
   filters:
   - nest:
       operation: lift
@@ -66,7 +66,7 @@ metadata:
     logging.kubesphere.io/enabled: "true"
     app.kubernetes.io/version: v0.0.1
 spec:
-  match: "*"
+  match: "kube*"
   filters:
   - modify:
       rules:
@@ -82,7 +82,7 @@ metadata:
     logging.kubesphere.io/enabled: "true"
     app.kubernetes.io/version: v0.0.1
 spec:
-  match: "syslog*"
+  match: "kubenode.*"
   filters:
   - modify:
       rules:
@@ -99,7 +99,7 @@ metadata:
     logging.kubesphere.io/enabled: "true"
     app.kubernetes.io/version: v0.0.1
 spec:
-  match: "matched.{{$key}}.*"
+  match: "m_{{$key}}.*"
   filters:
   - modify:
       rules:

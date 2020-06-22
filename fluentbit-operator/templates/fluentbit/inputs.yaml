@@ -1,55 +1,34 @@
 {{- if and .Values.fluentbit.enabled }}
-apiVersion: logging.kubesphere.io/v1alpha2
-kind: Input
-metadata:
-  name: input-docker
-  namespace: {{ $.Release.Namespace }}
-  labels:
-    logging.kubesphere.io/enabled: "true"
-    app.kubernetes.io/version: v0.0.1
-spec:
-  tail: 
-    bufferChunkSize: 1M
-    bufferMaxSize: 1M
-    db: /fluent-bit/tail
-    memBufLimit: 20MB
-    parser: docker
-    path: /var/log/containers/*.log
-    tag: kube.*
+{{- range $i, $input := .Values.fluentbit.targetLogs }}
 ---
 apiVersion: logging.kubesphere.io/v1alpha2
 kind: Input
 metadata:
-  name: input-ubuntu
+  name: input-{{ $input.name }}
   namespace: {{ $.Release.Namespace }}
   labels:
     logging.kubesphere.io/enabled: "true"
     app.kubernetes.io/version: v0.0.1
 spec:
   tail: 
-    bufferChunkSize: 1M
-    bufferMaxSize: 1M
     db: /fluent-bit/tail
-    memBufLimit: 5MB
-    parser: syslog-rfc5424
-    path: /var/log/syslog
-    tag: syslog.*
----
-apiVersion: logging.kubesphere.io/v1alpha2
-kind: Input
-metadata:
-  name: input-centos
-  namespace: {{ $.Release.Namespace }}
-  labels:
-    logging.kubesphere.io/enabled: "true"
-    app.kubernetes.io/version: v0.0.1
-spec:
-  tail: 
+{{- if and $input.bufferChunkSize }}
+    bufferChunkSize: {{ $input.bufferChunkSize }}
+{{- else}}
     bufferChunkSize: 1M
-    bufferMaxSize: 1M
-    db: /fluent-bit/tail
-    memBufLimit: 5MB
-    parser: syslog-rfc5424
-    path: /var/log/messages
-    tag: syslog.*
 {{- end}}
+{{- if and $input.bufferMaxSize }}
+    bufferMaxSize: {{ $input.bufferMaxSize }}
+{{- else}}
+    bufferMaxSize: 1M
+{{- end}}
+{{- if and $input.memBufLimit }}
+    memBufLimit: {{ $input.memBufLimit }}
+{{- else}}
+    memBufLimit: 5M
+{{- end}}
+    parser: {{ $input.parser }}
+    path: {{ $input.path }}
+    tag: "{{ $input.tag }}"
+{{- end }}
+{{- end }}

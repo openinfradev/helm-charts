@@ -3,6 +3,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: {{ template "fluentbit-operator.fullname" . }}-operator
+  namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ template "fluentbit-operator.name" . }}-operator
 {{ include "fluentbit-operator.labels" . | indent 4 }}
