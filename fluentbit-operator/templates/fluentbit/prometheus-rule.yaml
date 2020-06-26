@@ -1,4 +1,4 @@
-{{- if and .Values.fluentbit.enabled .Values.fluentbit.alerts.makeAlertRule -}}
+{{- if and .Values.fluentbit.enabled .Values.fluentbit.alerts.enabled -}}
 ---
 kind: PrometheusRule
 apiVersion: monitoring.coreos.com/v1
@@ -6,7 +6,7 @@ metadata:
   annotations:
     prometheus-operator-validated: 'true'
   name: {{ template "fluentbit-operator.fullname" . }}-alert
-  namespace:  {{ $.Release.Namespace }}
+  namespace:  {{ .Values.fluentbit.alerts.namespace }}
 spec:
   groups:
     - name: log-based-alert

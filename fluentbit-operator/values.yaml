@@ -336,9 +336,10 @@ fluentbit:
       enabled: false
 
   alerts:
+    enabled: false
     rules:
       critical: error
-    makeAlertRule: false
+    namespace: fed
 
   # Define cluster name which is shown in collected logs
   clusterName: unknown
