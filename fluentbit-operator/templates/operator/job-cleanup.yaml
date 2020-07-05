@@ -1,4 +1,5 @@
 {{- if and .Values.fluentbitOperator.enabled .Values.fluentbitOperator.cleanupCustomResource }}
+---
 apiVersion: batch/v1
 kind: Job
 metadata:

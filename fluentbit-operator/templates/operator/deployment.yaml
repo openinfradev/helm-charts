@@ -1,4 +1,5 @@
 {{- if .Values.fluentbitOperator.enabled }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -44,7 +45,7 @@ spec:
           - name: dockersock
             readOnly: true
             mountPath: /var/run/docker.sock
-          - name: fluentbit-bin
+          - name: {{ template "fluentbit-operator.name" . }}-bin
             readOnly: true
             mountPath: /tmp/init-fluent-bit.env.sh
             subPath: init-fluent-bit-env.sh
@@ -79,15 +80,15 @@ spec:
         - name: dockersock
           hostPath:
             path: /var/run/docker.sock
-        - name: fluentbit-bin
+        - name: {{ template "fluentbit-operator.name" . }}-bin
           configMap:
-            name: fluentbit-bin
+            name: {{ template "fluentbit-operator.name" . }}-bin
             defaultMode: 365
 {{- if .Values.fluentbitOperator.securityContext }}
       securityContext:
 {{ toYaml .Values.fluentbitOperator.securityContext | indent 8 }}
 {{- end }}
-      serviceAccountName: {{ template "fluentbit-operator.operator.serviceAccountName" . }}
+      serviceAccountName: fluentbit
     {{- with .Values.fluentbitOperator.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

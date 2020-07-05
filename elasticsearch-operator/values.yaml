@@ -1,3 +1,9 @@
+image:
+  elasticsearchTemplates: 
+    repository: docker.io/openstackhelm/heat
+    tag: newton
+    pullPolicy: IfNotPresent
+
 ## override Chart Name
 nameOverride: taco
 
@@ -119,4 +125,3 @@ customResource:
     #    certificate: {}
     #    selfSignedCertificate:
     #      disabled: true
-
