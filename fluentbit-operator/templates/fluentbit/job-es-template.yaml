@@ -1,0 +1,78 @@
+{{- if .Values.fluentbitOperator.esTemplate.enabled }}
+{{- $envAll := . }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "fluentbit-operator.name" . }}-es-template
+  namespace: {{ $.Release.Namespace }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "3"
+    "helm.sh/hook-delete-policy": hook-succeeded
+  labels:
+    app: {{ template "fluentbit-operator.name" . }}-operator
+{{ include "fluentbit-operator.labels" . | indent 4 }}
+spec:
+  template:
+    metadata:
+      name: {{ template "fluentbit-operator.name" . }}-es-template
+      labels:
+        app: {{ template "fluentbit-operator.name" . }}-operator
+{{ include "fluentbit-operator.labels" . | indent 8 }}
+    spec:
+      containers:
+      - name: template
+        image: "{{ .Values.image.elasticsearchTemplates.repository }}:{{ .Values.image.elasticsearchTemplates.tag }}"
+        imagePullPolicy: "{{ .Values.image.elasticsearchTemplates.pullPolicy }}"
+        env:
+          - name: ES_URL
+            value: {{ .Values.fluentbitOperator.esTemplate.url }}
+          - name: ES_USER
+            value: {{ .Values.fluentbitOperator.esTemplate.username }}
+          - name: ES_PW
+            value: {{ .Values.fluentbitOperator.esTemplate.password }}
+        command:
+        - /bin/sh
+        - -c
+        - /tmp/create_template.sh
+        volumeMounts:
+        - name: {{ template "fluentbit-operator.name" . }}-cr-bin
+          mountPath: /tmp/create_template.sh
+          subPath: create_template.sh
+          readOnly: true
+        # - name: {{ template "fluentbit-operator.name" . }}-cr-bin
+        #   mountPath: /tmp/create_template2.sh
+        #   subPath: create_template2.sh
+        #   readOnly: true
+        # - name: elasticsearch-ca
+        #   mountPath: /etc/ssl/certs/ca-certificates.crt 
+        #   subPath: ca.crt
+        #   readOnly: true
+        {{ range $template, $fields := .Values.fluentbitOperator.esTemplate.templates }}
+        - name: {{ template "fluentbit-operator.name" $envAll }}-cr-etc
+          mountPath: /tmp/{{$template}}.json
+          subPath: {{$template}}.json
+          readOnly: true
+        {{ end }}
+        {{ range $ilm, $fields := .Values.fluentbitOperator.esTemplate.ilms }}
+        - name: {{ template "fluentbit-operator.name" $envAll }}-cr-etc
+          mountPath: /tmp/{{$ilm}}.json
+          subPath: {{$ilm}}.json
+          readOnly: true
+        {{ end }}
+      volumes:
+      - name: {{ template "fluentbit-operator.name" . }}-cr-bin
+        configMap:
+          name: {{ template "fluentbit-operator.name" . }}-cr-bin
+          defaultMode: 365
+      - name: {{ template "fluentbit-operator.name" . }}-cr-etc
+        secret:
+          secretName: {{ template "fluentbit-operator.name" . }}-cr-etc
+          defaultMode: 292
+      # - name: elasticsearch-ca
+      #   secret:
+      #     secretName: taco-elasticsearch-es-http-ca-internal
+      #     defaultMode: 292
+      restartPolicy: OnFailure
+{{- end }}

@@ -1,8 +1,10 @@
 {{- if .Values.fluentbitOperator.enabled }}
+{{- $envAll := . }}
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: fluentbit-bin
+  name: {{ template "fluentbit-operator.name" . }}-bin
   namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ template "fluentbit-operator.name" . }}-operator

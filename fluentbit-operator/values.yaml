@@ -40,6 +40,10 @@ image:
     repository: siim/logalert-exporter
     tag: v0.1.1
     pullPolicy: IfNotPresent
+  elasticsearchTemplates: 
+    repository: docker.io/openstackhelm/heat
+    tag: newton
+    pullPolicy: IfNotPresent
 ##
 global:
   rbac:
@@ -163,7 +167,81 @@ fluentbitOperator:
   # securityContext:
   #   runAsNonRoot: true
   #   runAsUser: 65534
-
+  esTemplate:
+    enabled: false
+    url: https://taco-elasticsearch-es-http.lma.svc.cluster.local:9200
+    username: elastic
+    password: tacoword
+    ilms:
+      hot-delete-7days:
+        policy:
+          phases:
+            hot:
+              actions:
+                rollover:
+                  max_size: 50gb
+                  max_age: 1d
+                set_priority:
+                  priority: 50
+            delete:
+              min_age: 7d
+              actions:
+                delete: {}
+    templates:
+      fluent:
+        index_patterns: "container-*"
+        settings:
+          index:
+            number_of_shards: 1
+          index.lifecycle.name: hot-delete-7days
+          index.lifecycle.rollover_alias: container-alias
+        mappings:
+          properties:
+            kubernetes:
+              properties:
+                container_name:
+                  type: keyword
+                  index: false
+                docker_id:
+                  type: keyword
+                  index: false
+                host:
+                  type: keyword
+                  index: false
+                namespace_name:
+                  type: keyword
+                  index: false
+                pod_id:
+                  type: keyword
+                  index: false
+                pod_name:
+                  type: keyword
+                  index: false
+            log:
+              type: text
+              index: false
+      syslog:
+        index_patterns: "syslog-*"
+        settings:
+          index:
+            number_of_shards: 1
+          index.lifecycle.name: hot-delete-7days
+          index.lifecycle.rollover_alias: syslog-alias
+        mappings:
+          properties:
+            cluster: 
+              type: text
+              fields: 
+                keyword: 
+                  type: keyword
+                  ignore_above: 256
+            log: 
+              type: text
+              fields: 
+                keyword: 
+                  type: keyword
+                  ignore_above: 256
+                  
 ## Deploy a Fluentbit instance
 ##
 fluentbit:
@@ -302,12 +380,14 @@ fluentbit:
     ## Default rulset to send exporter
     ## format is "level: keyword"   for example "critical: error"
     ## VERY VERY VERY IMPORTANT ==> At least one tuple should be defined
+
   
   targetLogs:
   - name: dockerlog
     tag: kube.*
     path: /var/log/containers/*.log
     type: fluent
+    indexPrefix: container
     parser: docker
     memBufLimit: 20MB
     bufferChunkSize: 2M
