@@ -1,10 +1,10 @@
-{{- if .Values.fluentbitOperator.esTemplate.enabled }}
+{{- if .Values.fluentbit.esTemplate.enabled }}
 {{- $envAll := . }}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "fluentbit-operator.name" . }}-cr-bin
+  name: {{ template "fluentbit-operator.name" . }}-cr-cm
   namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ template "fluentbit-operator.name" . }}-operator
@@ -14,32 +14,42 @@ data:
     #!/bin/sh
     set -ev
 
-{{ range $ilm, $fields := .Values.fluentbitOperator.esTemplate.ilms }}
-    echo "trying to setting policy {{$ilm}}..."
-
-    result=$(curl -k -u ${ES_USER}:${ES_PW} \
-    -X PUT "${ES_URL}/_ilm/policy/{{$ilm}}"     \
-    -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d @/tmp/{{$ilm}}.json     \
-    | python -c "import sys, json; print(json.load(sys.stdin)['acknowledged']);" )
-
-    if [ "$result" == "True" ]; then
-      echo "{{$ilm}} ilm created!"
-    else
-      echo "{{$ilm}} ilm not created!"
-    fi
+{{ range .Values.fluentbit.esTemplate.ilms }}
+    echo "trying to setting policy {{.name}}..."
+    curl -k -u ${ES_USER}:${ES_PW} \
+    -X PUT "${ES_URL}/_ilm/policy/{{.name}}" \
+    -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/ilm-{{.name}}.json 
 {{- end}}
-{{ range $template, $fields := .Values.fluentbitOperator.esTemplate.templates }}
-
-    echo "trying to setting Template {{$template}}..."
-    result=$(curl -k -u ${ES_USER}:${ES_PW} \
-    -X PUT "${ES_URL}/_template/{{$template}}"     \
-    -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d @/tmp/{{$template}}.json     \
-    | python -c "import sys, json; print(json.load(sys.stdin)['acknowledged']);")
-    
-    if [ "$result" == "True" ]; then
-      echo "{{$template}} template created!"
-    else
-      echo "{{$template}} template not created!"
-    fi
+{{ range .Values.fluentbit.esTemplate.templates }}
+    echo "trying to setting Template {{.name}}..."
+    curl -k -u ${ES_USER}:${ES_PW} \
+    -X PUT "${ES_URL}/_template/{{.name}}" \
+    -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/template-{{.name}}.json 
 {{- end}}
+
+{{ range .Values.fluentbit.esTemplate.ilms }}
+  ilm-{{ .name }}.json: |- 
+    {{ toJson .json }}
+{{- end }}
+
+{{ range .Values.fluentbit.esTemplate.templates }}
+  template-{{ .name }}.json: |-
+    {{ toJson .json }}
+{{- end }}
+
+{{ range .Values.fluentbit.targetLogs }}
+{{ if .index}}
+  index-{{ .index.name }}.json: |-
+    {
+      "aliases": {
+        "{{.index.aliases}}":{
+          "is_write_index": true
+        }
+{{- if .index.mappings }}
+        , "mappings":{{ toJson .index.mappings }}
+{{- end}}        
+      }
+    }
+{{- end }}
+{{- end }}
 {{- end}}

@@ -88,7 +88,7 @@ spec:
       securityContext:
 {{ toYaml .Values.fluentbitOperator.securityContext | indent 8 }}
 {{- end }}
-      serviceAccountName: fluentbit
+      serviceAccountName: {{ template "fluentbit-operator.operator.serviceAccountName" . }}
     {{- with .Values.fluentbitOperator.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

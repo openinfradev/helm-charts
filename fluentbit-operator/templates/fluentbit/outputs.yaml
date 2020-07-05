@@ -24,9 +24,11 @@ metadata:
 spec:
   match: "{{ $input.tag }}"
   es: 
-    logstashFormat: true
-{{- if and $input.indexPrefix }}
+{{- if $input.indexPrefix }}
     logstashPrefix: {{ $input.indexPrefix }}
+    logstashFormat: true
+{{- else if $input.index }}
+    index: {{ $input.index }}
 {{- end}}
     host: {{ $envAll.Values.fluentbit.outputs.es.host }}
     port: {{ $envAll.Values.fluentbit.outputs.es.port }}

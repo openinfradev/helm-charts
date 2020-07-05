@@ -31,11 +31,11 @@ spec:
           - /bin/sh
           - -c
           - >
-              kubectl delete filter    --all;
+              kubectl delete filter --all;
               kubectl delete input --all;
               kubectl delete output --all;
               kubectl delete fluentbitconfig --all;
-              kubectl delete fluentbit     --all;
+              kubectl delete fluentbit --all;
               sleep 10;
 
               kubectl delete crd filters.logging.kubesphere.io;
