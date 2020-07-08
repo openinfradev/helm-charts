@@ -21,6 +21,10 @@ spec:
         app: {{ template "fluentbit-operator.name" . }}-operator
 {{ include "fluentbit-operator.labels" . | indent 8 }}
     spec:
+{{- if .Values.fluentbit.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.fluentbit.nodeSelector | indent 8 }}
+{{- end}}
       containers:
       - name: template
         image: "{{ .Values.image.elasticsearchTemplates.repository }}:{{ .Values.image.elasticsearchTemplates.tag }}"

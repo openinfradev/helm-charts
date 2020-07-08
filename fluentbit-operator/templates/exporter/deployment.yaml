@@ -13,6 +13,10 @@ spec:
     matchLabels:
       app: {{ template "fluentbit-operator.name" . }}-exporter
   template:
+{{- if .Values.logExporter.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.logExporter.nodeSelector | indent 8 }}
+{{- end}}
     metadata:
       labels:
         app: {{ template "fluentbit-operator.name" . }}-exporter      

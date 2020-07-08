@@ -138,7 +138,8 @@ fluentbitOperator:
   ## Define which Nodes the Pods are scheduled on.
   ## ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
-  nodeSelector: {}
+  # nodeSelector: 
+  #   taco-lma: enabled
 
   ## Tolerations for use with node taints
   ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -207,7 +208,11 @@ fluentbit:
     ## Define which Nodes the Pods are scheduled on.
     ## ref: https://kubernetes.io/docs/user-guide/node-selection/
     ##
-    nodeSelector: {}
+  ## Define which Nodes the Pods are scheduled on.
+  ## ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  # nodeSelector: 
+  #   taco-lma: enabled
 
     ## Secrets is a list of Secrets in the same namespace as the Fluentbit object, which shall be mounted into the Fluentbit Pods.
     ## The Secrets are mounted into /etc/fluentbit/secrets/. Secrets changes after initial creation of a Fluentbit object are not
@@ -396,3 +401,5 @@ fluentbit:
 
 logExporter:
   enabled: false
+# nodeSelector: 
+#   taco-lma: enabled
