@@ -6,10 +6,6 @@ metadata:
 spec:
   version: {{ .Values.customResource.elasticsearch.version }}
   image: {{ .Values.customResource.elasticsearch.image }}:{{ .Values.customResource.elasticsearch.version }}
-{{- if .Values.customResource.elasticsearch.nodeSelector }}
-  nodeSelector:
-{{ toYaml .Values.customResource.elasticsearch.nodeSelector | indent 4 }}
-{{- end }}
 {{- if not .Values.customResource.elasticsearch.podDisruptionBudget.enabled }}
   podDisruptionBudget: {}
 {{- end }}
@@ -18,9 +14,9 @@ spec:
     count: {{ .Values.customResource.elasticsearch.count }}
     config:
 {{ toYaml .Values.customResource.elasticsearch.config | indent 6 }}
-{{- if .Values.customResource.elasticsearch.podTempate }}
+{{- if .Values.customResource.elasticsearch.podTemplate }}
     podTemplate:
-{{ toYaml .Values.customResource.elasticsearch.podTempate | indent 4 }}
+{{ toYaml .Values.customResource.elasticsearch.podTemplate | indent 4 }}
 {{- end }}
 {{- if .Values.customResource.elasticsearch.volumeClaimTemplates }}
     volumeClaimTemplates:
