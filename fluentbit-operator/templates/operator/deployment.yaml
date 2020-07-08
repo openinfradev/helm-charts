@@ -16,10 +16,6 @@ spec:
       release: {{ $.Release.Name | quote }}
       {{ include "fluentbit-operator.labels" . | indent 6 }}
   template:
-{{- if .Values.fluentbitOperator.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.fluentbitOperator.nodeSelector | indent 8 }}
-{{- end}}
     metadata:
       labels:
         app: {{ template "fluentbit-operator.name" . }}-operator
@@ -32,6 +28,10 @@ spec:
 {{ toYaml .Values.fluentbitOperator.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.fluentbitOperator.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.fluentbitOperator.nodeSelector | indent 8 }}
+{{- end}}
     {{- if .Values.fluentbitOperator.priorityClassName }}
       priorityClassName: {{ .Values.fluentbitOperator.priorityClassName }}
     {{- end }}
