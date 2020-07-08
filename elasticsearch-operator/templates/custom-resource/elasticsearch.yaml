@@ -14,13 +14,15 @@ spec:
     count: {{ .Values.customResource.elasticsearch.count }}
     config:
 {{ toYaml .Values.customResource.elasticsearch.config | indent 6 }}
-{{- if .Values.customResource.elasticsearch.podTemplate }}
+{{- if .Values.customResource.elasticsearch.nodeSelector }}
     podTemplate:
-{{ toYaml .Values.customResource.elasticsearch.podTemplate | indent 4 }}
+      spec:
+        nodeSelector:
+{{ toYaml .Values.customResource.elasticsearch.nodeSelector | indent 10 }}
 {{- end }}
 {{- if .Values.customResource.elasticsearch.volumeClaimTemplates }}
     volumeClaimTemplates:
-{{ toYaml .Values.customResource.elasticsearch.volumeClaimTemplates | indent 4 }}
+{{ toYaml .Values.customResource.elasticsearch.volumeClaimTemplates | indent 6 }}
 {{- end }}
         # this changes the kernel setting on the node to allow ES to use mmap
         # if you uncomment this init container you will likely also want to remove the

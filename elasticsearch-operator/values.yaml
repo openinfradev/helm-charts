@@ -35,6 +35,8 @@ elasticsearchOperator:
 customResource:
   elasticsearch:
     enabled: true
+    # nodeSelector:
+    #   taco-lma: enabled
 
     ## admin user for Elasticsearch. Currently, unable to change user name
     defaultAuth:
@@ -82,12 +84,6 @@ customResource:
     #       # provide your own certificate
     #       secretName: my-cert
  
-    ## podTemplates
-    # podTemplate:
-    #   spec:
-    #     volumes:
-    #     - name: elasticsearch-data
-    #       emptyDir: {}
     ## Storage definition for Elasticsearch instance.
     ## Must be set
     ##
@@ -121,6 +117,8 @@ customResource:
             nodePort: 30001
             targetPort: 5601
             port: 5601
+    # nodeSelector:
+    #   taco-lma: enabled
     #  tls:
     #    certificate: {}
     #    selfSignedCertificate:
