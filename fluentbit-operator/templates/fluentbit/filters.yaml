@@ -33,10 +33,10 @@ spec:
       removePrefix: kubernetes_
   - rewriteTag:
       rules:
-{{- range $key, $value := .Values.fluentbit.alerts.rules }}
+{{- range .Values.fluentbit.alerts.rules }}
       - key: "$log"
-        regex: "(.*{{$value}}.*)"  #"(.*error.*)"
-        newTag: m_{{$key}}.$TAG
+        regex: "({{.regex}})"  #"(.*error.*)"
+        newTag: m_{{.severity}}.$TAG
         keep: true
 {{- end }}
       emitterName: alertrule_match
@@ -88,22 +88,22 @@ spec:
       rules:
       - add:
           hostname: ${HOSTNAME}
-{{- range $key, $value := .Values.fluentbit.alerts.rules }}
+{{- range .Values.fluentbit.alerts.rules }}
 ---
 apiVersion: logging.kubesphere.io/v1alpha2
 kind: Filter
 metadata:
-  name: add-{{$key}}
+  name: add-{{.severity}}
   namespace: {{ $.Release.Namespace }}
   labels:
     logging.kubesphere.io/enabled: "true"
     app.kubernetes.io/version: v0.0.1
 spec:
-  match: "m_{{$key}}.*"
+  match: "m_{{.severity}}.*"
   filters:
   - modify:
       rules:
       - add:
-          level: {{$key}}
+          level: {{.severity}}
 {{- end}}
 {{- end}}
