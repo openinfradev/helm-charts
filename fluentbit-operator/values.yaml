@@ -404,8 +404,7 @@ fluentbit:
           index:
             number_of_shards: 1
           index.lifecycle.name: hot-delete-7days
-          index.lifecycle.rollover_alias: syslog-alias                
-
+          index.lifecycle.rollover_alias: syslog-alias
   # Define cluster name which is shown in collected logs
   clusterName: unknown
 

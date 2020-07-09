@@ -12,13 +12,13 @@ spec:
     - name: log-based-alert
 {{- range .Values.fluentbit.alerts.rules }}
       rules:
-        - alert: log-has-{{.name}}
+        - alert: log-{{.name}}
           annotations:
             message: >- 
               {{ .message }}
             summary: >-
               {{ .summary }}
-          expr: taco_logging_system_alert == 1
+          expr: taco_logging_system_alert{severity={{ .severity }}} == 1
           labels:
             severity: {{ .severity }}
 {{- end}}
