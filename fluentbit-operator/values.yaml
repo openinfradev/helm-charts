@@ -353,6 +353,11 @@ fluentbit:
 
   alerts:
     enabled: false
+    namespace: fed
+    message: |-
+      {{ $labels.container }} in {{ $labels.pod }} ({{ $labels.taco_cluster }}/{{ $labels.namespace }} ) generate a error due to log = {{ $labels.log }}
+    summary: |-
+      {{ $labels.container }} in {{ $labels.pod }} ({{ $labels.taco_cluster }}/{{ $labels.namespace }} ) generate a error
     # ******************** VERY IMPORTANT ************
     # current version of log-exporter(siim/logalert-exporter:v0.1.1) support only one notification
     # so you should not define more than one rule at installation
@@ -360,12 +365,7 @@ fluentbit:
     rules:
     - name: example
       severity: critical
-      regex: error
-      message: |-
-        {{ $labels.container }} in {{ $labels.pod }} ({{ $labels.taco_cluster }}/{{ $labels.namespace }} ) generate a error due to log = {{ $labels.log }}
-      summary: |-
-        {{ $labels.container }} in {{ $labels.pod }} ({{ $labels.taco_cluster }}/{{ $labels.namespace }} ) generate a error
-    namespace: fed
+      regex: ".*update error.*"
 
   esTemplate:
     enabled: false

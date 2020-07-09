@@ -10,16 +10,41 @@ metadata:
 spec:
   groups:
     - name: log-based-alert
-{{- range .Values.fluentbit.alerts.rules }}
       rules:
-        - alert: log-{{.name}}
+        - alert: log-page
           annotations:
             message: >- 
-              {{ .message }}
+              {{ .Values.fluentbit.alerts.message }}
             summary: >-
-              {{ .summary }}
-          expr: taco_logging_system_alert{severity={{ .severity }}} == 1
+              {{ .Values.fluentbit.alerts.summary }}
+          expr: taco_logging_system_alert{severity="critical"} == 1
           labels:
-            severity: {{ .severity }}
-{{- end}}
+            severity: page
+        - alert: log-critical
+          annotations:
+            message: >- 
+              {{ .Values.fluentbit.alerts.message }}
+            summary: >-
+              {{ .Values.fluentbit.alerts.summary }}
+          expr: taco_logging_system_alert{severity="critical"} == 1
+          labels:
+            severity: critical
+        - alert: log-info
+          annotations:
+            message: >- 
+              {{ .Values.fluentbit.alerts.message }}
+            summary: >-
+              {{ .Values.fluentbit.alerts.summary }}
+          expr: taco_logging_system_alert{severity="info"} == 1
+          labels:
+            severity: info
+        - alert: log-warning
+          annotations:
+            message: >- 
+              {{ .Values.fluentbit.alerts.message }}
+            summary: >-
+              {{ .Values.fluentbit.alerts.summary }}
+          expr: taco_logging_system_alert{severity="warning"} == 1
+          labels:
+            severity: warning
 {{- end}}
