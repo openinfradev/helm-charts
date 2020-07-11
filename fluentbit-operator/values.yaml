@@ -365,7 +365,7 @@ fluentbit:
     rules:
     - name: example
       severity: critical
-      regex: ".*update error.*"
+      regex: "update.?error"
 
   esTemplate:
     enabled: false
