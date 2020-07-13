@@ -47,7 +47,9 @@ customResource:
 
     ## Elasticsearch Version
     version: 7.5.1
-    image: docker.elastic.co/elasticsearch/elasticsearch
+    image:
+      repository: docker.elastic.co/elasticsearch/elasticsearch
+      tag: 7.5.1
     
     ## Elasticsearch instance count 
     count: 3
@@ -100,8 +102,10 @@ customResource:
 
   kibana:
     enabled: true
-    version: 7.4.2
-    image: docker.elastic.co/kibana/kibana
+    version: 7.5.1
+    image:
+      repository: docker.elastic.co/kibana/kibana
+      tag: 7.5.1
     ## container resources
     # resources:
     #   limits:

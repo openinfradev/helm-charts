@@ -5,7 +5,7 @@ metadata:
   name: {{ template "elasticsearch-operator.name" . }}-elasticsearch
 spec:
   version: {{ .Values.customResource.elasticsearch.version }}
-  image: {{ .Values.customResource.elasticsearch.image }}:{{ .Values.customResource.elasticsearch.version }}
+  image: {{ .Values.customResource.elasticsearch.image.repository }}:{{ .Values.customResource.elasticsearch.image.tag }}
 {{- if not .Values.customResource.elasticsearch.podDisruptionBudget.enabled }}
   podDisruptionBudget: {}
 {{- end }}

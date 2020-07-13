@@ -6,7 +6,7 @@ metadata:
 spec:
   version: {{ default "7.4.2" .Values.customResource.kibana.version }}
 {{- if .Values.customResource.kibana.image }}
-  image: {{ .Values.customResource.kibana.image }}:{{ .Values.customResource.kibana.version }}
+  image: "{{ .Values.customResource.kibana.image.repository }}:{{ .Values.customResource.kibana.image.tag }}"
 {{- end }}
 {{- if .Values.customResource.kibana.nodeSelector }}
   nodeSelector:
