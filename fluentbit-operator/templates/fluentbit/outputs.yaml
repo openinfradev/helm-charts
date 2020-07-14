@@ -79,7 +79,7 @@ spec:
   match: "kube*"
   kafka:
     brokers: {{ $envAll.Values.fluentbit.outputs.kafka.broker }}
-    topics: {{ $envAll.Values.fluentbit.outputs.kafka.topics }}
+    topics: {{ $envAll.Values.fluentbit.outputs.kafka.topic }}
     format: json
 {{- end }}
 {{- end }}
