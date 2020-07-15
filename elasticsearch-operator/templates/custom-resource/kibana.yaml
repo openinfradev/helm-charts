@@ -4,10 +4,8 @@ kind: Kibana
 metadata:
   name: {{ template "elasticsearch-operator.name" . }}-kibana-dashboard
 spec:
-  version: {{ default "7.4.2" .Values.customResource.kibana.version }}
-{{- if .Values.customResource.kibana.image }}
+  version: {{ default "7.4.2" .Values.customResource.kibana.image.tag }}
   image: "{{ .Values.customResource.kibana.image.repository }}:{{ .Values.customResource.kibana.image.tag }}"
-{{- end }}
 {{- if .Values.customResource.kibana.nodeSelector }}
   nodeSelector:
 {{ toYaml .Values.customResource.kibana.nodeSelector | indent 4 }}

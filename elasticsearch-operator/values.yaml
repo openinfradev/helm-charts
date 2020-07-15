@@ -45,8 +45,6 @@ customResource:
 
     javaOpts: "-Xms256m -Xmx256m"
 
-    ## Elasticsearch Version
-    version: 7.5.1
     image:
       repository: docker.elastic.co/elasticsearch/elasticsearch
       tag: 7.5.1
@@ -102,7 +100,6 @@ customResource:
 
   kibana:
     enabled: true
-    version: 7.5.1
     image:
       repository: docker.elastic.co/kibana/kibana
       tag: 7.5.1
