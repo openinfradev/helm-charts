@@ -74,9 +74,9 @@ Create name of the service account to use
 {{/*
 Create a default fully qualified app name for the postgres requirement.
 */}}
-{{- define "keycloak.postgresql.fullname" -}}
-{{- $postgresContext := dict "Values" .Values.postgresql "Release" .Release "Chart" (dict "Name" "postgresql") -}}
-{{ include "postgresql.fullname" $postgresContext }}
+{{- define "keycloak.postgresql-ha.fullname" -}}
+{{- $postgresContext := dict "Values" (index .Values "postgresql-ha") "Release" .Release "Chart" (dict "Name" "postgresql-ha") -}}
+{{ include "postgresql-ha.fullname" $postgresContext }}
 {{- end -}}
 
 {{/*
@@ -156,17 +156,17 @@ Create environment variables for database configuration.
 - name: DB_VENDOR
   value: postgres
 - name: DB_ADDR
-  value: {{ include "keycloak.postgresql.fullname" . }}
+  value: {{ printf "%s-pgpool" (include "keycloak.postgresql-ha.fullname" .) }}
 - name: DB_PORT
   value: "5432"
 - name: DB_DATABASE
-  value: {{ .Values.postgresql.postgresqlDatabase | quote }}
+  value: {{ index .Values "postgresql-ha" "postgresql" "database" | quote }}
 - name: DB_USER
-  value: {{ .Values.postgresql.postgresqlUsername | quote }}
+  value: {{ index .Values "postgresql-ha" "postgresql" "username" | quote }}
 - name: DB_PASSWORD
   valueFrom:
     secretKeyRef:
-      name: {{ include "keycloak.postgresql.fullname" . }}
+      name: {{ printf "%s-postgresql" (include "keycloak.postgresql-ha.fullname" .) }}
       key: postgresql-password
 {{- else }}
 - name: DB_VENDOR
