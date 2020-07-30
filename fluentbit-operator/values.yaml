@@ -40,6 +40,10 @@ image:
     repository: siim/logalert-exporter
     tag: v0.1.1
     pullPolicy: IfNotPresent
+  elasticsearchTemplates: 
+    repository: docker.io/openstackhelm/heat
+    tag: newton
+    pullPolicy: IfNotPresent
 ##
 global:
   rbac:
@@ -134,7 +138,8 @@ fluentbitOperator:
   ## Define which Nodes the Pods are scheduled on.
   ## ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
-  nodeSelector: {}
+  # nodeSelector: 
+  #   taco-lma: enabled
 
   ## Tolerations for use with node taints
   ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -203,7 +208,11 @@ fluentbit:
     ## Define which Nodes the Pods are scheduled on.
     ## ref: https://kubernetes.io/docs/user-guide/node-selection/
     ##
-    nodeSelector: {}
+  ## Define which Nodes the Pods are scheduled on.
+  ## ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  # nodeSelector: 
+  #   taco-lma: enabled
 
     ## Secrets is a list of Secrets in the same namespace as the Fluentbit object, which shall be mounted into the Fluentbit Pods.
     ## The Secrets are mounted into /etc/fluentbit/secrets/. Secrets changes after initial creation of a Fluentbit object are not
@@ -308,16 +317,23 @@ fluentbit:
     tag: kube.*
     path: /var/log/containers/*.log
     type: fluent
+    indexPrefix: container
     parser: docker
     memBufLimit: 20MB
     bufferChunkSize: 2M
     bufferMaxSize: 5M
+    index: 
+      name: container-0001
+      aliases: container-alias
   - name: syslog
     tag: kubenode.*
     path: /var/log/syslog
     type: syslog
     indexPrefix: syslog
     parser: syslog-rfc5424
+    index: 
+      name: syslog-0001
+      aliases: container-alias
   # - name: journal
   #   tag: journal.*
   #   path: /var/log/journal
@@ -336,12 +352,63 @@ fluentbit:
       enabled: false
 
   alerts:
+    enabled: false
+    namespace: fed
+    message: |-
+      {{ $labels.container }} in {{ $labels.pod }} ({{ $labels.taco_cluster }}/{{ $labels.namespace }} ) generate a error due to log = {{ $labels.log }}
+    summary: |-
+      {{ $labels.container }} in {{ $labels.pod }} ({{ $labels.taco_cluster }}/{{ $labels.namespace }} ) generate a error
+    # ******************** VERY IMPORTANT ************
+    # current version of log-exporter(siim/logalert-exporter:v0.1.1) support only one notification
+    # so you should not define more than one rule at installation
+    # To define multiple phrase, make custom resouce for filter by hands
     rules:
-      critical: error
-    makeAlertRule: false
+    - name: example
+      severity: critical
+      regex: "update.?error"
 
+  esTemplate:
+    enabled: false
+    url: https://taco-elasticsearch-es-http.lma.svc.cluster.local:9200
+    username: elastic
+    password: tacoword
+    ilms:
+    - name: hot-delete-7days
+      json:
+        policy:
+          phases:
+            hot:
+              actions:
+                rollover:
+                  max_size: 50gb
+                  max_age: 1d
+                set_priority:
+                  priority: 50
+            delete:
+              min_age: 7d
+              actions:
+                delete: {}
+    templates:
+    - name: fluent
+      json:
+        index_patterns: "container*"
+        settings:
+          index:
+            number_of_shards: 1
+          index.lifecycle.name: hot-delete-7days
+          index.lifecycle.rollover_alias: container-alias
+    - name: syslog
+      json:
+        index_patterns: "syslog*"
+        settings:
+          index:
+            number_of_shards: 1
+          index.lifecycle.name: hot-delete-7days
+          index.lifecycle.rollover_alias: syslog-alias
   # Define cluster name which is shown in collected logs
   clusterName: unknown
 
 logExporter:
   enabled: false
+# nodeSelector: 
+#   taco-lma: enabled

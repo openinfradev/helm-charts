@@ -17,6 +17,10 @@ spec:
       labels:
         app: {{ template "fluentbit-operator.name" . }}-exporter      
     spec:
+{{- if .Values.logExporter.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.logExporter.nodeSelector | indent 8 }}
+{{- end}}
       containers:
       - name: exporter
         image: {{ .Values.image.exporter.repository }}:{{ .Values.image.exporter.tag }}

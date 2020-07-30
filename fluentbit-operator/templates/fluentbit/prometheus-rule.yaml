@@ -1,4 +1,4 @@
-{{- if and .Values.fluentbit.enabled .Values.fluentbit.alerts.makeAlertRule -}}
+{{- if and .Values.fluentbit.enabled .Values.fluentbit.alerts.enabled -}}
 ---
 kind: PrometheusRule
 apiVersion: monitoring.coreos.com/v1
@@ -6,19 +6,45 @@ metadata:
   annotations:
     prometheus-operator-validated: 'true'
   name: {{ template "fluentbit-operator.fullname" . }}-alert
-  namespace:  {{ $.Release.Namespace }}
+  namespace:  {{ .Values.fluentbit.alerts.namespace }}
 spec:
   groups:
     - name: log-based-alert
-{{- range $key, $value := .Values.fluentbit.alerts.rules }}
       rules:
-        - alert: log-has-{{- $value}}
+        - alert: log-page
           annotations:
-            message: 'log alert'
+            message: >- 
+              {{ .Values.fluentbit.alerts.message }}
             summary: >-
-              generated
-          expr: taco_logging_system_alert == 1
+              {{ .Values.fluentbit.alerts.summary }}
+          expr: taco_logging_system_alert{severity="critical"} == 1
           labels:
             severity: page
-{{- end}}
+        - alert: log-critical
+          annotations:
+            message: >- 
+              {{ .Values.fluentbit.alerts.message }}
+            summary: >-
+              {{ .Values.fluentbit.alerts.summary }}
+          expr: taco_logging_system_alert{severity="critical"} == 1
+          labels:
+            severity: critical
+        - alert: log-info
+          annotations:
+            message: >- 
+              {{ .Values.fluentbit.alerts.message }}
+            summary: >-
+              {{ .Values.fluentbit.alerts.summary }}
+          expr: taco_logging_system_alert{severity="info"} == 1
+          labels:
+            severity: info
+        - alert: log-warning
+          annotations:
+            message: >- 
+              {{ .Values.fluentbit.alerts.message }}
+            summary: >-
+              {{ .Values.fluentbit.alerts.summary }}
+          expr: taco_logging_system_alert{severity="warning"} == 1
+          labels:
+            severity: warning
 {{- end}}

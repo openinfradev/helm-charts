@@ -4,10 +4,8 @@ kind: Kibana
 metadata:
   name: {{ template "elasticsearch-operator.name" . }}-kibana-dashboard
 spec:
-  version: {{ default "7.4.2" .Values.customResource.kibana.version }}
-{{- if .Values.customResource.kibana.image }}
-  image: {{ .Values.customResource.kibana.image }}:{{ .Values.customResource.kibana.version }}
-{{- end }}
+  version: {{ default "7.4.2" .Values.customResource.kibana.image.tag }}
+  image: "{{ .Values.customResource.kibana.image.repository }}:{{ .Values.customResource.kibana.image.tag }}"
 {{- if .Values.customResource.kibana.nodeSelector }}
   nodeSelector:
 {{ toYaml .Values.customResource.kibana.nodeSelector | indent 4 }}
@@ -29,4 +27,8 @@ spec:
           limits:
             cpu: "1"
             memory: 1Gi
+{{- if .Values.customResource.kibana.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.customResource.kibana.nodeSelector | indent 8 }}
+{{- end }}
 {{- end }}

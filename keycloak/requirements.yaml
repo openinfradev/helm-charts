@@ -1,5 +1,5 @@
 dependencies:
-  - name: postgresql
-    version: 8.9.5
+  - name: postgresql-ha
+    version: 3.4.3
     repository: https://charts.bitnami.com/bitnami
     condition: keycloak.persistence.deployPostgres

@@ -1,3 +1,9 @@
+image:
+  elasticsearchTemplates: 
+    repository: docker.io/openstackhelm/heat
+    tag: newton
+    pullPolicy: IfNotPresent
+
 ## override Chart Name
 nameOverride: taco
 
@@ -29,6 +35,8 @@ elasticsearchOperator:
 customResource:
   elasticsearch:
     enabled: true
+    # nodeSelector:
+    #   taco-lma: enabled
 
     ## admin user for Elasticsearch. Currently, unable to change user name
     defaultAuth:
@@ -37,9 +45,9 @@ customResource:
 
     javaOpts: "-Xms256m -Xmx256m"
 
-    ## Elasticsearch Version
-    version: 7.5.1
-    image: docker.elastic.co/elasticsearch/elasticsearch
+    image:
+      repository: docker.elastic.co/elasticsearch/elasticsearch
+      tag: 7.5.1
     
     ## Elasticsearch instance count 
     count: 3
@@ -76,12 +84,6 @@ customResource:
     #       # provide your own certificate
     #       secretName: my-cert
  
-    ## podTemplates
-    # podTemplate:
-    #   spec:
-    #     volumes:
-    #     - name: elasticsearch-data
-    #       emptyDir: {}
     ## Storage definition for Elasticsearch instance.
     ## Must be set
     ##
@@ -98,8 +100,9 @@ customResource:
 
   kibana:
     enabled: true
-    version: 7.4.2
-    image: docker.elastic.co/kibana/kibana
+    image:
+      repository: docker.elastic.co/kibana/kibana
+      tag: 7.5.1
     ## container resources
     # resources:
     #   limits:
@@ -115,8 +118,9 @@ customResource:
             nodePort: 30001
             targetPort: 5601
             port: 5601
+    # nodeSelector:
+    #   taco-lma: enabled
     #  tls:
     #    certificate: {}
     #    selfSignedCertificate:
     #      disabled: true
-
