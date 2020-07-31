@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cloud-console.fullname" . }}
+  labels:
+{{ include "cloud-console.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "cloud-console.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "cloud-console.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+#      hostNetwork: true
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- if .Values.hostAliases }}
+    {{- with .Values.hostAliases }}
+      hostAliases:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- end }}
+      containers:
+      - name: watcher
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.service.targetPort }}
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.service.targetPort }} 
+        readinessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.service.targetPort }} 
+        volumeMounts:
+        - name: conf
+          mountPath: /home/tacomo/tacomo-webserver/conf/tacomo.conf
+          subPath: tacomo.conf
+        - name: conf
+          mountPath: /home/tacomo/tacomo-webserver/conf/loggingfilter.json
+          subPath: loggingfilter.json
+        - name: conf
+          mountPath: /home/tacomo/tacomo-webserver/conf/prometheusrule.json 
+          subPath: prometheusrule.json 
+        - name: sql
+          mountPath: /home/tacomo/tacomo-webserver/sql/tacomodb_1.sql
+          subPath: tacomodb_1.sql
+        - name: db-volume
+          mountPath: /home/tacomo/tacomo-webserver/dbdata
+        - name: log-volume
+          mountPath: /home/tacomo/tacomo-webserver/logs
+      volumes:
+      - name: conf
+        configMap:
+          name: {{ template "cloud-console.fullname" . }}
+          items:
+          - key: tacomo.conf
+            path: tacomo.conf
+          - key: loggingfilter.json
+            path: loggingfilter.json
+          - key: prometheusrule.json 
+            path: prometheusrule.json 
+      - name: sql
+        configMap:
+          name: {{ template "cloud-console.fullname" . }}
+          items:
+          - key: tacomodb_1.sql
+            path: tacomodb_1.sql
+      - name: db-volume
+        persistentVolumeClaim:
+          claimName: {{ template "cloud-console.fullname" . }}-pvc
+      - name: log-volume
+        hostPath:
+          path: /tmp
+          type: Directory
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

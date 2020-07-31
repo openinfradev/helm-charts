@@ -1,0 +1,74 @@
+{{- $envAll := . }}
+{{- if eq .Values.ingress.enabled true }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cloud-console.fullname" . }}
+  labels:
+{{ include "cloud-console.labels" . | indent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "cloud-console.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+---
+{{- $from := int $envAll.Values.service.proxy_from}}
+{{- $to := int (add $envAll.Values.service.proxy_to 1)}}
+{{- range untilStep $from $to 1 }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cloud-console.fullname" $envAll }}-{{ . }}
+  labels:
+{{ include "cloud-console.labels" $envAll | indent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ . }}
+      targetPort: {{ . }}
+      protocol: TCP
+      name: http-{{ . }}
+  selector:
+    app.kubernetes.io/name: {{ include "cloud-console.name" $envAll }}
+    app.kubernetes.io/instance: {{ $envAll.Release.Name }}
+---
+{{- end }}
+{{- else }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cloud-console.fullname" . }}
+  labels:
+{{ include "cloud-console.labels" . | indent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+{{- if and (eq .Values.service.type "NodePort") .Values.service.nodePort }}
+      nodePort: {{ .Values.service.nodePort }}
+{{- end }}
+      protocol: TCP
+      name: http
+{{- $from := int $envAll.Values.service.proxy_from}}
+{{- $to := int (add $envAll.Values.service.proxy_to 1)}}
+{{- range untilStep $from $to 1 }}
+    - port: {{ . }}
+      targetPort: {{ . }}
+{{- if eq $envAll.Values.service.type "NodePort" }}
+      nodePort: {{ . }}
+{{- end }}
+      protocol: TCP
+      name: http-{{ . }}
+{{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "cloud-console.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+---
+{{- end }}
+

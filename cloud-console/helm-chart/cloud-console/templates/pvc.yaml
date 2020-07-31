@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "cloud-console.fullname" . }}-pvc
+  labels:
+    app: {{ template "cloud-console.name" . }}
+    chart: {{ template "cloud-console.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  storageClassName: {{ .Values.volume.storageClassName }}
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    limits: 
+      storage: {{ .Values.volume.limits.storage }} 
+    requests:
+      storage: {{ .Values.volume.requests.storage }}

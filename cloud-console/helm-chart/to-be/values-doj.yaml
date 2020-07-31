@@ -1,0 +1,149 @@
+config:
+  grafana:
+    authkey: admin:password
+  initDB: true
+  kibana:
+    authkey: elastic:tacoword
+  password: password
+  username: taco
+
+image:
+#  repository: doj-admin:5000/cloud-console
+  repository: pseudojo/cloud-console
+  tag: "20200727-2"
+  pullPolicy: Always
+
+nodeSelector:
+  taco-lma: enabled
+
+service:
+  nodePort: 32000
+  port: 32000
+  proxy_from: 32001
+  proxy_to: 32008
+  targetPort: 32000
+  type: ClusterIP
+
+ingress:
+  enabled: false
+  endpoints:
+  - name: public
+    annotations:
+      ingress.kubernetes.io/allow-http: true
+      ingress.kubernetes.io/ssl-redirect: false
+      virtual-server.f5.com/ip: 175.113.150.30
+      virtual-server.f5.com/partition: k8s-dev
+  
+    # main = cloudconsole domain
+    main:
+      host: cloudconsole-dev.skbroadband.com
+  
+    # ccproxy = cloudconsole proxy domain : "<prefix><port><postfix>"
+    ccproxy:
+      host:
+        prefix: ccproxy-
+        postfix: -dev.skbroadband.com
+  - name: private
+    annotations:
+      ingress.kubernetes.io/allow-http: "true"
+      ingress.kubernetes.io/ssl-redirect: "false"
+      virtual-server.f5.com/ip: 10.10.202.15
+      virtual-server.f5.com/partition: k8s-dev
+  
+    # main = cloudconsole domain
+    main:
+      host: cloudconsole-dev.skbroadband.com
+  
+    # ccproxy = cloudconsole proxy domain
+    ccproxy:
+      host:
+        prefix: ccproxy-
+        postfix: -dev.skbroadband.com
+
+volume:
+  storageClassName: netapp
+
+config:
+  #config.service.proxyurl.format
+  service:
+    proxyportlist: 32001-32008
+    proxyurl:
+      format: "http://ccproxy-%REQUEST_PORT%-dev.skbroadband.com"
+
+  prometheus:
+    ruleUrl: /apis/monitoring.coreos.com/v1/namespaces/fed/prometheusrules
+
+  loggingfilter:
+    url: /apis/logging.banzaicloud.io/v1beta1/namespaces/fed/flows
+
+  filter:
+    rule: "yes"
+
+  keycloak:
+    enabled: "yes"
+    url: https://keycloak-dev.skbroadband.com/auth
+    realm: nextpaas
+    clientId: cloud-console
+    hasRealmRole1: lma_system
+    hasRealmRole2: lma_app
+    hasRealmRole3: lma_viewer
+    cacert: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURSekNDQWkrZ0F3SUJBZ0lKQU41dFhpR1gvR0dqTUEwR0NTcUdTSWIzRFFFQkN3VUFNRG94Q3pBSkJnTlYKQkFvTUFrbFVNU3N3S1FZRFZRUUREQ0pyWlhsamJHOWhheTV6YTJJdFpHOXFMV1JsZGpBeExtSjBkbkJoWVhNdQpZMjl0TUI0WERUSXdNRGN3TXpFd01UVXlPRm9YRFRNd01EY3dNVEV3TVRVeU9Gb3dPakVMTUFrR0ExVUVDZ3dDClNWUXhLekFwQmdOVkJBTU1JbXRsZVdOc2IyRnJMbk5yWWkxa2Iyb3RaR1YyTURFdVluUjJjR0ZoY3k1amIyMHcKZ2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLQW9JQkFRQzI3bGkzTEpQVEY2cm1yOU15Q0Y3SgpGQkIyZkwzYVYxbU9TUVJPckovb25FUzBtd25uZUFKYkw2Q044SVlZVlZ3QXZYWmlwY0RKa1ZTNVgySUNlajI0CmJlUUFPcGxwOFFKaXZYMmJpelp3QU9JTGcxdFFBTkhHY1VsQXVRZzBmYmhYYWhZcGllbDJqc3BERFNoWXJNYUQKR1haTS9YdnkyL0R6M29VNHJqeFZUckZhdW1mZFhTTjdpSGp3REJtd3d5dVZaWThzWHlURGdCS2Yxd0pQcVFzdgpUSlIvb0ZRTm8zbDNhSlBWUDEwd2JSMkJRc3NFSTQ4K203bFhRUkZpRzFtbFFoOFYvNXg3YnlyZjlscmtkeDRlClRmRnMvd3cyUWhHUTJQcExkSDVDdTJTcnI5aDVkMG1tZG9YL083aDgvRm1iNitkMXhWMDNkWGJIRXpsdlFFcGQKQWdNQkFBR2pVREJPTUIwR0ExVWREZ1FXQkJTU1d0YjJCc2lxbGtwVlV4c09hcSs0WGpxM3pEQWZCZ05WSFNNRQpHREFXZ0JTU1d0YjJCc2lxbGtwVlV4c09hcSs0WGpxM3pEQU1CZ05WSFJNRUJUQURBUUgvTUEwR0NTcUdTSWIzCkRRRUJDd1VBQTRJQkFRQlVLa2FlRjJlUHIwaG0ycmxrTnhoWCs0cFpGeHB1cmV3L042MmVVN1NDOHFRK1ZiUjIKM0F6M0c5bnozMnM2YTZkalYzUmdsSjk1dkxiRlhONk5kNHpOTWpsRkFDNjdJdFBLODBHc1ZQbVkxRUYzdlRsSQpKcmMyck4zeUNjRjAyQ3NwMUhIVFlNa3ptNndXeUtUVzE0dDlMY0JxUVJiZytSMURKTW5iNXJZdCtoS0Rlc2ltCkROb0tKVWlybCtDSnNqS2xOYVg3UjZYdXNoOHRLRWRSdUVKZ1lkM2d3dms3ejJuS2hyMGQxQUI5Y2VCcldNckIKVW9qMmZMMGdUQkl4dWJBdmhMcThWdjNlTzNRZ0ZkeEVSSWQrMWpzaExEQ1IwUzM3dHhnbUE2OEc0YldEdnpSYQpEQ2syb1E5eDF1Z0xNVGQvUGpLSmZzNlpzbHA5SFVTSGpEYlgKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+
+  lenz:
+    url: http://dashboard-dev.skbroadband.com:8080
+
+  extra:
+    config: |-
+
+    sql: |-
+      /* INSERT CLUSTER AND MENU DATA FOR SKB-DOJ-DEV */
+      INSERT INTO "cluster" VALUES ('skb-doj-dev01','http://taco-kibana-dashboard-kb-http.lma.svc.skb-doj-dev01.btvpaas.com:5601','http://lma-grafana.fed.svc.skb-doj-dev01.btvpaas.com','https://kubernetes.default.svc.skb-doj-dev01.btvpaas.com','eyJhbGciOiJSUzI1NiIsImtpZCI6IjRhZDRQYVR2SFZPNzQtMmVZcU1ITGtJeE1nc3RMTVA0blpvMDhxQ2k5TTAifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJ0aWxsZXItdG9rZW4tcjRyZHAiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoidGlsbGVyIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiMmIyY2ZjMzYtMzlhNC00YTIyLTllNmMtMTM0OWEzZGYyMWRkIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmUtc3lzdGVtOnRpbGxlciJ9.51L2hTZOoyBmikFQFAa9shzmH9w42M2iHwG0faZDD_6TADWI-N7A2OnmVpHMb2XkmjvG_jLL6u-mzcJbUxs7eGSkssiji1v3GvEcK0eenq3jdKI423_6QPm61TCwA_fFRjkyl_-aeqcJx0Vg82fleP_5dfFtaNtFLAPeFifY3Z6ZqKORInRFpkYkBgxHtIh-6ywYM4QBaSUVgYjxLMJiSQZ9dwgGryd2z8E0gaKqZRmbDRYrQi0PBEyHHOMAo9VIJq5F9g90_hA3rk8UEkOWiR0FSrr2VcxJTvf2Olu75B_2ESf2ct4NvZk8uYARRT67LL51OdnoDaSfGjhvmmi1Ig',1,'grafana','/d/_IOiw2TWz/cluster-status-taco?orgId=1&var-taco_cluster=skb-doj-dev01','grafana','/d/Us97AHbWz/pod-status-taco?orgId=1&var-taco_cluster=skb-doj-dev01','grafana','/app/canvas#/workpad/workpad-57011c4b-16e5-4167-967a-8b3046547f8d/page/1?__fullscreen=true','grafana','/app/canvas#/workpad/workpad-57011c4b-16e5-4167-967a-8b3046547f8d/page/1?__fullscreen=true','LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN5RENDQWJDZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRJd01EY3dNakV3TlRVMU1Wb1hEVE13TURZek1ERXdOVFUxTVZvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBTGc3CkpmSkJmSW1KN2VCQjVlb2FMRC9YRlNZWWRGKzduT2JPT2s1cnk4cUhaVVk2UzlETDJicXpXdVNMdE1nYUgySE4KVDViajNxbmlaTzhRdGJvc1lpOUM4ODdrcjVuRjc5TkdzcFRzbFpiUG5OV28zTGZLRDZhKzlNQ1oreU82T05xeAphNEg2eDhpbGNIeU5YbHNSVktBNG9KaGNJMlRoRmNMdTNXcURqanFvSkwrSzk0ZVlFS3hZYTdHKzlwTmF4VFZ2CkVzYUJyQjhEd2xhNkxkSU5EU1V0THZvMjVCWkdyaXF1T2Y0OEYxYTlGNFI1V21weTBacXZMZkZsaHhNeGp4MVEKNjFEcm1FdVNZQ0FpQ01ndCtyUmZRWmovUjhsTUZjVVl4OWVtanhmVHYrUFFKd1dzOHg5OXlwSzZGYkdPU3o3SQpwZFlybitySjdPRnpnNm5oMWdFQ0F3RUFBYU1qTUNFd0RnWURWUjBQQVFIL0JBUURBZ0trTUE4R0ExVWRFd0VCCi93UUZNQU1CQWY4d0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFMVGdHMnVKdW9ub2g4Ly8yaGQ2OGhKT0MwYmIKbnJpRys3V2pVbkwrUWpzSlFqTk5YbXJid3dlb1JrajVDaVJxeUFhazYxZmIrdFVxcTJjcGw4eVM5c2JkeCtJSQpxdWdneVR5cjZYRnl4aTlkVE9Ya3RDZnJINGs0VlYyZmM3MFp0K3F1NEk0Nk1BSnVNa2RNQmRuRVM0SmhVR21OCllZS1RGTmxCSHJMa2E0T1B4dGRQbWNPbUFmd1VXSTVsV3RzVWN0Q0J6bzcrZWp1M1BUbC9sR0JHbXRJSFl1bDYKcnRzbGErbjloSi9qREs3S1ovMS9NN2hzeERuSC9ZeEhQcTRRWkNjMEE5VDFmRkpSd002cThDbVNodlNuOVRKRQpaNENXREVJRUl0dzhyM3ppeWlrMlExUmR0MVlXWFUzR2Q3SDJiRi9SVW9MaVlQdTZkblVRWmRuKzd3Zz0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=', 'https://skb-doj-dev01.btvpaas.com:6443');
+      INSERT INTO "cluster" VALUES ('skb-doj-stg01','http://kibana.skb-doj-stg01.btvpaas.com','http://lma-grafana.fed.svc.skb-doj-dev01.btvpaas.com','https://skb-doj-stg01.btvpaas.com:6443','eyJhbGciOiJSUzI1NiIsImtpZCI6ImtTU2p0QjFsY0JkZWk0SnpyQ0JjWUZlb01vYWtoVGVSZzBQRkxFR0NGSzAifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJ0aWxsZXItdG9rZW4ta2JnOG0iLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoidGlsbGVyIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiZTJjZDM0OGEtMzU3Yy00MDkyLWJhMTMtYjY5ZjYzNDEzMzgyIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmUtc3lzdGVtOnRpbGxlciJ9.xRos2LhFevfOQFJ-u0939uz_BylQ052z2cbtRDwfRGo_-pGGokTsXu-KwRHDR1PaWfzgh4UlHdf9j_I17rk7CvYHuAWYtAFbsOrdNZEQPbnTBWQiTWt0FqT_GPboeXPdZEy1i_VFotDCs5ZfQluQsjZVRAd6rzHsBkT1ImHbsZA35UzTZIX5bOx6VQsSdGvHlpUyuwn8zCwun62OuAwmMbz5dXuS7GPdmruEkqWFB_ivQ6RcA_lqXv_muG54XRfzyAyzMHMgBPo4eACzER_As29bLYbLqf3lbialjx6805QkNUjXByDdJ7XaofLzvK6WQ4XoVoFunsyxgzi1goco3A',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN5RENDQWJDZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRJd01EY3hOakE0TkRRd01Wb1hEVE13TURjeE5EQTRORFF3TVZvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBTHJjCkgxVmd4QnJ0dUlsNm5qc1ZJdHI1QkMvZkJsR3pmNEVQNFRyVjdtVVA1bjZ1VjF5VVlJWnMvWWE0R3dPZ1E1RnoKeEdoa1gzeXRZa3I3a0I2U1R4NDRBai9Kd0NFejR0U29IL2EzcjRZOWlPb2ROeFRXRi8rdGcwUFpMQW5QN2s4Ngp4SjYvOXR4QmszZDZDdGp0L3NXbU1yVzlrUDByYjQ5ZDNOL25GVVJMczFaR3VkQWJwcmlYbGtFTm9NZjdLUks1CitDam84dFJhY0hRWktLVHpTWkliM0ZwRDU2bHhPL3l4VnBtNHdxRCtXalRiY2g3bjFkcnB1VHJKQXg5UVRBeVgKUVNhMUFrN21nSUJEVmhzNGV1YUI5YUVMQTVHMlRuQkd5RFNaL1dhbkdIcTgycVBaelR3WFVNcWRRM0ROVWNPLwpxVkZ5OFFPeUdDUE5kQ1Z3dTBNQ0F3RUFBYU1qTUNFd0RnWURWUjBQQVFIL0JBUURBZ0trTUE4R0ExVWRFd0VCCi93UUZNQU1CQWY4d0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFGV2l0SnFVU00rVnc3Z1l5Q1gvZm94UVNJaksKUzl3ZFZFVjk0WU0rOGJpeFZ3OVEvb2tKeDljYTBtT1dvRE0xQytKUk80YlZUcVVkNjZEbTFjbFg0cEZ1TEQ3egpFYmQ1dDF0Wk01RXl3ZDlzQ0xPSFZpZzBtT3BDUUM2NUNvSEVFQVFndXpPV1QrOWhoTWE4SWxSUzh3b2x6eVZhCnZRbUQ1TUlYUkFDNnlYMDZKRE1MRVlpQ0pyOWVGNEowa2MyT09tV2ZoVytsUDR2UkZ1aGRHZ0xXS05VV2tHeVUKdERIVnh5azlMTnBVWlNWOTRNTGlMUFFRdk5Id2V4TWZ0MHZDNmNuSnVHR3dISEU4NW9xckZ4bVRXRnZaWFFqVApsQk15cmtZLzFHMnNNeVg1OWtzQTBJM3lzYUNqNnNkVDNKdjFoRUVySjhxREsvcEVMaUZiNndYMkQvQT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=','https://skb-doj-stg01.btvpaas.com:6443');
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',1,0,'Kubernetes',1,NULL,NULL,NULL,0);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',2,0,'TACO Dashboard',2,NULL,NULL,NULL,1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',3,2,'Cluster Status',3,'/d/_IOiw2TWz/cluster-status-taco?orgId=1&var-taco_cluster=skb-doj-dev01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',4,2,'Compute Resource',4,'/d/mBjfpOaWk/compute-resources-cluster-taco?orgId=1&refresh=30s','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',5,2,'Host Status',5,'/d/okotUJJWz/hosts-status-taco?orgId=1&var-taco_cluster=skb-doj-dev01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',6,2,'Pod Status',6,'/d/Us97AHbWz/pod-status-taco?orgId=1&var-taco_cluster=skb-doj-dev01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',7,2,'Node Status',7,'/d/tKgHHwoWk/node-status-taco?orgId=1&var-taco_cluster=skb-doj-dev01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',8,2,'Node Network',8,'/d/l1jN0FAZz/node-network-detail-taco?orgId=1&var-taco_cluster=skb-doj-dev01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',9,2,'Calico Status',9,'/d/pF9vmrTWz/calico?orgId=1&var-taco_cluster=skb-doj-dev01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',10,2,'Node (All Clusters)',10,'/d/9CWBz0bik/node-status-tonghab-view?orgId=1','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',11,0,'NextPass Dashboard',11,NULL,NULL,NULL,1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',12,11,'Cluster Status',12,'/d/SHuJaTWMk/01-cluster?orgId=1&var-taco_cluster=skb-doj-dev01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',13,11,'Pod Status',13,'/d/_NanfTZMk/02-app?orgId=1&var-taco_cluster=skb-doj-dev01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',14,11,'Namespace Status',14,'/d/1YHjfoWMz/03-namespace?orgId=1&var-taco_cluster=skb-doj-dev01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',15,11,'Node Status',15,'/d/80bIYTWGz/04-node?orgId=1&var-taco_cluster=skb-doj-dev01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',16,11,'Summary',16,'/d/HicqYoZGk/05-summary?orgId=1&var-taco_cluster=skb-doj-dev01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',17,11,'Control Manager & API',17,'/d/rfwMPoWGz/06-k8s-control-plane-manager?orgId=1&var-taco_cluster=skb-doj-dev01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',18,11,'K8S ETCD',18,'/d/wvirETZGz/07-k8s-control-plane-etcd?orgId=1&var-taco_cluster=skb-doj-dev01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',19,11,'K8S - Scheduler',19,'/d/CLKUL4GMz/08-scheduler?orgId=1&var-taco_cluster=skb-doj-dev01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',20,11,'K8S CoreDNS',20,'/d/kp3SsTWMk/09-coredns?orgId=1&refresh=10s&var-taco_cluster=skb-doj-dev01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',21,11,'K8S Proxy',21,'/d/ioHKsoWMz/10-k8s-proxy?orgId=1&var-taco_cluster=skb-doj-dev01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',22,0,'Discovery',22,'/app/kibana#/discover','kibana_dash','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-dev01',23,0,'Control',23,'/EmptyLink','adminConsole','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',1,0,'Kubernetes',1,NULL,NULL,NULL,0);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',2,0,'TACO Dashboard',2,NULL,NULL,NULL,1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',3,2,'Cluster Status',3,'/d/_IOiw2TWz/cluster-status-taco?orgId=1&var-taco_cluster=skb-doj-stg01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',4,2,'Compute Resource',4,'/d/mBjfpOaWk/compute-resources-cluster-taco?orgId=1&refresh=30s&var-datasource=Prometheus&var-taco_cluster=skb-doj-stg01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',5,2,'Host Status',5,'/d/okotUJJWz/hosts-status-taco?orgId=1&var-taco_cluster=skb-doj-stg01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',6,2,'Pod Status',6,'/d/Us97AHbWz/pod-status-taco?orgId=1&var-taco_cluster=skb-doj-stg01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',7,2,'Node Status',7,'/d/tKgHHwoWk/node-status-taco?orgId=1&var-taco_cluster=skb-doj-stg01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',8,2,'Node Network',8,'/d/l1jN0FAZz/node-network-detail-taco?orgId=1&var-taco_cluster=skb-doj-stg01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',9,2,'Calico Status',9,'/d/pF9vmrTWz/calico?orgId=1&var-taco_cluster=skb-doj-stg01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',10,2,'Node (All Clusters)',10,'/d/9CWBz0bik/node-status-tonghab-view?orgId=1','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',11,0,'NextPass Dashboard',11,NULL,NULL,NULL,1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',12,11,'Cluster Status',12,'/d/SHuJaTWMk/01-cluster?orgId=1&var-taco_cluster=skb-doj-stg01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',13,11,'Pod Status',13,'/d/_NanfTZMk/02-app?orgId=1&var-taco_cluster=skb-doj-stg01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',14,11,'Namespace Status',14,'/d/1YHjfoWMz/03-namespace?orgId=1&var-taco_cluster=skb-doj-stg01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',15,11,'Node Status',15,'/d/80bIYTWGz/04-node?orgId=1&var-taco_cluster=skb-doj-stg01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',16,11,'Summary',16,'/d/HicqYoZGk/05-summary?orgId=1&var-taco_cluster=skb-doj-stg01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',17,11,'Control Manager & API',17,'/d/rfwMPoWGz/06-k8s-control-plane-manager?orgId=1&var-taco_cluster=skb-doj-stg01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',18,11,'K8S ETCD',18,'/d/wvirETZGz/07-k8s-control-plane-etcd?orgId=1&var-taco_cluster=skb-doj-stg01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',19,11,'K8S - Scheduler',19,'/d/CLKUL4GMz/08-scheduler?orgId=1&var-taco_cluster=skb-doj-stg01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',20,11,'K8S CoreDNS',20,'/d/kp3SsTWMk/09-coredns?orgId=1&var-taco_cluster=skb-doj-stg01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',21,11,'K8S Proxy',21,'/d/ioHKsoWMz/10-k8s-proxy?orgId=1&var-taco_cluster=skb-doj-stg01','grafana','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',22,0,'Discovery',22,'/app/kibana#/discover','kibana_dash','embedded',1);
+      INSERT INTO "cluster_menu" VALUES ('skb-doj-stg01',23,0,'Control',23,'/EmptyLink','adminConsole','embedded',1);
+      INSERT INTO "main_menu" VALUES ('skb-doj-dev01','Y','N','N','N');
+      INSERT INTO "main_menu" VALUES ('skb-doj-stg01','Y','N','N','N');

@@ -1,0 +1,142 @@
+replicaCount: 1
+
+image:
+  tag: latest 
+  repository: sktdev/taco-watcher
+  tag: 1.0.1
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# For [ /etc/hosts ]...
+# Empty custom hosts
+hostAliases: []
+# ... or apply custom hosts
+#hostAliases: 
+#- ip: "10.0.0.1"
+#  hostnames:
+#  - "kibana.example.com"
+#- ip: "10.0.0.2"
+#  hostnames:
+#  - "grafana.example.com"
+
+service:
+  type: NodePort
+  port: 32000
+  targetPort: 32000
+  nodePort:  32000
+  proxy_from: 32001
+  proxy_to: 32009
+
+ingress:
+  enabled: true
+  endpoints:
+  - name: public
+    annotations:
+      ingress.kubernetes.io/allow-http: "true"   
+      ingress.kubernetes.io/ssl-redirect: "false"
+    
+    # main = cloudconsole domain
+    main:
+      host: cloudconsole.example.com
+  
+    # ccproxy = cloudconsole proxy domain
+    ccproxy:
+      host:
+        # generate domain : "<prefix><port><postfix>"
+        # ex) ccproxy-32001.example.com
+        prefix: "ccproxy-"
+        postfix: ".example.com"
+
+volume:
+  storageClassName: rbd
+
+  limits:
+    storage: 100Mi
+  requests:
+    storage: 100Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+config:
+  initDB: true
+
+  username: taco
+  password: password
+
+  # system
+  service:
+    port: 32000
+    proxyportlist: "32001-32009"
+    proxyurl:
+      format: "%REQUEST_HOST%:%REQUEST_PORT%"
+    https:
+      use: "no"
+      keystore: 
+        keyfile: /home/tacomo/tacomo-webserver/conf/keystore.p12
+        type: PKCS12
+        password: password
+        alias: tacomo
+      ciphers: TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA
+      enabledprotocols: TLSv1.2
+    
+  log:
+    level: LOG_DEBUG
+    path: /home/tacomo/tacomo-webserver/logs
+    max:
+      fileSize: 64
+      history: 3
+
+  ldap:
+    loginUse: "no"
+    server:
+      ip: "218.36.252.193"
+      port: 32182
+    ssl:
+      enable: "no"
+      certValidationSkip: "yes"
+    userDnPattern: "cn={0},dc=cluster,dc=local"
+    connTimeout: 5
+    readTimeout: 5
+
+  security:
+    sessionTimeout: 60
+
+  kibana:
+    authkey: elastic:tacoword
+
+  grafana: 
+    authkey: admin:password
+
+  prometheus:
+    ruleUrl: /apis/monitoring.coreos.com/v1/namespaces/fed/prometheusrules
+
+  loggingfilter:
+    url: /apis/logging.banzaicloud.io/v1beta1/namespaces/fed/flows
+
+  filter:
+    rule: "yes"
+
+  keycloak:
+    enabled: "yes"
+    url: http://keycloak.example.com/auth
+    realm: taco
+    clientId: taco-watcher
+    hasRealmRole1: lma_system
+    hasRealmRole2: lma_app
+    hasRealmRole3: lma_viewer
+  
+  lenz:
+    url: http://lenz.example.com
+
+  extra:
+    config: |-
+
+    sql: |-
+      
