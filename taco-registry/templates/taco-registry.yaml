@@ -1,0 +1,196 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.tacoRegistry.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.tacoRegistry.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.tacoRegistry.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.tacoRegistry.name }}
+    spec:
+      {{- with .Values.tacoClair.deployment.hostAliases }}
+      hostAliases:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      volumes:
+        {{ if .Values.tacoRegistry.volume.enabled }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Values.tacoRegistry.name }}-data
+        {{- end }}
+        - name: ssl
+          configMap:
+            name: {{ .Values.tacoRegistry.name }}-ssl
+        - name: config
+          configMap:
+            name: {{ .Values.tacoRegistry.name }}
+        - name: config-clair
+          configMap:
+            name: {{ .Values.tacoClair.name }}
+      containers:
+      - name: {{ .Values.tacoRegistry.name }}
+        image: {{ .Values.tacoRegistry.deployment.image }}
+        imagePullPolicy: Always
+        volumeMounts:
+          {{ if .Values.tacoRegistry.volume.enabled }}
+          - name: data
+            mountPath: /var/lib/registry
+          {{- end }}
+          - name: ssl
+            mountPath: /ssl
+          - name: config
+            mountPath: /etc/docker/registry
+      - name: {{ .Values.tacoClair.name }}
+        image: {{ .Values.tacoClair.deployment.image }}
+        imagePullPolicy: Always
+        volumeMounts:
+          - name: config-clair
+            mountPath: /etc/clair
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.tacoRegistry.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.tacoRegistry.name }}
+spec:
+  type: {{ .Values.tacoRegistry.service.type }}
+  ports:
+    {{- range .Values.tacoRegistry.service.ports }}
+    - name: {{ .name }}
+      port: {{ .port }}
+      {{- if .targetPort }}
+      targetPort: {{ .targetPort }}
+      {{- end }}
+      {{- if .nodePort }}
+      nodePort: {{ .nodePort }}
+      {{- end }}
+    {{- end}}
+    {{- range .Values.tacoClair.service.ports }}
+    - name: {{ .name }}-clair
+      port: {{ .port }}
+      {{- if .targetPort }}
+      targetPort: {{ .targetPort }}
+      {{- end }}
+      {{- if .nodePort }}
+      nodePort: {{ .nodePort }}
+      {{- end }}
+    {{- end}}
+  selector:
+    app: {{ .Values.tacoRegistry.name }}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Values.tacoRegistry.name }}-1
+  namespace: {{ .Values.namespace }}
+  {{- with .Values.tacoRegistry.ingress1.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+spec:
+  rules:
+    - host: {{ .Values.tacoRegistry.ingress1.host }}
+      http:
+        paths:
+        {{- $root := . -}}
+        {{- range .Values.tacoRegistry.ingress1.paths }}
+        - path: {{ .path }}
+          backend:
+            serviceName: {{ $root.Values.tacoRegistry.name }}
+            servicePort: {{ .port }}
+        {{- end }}
+{{ if .Values.tacoRegistry.ingress2.enabled }}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Values.tacoRegistry.name }}-2
+  namespace: {{ .Values.namespace }}
+  {{- with .Values.tacoRegistry.ingress2.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+spec:
+  rules:
+    - host: {{ .Values.tacoRegistry.ingress2.host }}
+      http:
+        paths:
+        {{- $root := . -}}
+        {{- range .Values.tacoRegistry.ingress2.paths }}
+        - path: {{ .path }}
+          backend:
+            serviceName: {{ $root.Values.tacoRegistry.name }}
+            servicePort: {{ .port }}
+        {{- end }}
+{{- end }}
+{{ if .Values.tacoRegistry.ingressPub1.enabled }}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Values.tacoRegistry.name }}-pub-1
+  namespace: {{ .Values.namespace }}
+  {{- with .Values.tacoRegistry.ingressPub1.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+spec:
+  rules:
+    - host: {{ .Values.tacoRegistry.ingressPub1.host }}
+      http:
+        paths:
+        {{- $root := . -}}
+        {{- range .Values.tacoRegistry.ingressPub1.paths }}
+        - path: {{ .path }}
+          backend:
+            serviceName: {{ $root.Values.tacoRegistry.name }}
+            servicePort: {{ .port }}
+        {{- end }}
+{{- end }}
+{{ if .Values.tacoRegistry.ingressPub2.enabled }}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Values.tacoRegistry.name }}-pub-2
+  namespace: {{ .Values.namespace }}
+  {{- with .Values.tacoRegistry.ingressPub2.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+spec:
+  rules:
+    - host: {{ .Values.tacoRegistry.ingressPub2.host }}
+      http:
+        paths:
+        {{- $root := . -}}
+        {{- range .Values.tacoRegistry.ingressPub2.paths }}
+        - path: {{ .path }}
+          backend:
+            serviceName: {{ $root.Values.tacoRegistry.name }}
+            servicePort: {{ .port }}
+        {{- end }}
+{{- end }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.tacoRegistry.name }}-data
+  namespace: {{ .Values.namespace }}
+spec:
+  storageClassName: {{ .Values.tacoRegistry.volume.storageClassName }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.tacoRegistry.volume.data.size }}

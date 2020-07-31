@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.tacoClair.name }}
+  namespace: {{ .Values.namespace }}
+data:
+  config.yaml: |-
+    clair:
+      database:
+        type: pgsql
+        options:
+          source: postgresql://{{ .Values.tacoClair.deployment.data.user }}@{{ .Values.tacoDb.name }}:5432/{{ .Values.tacoClair.deployment.data.db }}?password={{ .Values.tacoClair.deployment.data.password }}&sslmode=disable
+          cachesize: 16384
+      api:
+        healthport: 6061
+        port: 6060
+        timeout: 900s
+        paginationkey:

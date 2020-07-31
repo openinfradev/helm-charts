@@ -1,0 +1,167 @@
+# Taco Registry Chart
+# Registry, Postgres, Clair, Builder, App
+
+namespace: default
+ingressPort: 30080
+
+# Taco-Registry
+tacoRegistry:
+  name: taco-private-registry
+  deployment:
+    image: registry:2
+    auth:
+      service: taco-registry
+      issuer: taco-registry
+      keyPassword: taco-registry
+      keyPairAlias: servercert
+      keyPairPassword: taco-registry
+  service:
+    type: ClusterIP
+    ports:
+      - name: http
+        port: 5000
+        targetPort: 5000
+        nodePort:    
+  ingress1:
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: 10240m
+    host: taco-registry.com
+    paths:
+      - path: /
+        port: 5000
+  ingress2:
+    enabled: false
+    annotations: {}
+    host:
+    paths:
+      - path: /
+        port: 5000
+  ingressPub1:
+    enabled: false
+    annotations: {}
+    host:
+    paths:
+      - path: /
+        port: 5000
+  ingressPub2:
+    enabled: false
+    annotations: {}
+    host:
+    paths:
+      - path: /
+        port: 5000
+  volume:
+    enabled: false
+    storageClassName: taco-sc
+    data:
+      size: 10Gi
+
+# Taco-db : Postgres
+tacoDb:
+  name: taco-db
+  deployment:
+    image: postgres:latest
+    data:
+      db: registry
+      user: registry
+      password: registry1234
+  service:
+    type: ClusterIP
+    ports:
+      - name: http
+        port: 5432
+        targetPort: 5432
+        nodePort:
+  volume:
+    enabled: false
+    storageClassName: taco-sc
+    data:
+      size: 10Gi
+
+# Taco-clair : Clair
+tacoClair:
+  name: taco-clair
+  deployment:
+    image: quay.io/coreos/clair:latest
+    replicas: 1
+    hostAliases:
+      - ip: "192.168.201.11"
+        hostnames:
+          - "taco-registry.com"
+    data:
+      db: clair
+      user: clair
+      password: clair
+  service:
+    type: ClusterIP
+    ports:
+      - name: http
+        port: 6060
+        targetPort: 6060
+        nodePort:
+      - name: health
+        port: 6061
+        targetPort: 6061
+        nodePort:
+
+# Taco-registry-builder : Builder
+tacoRegistryBuilder:
+  name: taco-registry-builder
+  deployment:
+    image: boozer83/taco-registry-builder:latest
+    replicas: 1
+    hostAliases:
+      - ip: "192.168.201.11"
+        hostnames:
+        - "taco-registry.com"
+  service:
+    type: ClusterIP
+    ports:
+      - name: http
+        port: 4000
+        targetPort: 4000
+        nodePort:
+  volume:
+    data:
+      size: 100Mi
+      path: /var/run/docker.sock
+  mirrors:
+    - ip: 192.168.0.1
+      host: taco-registry-1.com
+
+# Taco-registry-app : App
+tacoRegistryApp:
+  name: taco-registry-app
+  deployment:
+    image: boozer83/taco-registry-app:latest
+    replicas: 1
+    hostAliases:
+      - ip: "175.113.150.30"
+        hostnames:
+        - "keycloak.skb-doj-dev01.btvpaas.com"
+    env:
+      - name: KEYCLOAK_AUTH_SERVER_URI
+        value: "https://keycloak.skb-doj-dev01.btvpaas.com/auth"
+      - name: KEYCLOAK_CLIENT_ID
+        value: "registry"
+      - name: KEYCLOAK_REALM
+        value: "nextpaas"
+  service:
+    type: ClusterIP
+    ports:
+      - name: http
+        port: 8080
+        targetPort: 8080
+        nodePort:
+  ingress:
+    host: taco.com
+    paths:
+      - path: /
+        port: 8080
+  ingressPub:
+    enabled: false
+    host:
+    paths:
+      - path: /
+        port: 8080
+

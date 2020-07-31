@@ -1,0 +1,99 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.tacoRegistryBuilder.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.tacoRegistryBuilder.name }}
+spec:
+  replicas: {{ .Values.tacoRegistryBuilder.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.tacoRegistryBuilder.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.tacoRegistryBuilder.name }}
+    spec:
+      {{- with .Values.tacoRegistryBuilder.deployment.hostAliases }}
+      hostAliases:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- range .Values.tacoRegistryBuilder.mirrors }}
+        - ip: {{ .ip }}
+          hostnames:
+            - {{ .host }}
+      {{- end}}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Values.tacoRegistryBuilder.name }}
+        - name: docker-sock
+          persistentVolumeClaim:
+            claimName: {{ .Values.tacoRegistryBuilder.name }}-sock
+      containers:
+      - name: {{ .Values.tacoRegistryBuilder.name }}
+        image: {{ .Values.tacoRegistryBuilder.deployment.image }}
+        imagePullPolicy: Always
+        volumeMounts:
+          - name: config
+            mountPath: /etc/conf
+          - name: docker-sock
+            mountPath: /var/run/docker.sock
+        env:
+          - name: BUILDER_CONFIG
+            value: "/etc/conf/config.yml"
+          - name: BUILDER_LOG_LEVEL
+            value: "DEBUG"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.tacoRegistryBuilder.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.tacoRegistryBuilder.name }}
+spec:
+  type: {{ .Values.tacoRegistryBuilder.service.type }}
+  ports:
+    {{- range .Values.tacoRegistryBuilder.service.ports }}
+    - name: {{ .name }}
+      port: {{ .port }}
+      {{- if .targetPort }}
+      targetPort: {{ .targetPort }}
+      {{- end }}
+      {{- if .nodePort }}
+      nodePort: {{ .nodePort }}
+      {{- end }}
+    {{- end}}
+  selector:
+    app: {{ .Values.tacoRegistryBuilder.name }}
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ .Values.tacoRegistryBuilder.name }}-sock
+  namespace: {{ .Values.namespace }}
+spec:
+  storageClassName: {{ .Values.tacoRegistryBuilder.name }}-sock
+  capacity:
+    storage: {{ .Values.tacoRegistryBuilder.volume.data.size }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.tacoRegistryBuilder.volume.data.path }}
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.tacoRegistryBuilder.name }}-sock
+  namespace: {{ .Values.namespace }}
+spec:
+  storageClassName: {{ .Values.tacoRegistryBuilder.name }}-sock
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.tacoRegistryBuilder.volume.data.size }}

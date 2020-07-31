@@ -1,0 +1,85 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.tacoDb.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.tacoDb.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.tacoDb.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.tacoDb.name }}
+    spec:
+      volumes:
+        {{ if .Values.tacoDb.volume.enabled }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Values.tacoDb.name }}-data
+        {{- end }}
+        - name: config
+          configMap:
+            name: {{ .Values.tacoDb.name }}
+      containers:
+      - name: {{ .Values.tacoDb.name }}
+        image: {{ .Values.tacoDb.deployment.image }}
+        imagePullPolicy: Always
+        volumeMounts:
+          {{ if .Values.tacoDb.volume.enabled }}
+          - name: data
+            mountPath: /var/lib/postgresql
+          {{- end }}
+          - name: config
+            mountPath: /docker-entrypoint-initdb.d/
+        env:
+          - name: POSTGRES_DB
+            value: {{ .Values.tacoDb.deployment.data.db }}
+          - name: POSTGRES_USER
+            value: {{ .Values.tacoDb.deployment.data.user }}
+          - name: POSTGRES_PASSWORD
+            value: {{ .Values.tacoDb.deployment.data.password }}
+          - name: POSTGRES_INITDB_ARGS
+            value: "--encoding=UTF-8"
+          - name: APP_TIME_ZONE
+            value: "Asia/Seoul"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.tacoDb.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.tacoDb.name }}
+spec:
+  type: {{ .Values.tacoDb.service.type }}
+  ports:
+    {{- range .Values.tacoDb.service.ports }}
+    - name: {{ .name }}
+      port: {{ .port }}
+      {{- if .targetPort }}
+      targetPort: {{ .targetPort }}
+      {{- end }}
+      {{- if .nodePort }}
+      nodePort: {{ .nodePort }}
+      {{- end }}
+    {{- end}}
+  selector:
+    app: {{ .Values.tacoDb.name }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.tacoDb.name }}-data
+  namespace: {{ .Values.namespace }}
+spec:
+  storageClassName: {{ .Values.tacoDb.volume.storageClassName }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.tacoDb.volume.data.size }}
