@@ -1,0 +1,49 @@
+# Taco Registry Chart
+
+namespace: default
+
+# Taco-Registry
+tacoRegistry:
+  name: private-registry
+  deployment:
+    image: registry:2
+  service:
+    type: ClusterIP
+    ports:
+      - name: http
+        port: 5000
+        targetPort: 5000
+        nodePort:    
+  ingress1:
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: 10240m
+    host: taco-registry.com
+    paths:
+      - path: /
+        port: 5000
+  ingress2:
+    enabled: false
+    annotations: {}
+    host:
+    paths:
+      - path: /
+        port: 5000
+  ingressPub1:
+    enabled: false
+    annotations: {}
+    host:
+    paths:
+      - path: /
+        port: 5000
+  ingressPub2:
+    enabled: false
+    annotations: {}
+    host:
+    paths:
+      - path: /
+        port: 5000
+  volume:
+    storageClassName: taco-sc
+    data:
+      size: 10Gi
+
