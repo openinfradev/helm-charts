@@ -76,7 +76,7 @@ metadata:
   name: {{ .Values.tacoRegistryBuilder.name }}-sock
   namespace: {{ .Values.namespace }}
 spec:
-  storageClassName: {{ .Values.tacoRegistryBuilder.name }}-sock
+  storageClassName: {{ .Values.storageClassName   }}
   capacity:
     storage: {{ .Values.tacoRegistryBuilder.volume.data.size }}
   accessModes:
@@ -91,7 +91,7 @@ metadata:
   name: {{ .Values.tacoRegistryBuilder.name }}-sock
   namespace: {{ .Values.namespace }}
 spec:
-  storageClassName: {{ .Values.tacoRegistryBuilder.name }}-sock
+  storageClassName: {{ .Values.storageClassName }}
   accessModes:
     - ReadWriteOnce
   resources:

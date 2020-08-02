@@ -188,7 +188,7 @@ metadata:
   name: {{ .Values.tacoRegistry.name }}-data
   namespace: {{ .Values.namespace }}
 spec:
-  storageClassName: {{ .Values.tacoRegistry.volume.storageClassName }}
+  storageClassName: {{ .Values.storageClassName }}
   accessModes:
     - ReadWriteOnce
   resources:

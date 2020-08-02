@@ -4,6 +4,8 @@
 namespace: default
 ingressPort: 30080
 
+storageClassName: taco-sc
+
 # Taco-Registry
 tacoRegistry:
   name: taco-private-registry
@@ -52,7 +54,6 @@ tacoRegistry:
         port: 5000
   volume:
     enabled: false
-    storageClassName: taco-sc
     data:
       size: 10Gi
 
@@ -74,7 +75,6 @@ tacoDb:
         nodePort:
   volume:
     enabled: false
-    storageClassName: taco-sc
     data:
       size: 10Gi
 
