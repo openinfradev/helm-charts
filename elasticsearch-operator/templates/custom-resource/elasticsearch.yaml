@@ -42,6 +42,10 @@ spec:
           env:
           - name: ES_JAVA_OPTS
             value: {{ .Values.customResource.elasticsearch.javaOpts | quote }}
+          resources:
+            limits:
+              memory: {{ .Values.customResource.elasticsearch.limitMem | quote }}
+              cpu: {{ .Values.customResource.elasticsearch.limitCpu | quote }}          
   # - http:
   #   service:
   #     ports:

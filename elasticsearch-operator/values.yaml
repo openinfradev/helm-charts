@@ -44,7 +44,8 @@ customResource:
       password: tacoword
 
     javaOpts: "-Xms256m -Xmx256m"
-
+    limitCpu: 1
+    limitMem: 512m
     image:
       repository: docker.elastic.co/elasticsearch/elasticsearch
       tag: 7.5.1
