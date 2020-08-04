@@ -175,8 +175,10 @@ tacoRegistryBuilder:
   mirrors:
 #    - ip: 172.32.150.7
 #      host: registry.skb-suy-prd01.btvpaas.com
+#      port: 8080
     - ip: 172.33.150.7
       host: registry.skb-ssu-prd02.btvpaas.com
+      port: 80
 
 # Taco-registry-app : App
 tacoRegistryApp:

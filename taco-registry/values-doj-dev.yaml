@@ -175,6 +175,7 @@ tacoRegistryBuilder:
   mirrors:
     - ip: 175.113.150.29
       host: registry.skb-doj-stg01.btvpaas.com
+      port: 80
 
 # Taco-registry-app : App
 tacoRegistryApp:

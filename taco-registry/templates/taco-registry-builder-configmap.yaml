@@ -41,7 +41,7 @@ data:
       auth: http://{{ .Values.tacoRegistryApp.name }}:8080/api/oauth/token
       mirrors:
         {{- range .Values.tacoRegistryBuilder.mirrors }}
-        - {{ .host }}
+        - {{ .host }}:{{ .port }}
         {{- end}}
 
 
