@@ -31,7 +31,13 @@ $ helm delete --purge taco-registry
 | `tacoRegistry.ingressPub2.host` | registry ingress 도메인 | `taco-registry.com` |
 | `tacoRegistry.volume.storageClassName` | registry storage class name | `netapp` |
 | `tacoRegistry.volume.data.size` | registry storage 볼륨 사이즈 | `10Gi` |
+| `tacoDb.useExternalDb` | 외부 db 사용 여부 | `false` |
 | `tacoDb.deployment.image` | db image | `postgress:latest` |
+| `tacoDb.deployment.data.host` | db host (`useExternalDb`이 false 인 경우 {serviceName}.{namespace}.svc로 설정)  | `taco-db.default.svc` |
+| `tacoDb.deployment.data.port` | db port | `5432` |
+| `tacoDb.deployment.data.rootDb` | root db | `postgres` |
+| `tacoDb.deployment.data.rootUser` | root user name | `postgres` |
+| `tacoDb.deployment.data.rootPassword` | root password | `postgres1234` |
 | `tacoDb.deployment.data.db` | db name | `registry` |
 | `tacoDb.deployment.data.user` | db user name | `registry` |
 | `tacoDb.deployment.data.password` | db password | `registry1234` |

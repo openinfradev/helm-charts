@@ -22,8 +22,8 @@ data:
     database:
       # postgres, mysql
       type: postgres
-      host: {{ .Values.tacoDb.name }}
-      port: 5432
+      host: {{ .Values.tacoDb.deployment.data.host }}
+      port: {{ .Values.tacoDb.deployment.data.port }}
       name: {{ .Values.tacoDb.deployment.data.db }}
       user: {{ .Values.tacoDb.deployment.data.user }}
       password: {{ .Values.tacoDb.deployment.data.password }}
