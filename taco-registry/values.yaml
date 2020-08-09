@@ -59,9 +59,15 @@ tacoRegistry:
 # Taco-db : Postgres
 tacoDb:
   name: taco-db
+  useExternalDb: false
   deployment:
     image: postgres:latest
     data:
+      host: taco-db.default.svc
+      port: 5432
+      rootDb: postgres
+      rootUser: postgres
+      rootPassword: postgres1234
       db: registry
       user: registry
       password: registry1234

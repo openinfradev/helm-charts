@@ -24,6 +24,19 @@ spec:
         - name: data
           configMap:
             name: {{ .Values.tacoRegistry.name }}
+      {{ if .Values.tacoDb.useExternalDb }}
+        - name: init-config
+          configMap:
+            name: {{ .Values.tacoDb.name }}
+            defaultMode: 0777
+      initContainers:
+      - name: check-db-ready
+        image: postgres:latest
+        volumeMounts:
+          - name: init-config
+            mountPath: /docker-entrypoint-initdb.d/
+        command: ['sh', '-c', '/docker-entrypoint-initdb.d/init.sh']
+      {{- end }}
       containers:
       - name: {{ .Values.tacoRegistryApp.name }}
         image: {{ .Values.tacoRegistryApp.deployment.image }}
@@ -55,6 +68,10 @@ spec:
             value: "{{ $root.Values.tacoRegistry.deployment.auth.keyPairAlias }}"
           - name: REGISTRY_AUTH_KEY_PAIR_PASSWORD
             value: "{{ $root.Values.tacoRegistry.deployment.auth.keyPairPassword }}"
+          - name: POSTGRES_HOST
+            value: "{{ $root.Values.tacoDb.deployment.data.host }}"
+          - name: POSTGRES_PORT
+            value: "{{ $root.Values.tacoDb.deployment.data.port }}"
           - name: POSTGRES_DB
             value: "{{ $root.Values.tacoDb.deployment.data.db }}"
           - name: POSTGRES_USER

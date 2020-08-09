@@ -10,7 +10,7 @@ data:
       database:
         type: pgsql
         options:
-          source: postgresql://{{ .Values.tacoClair.deployment.data.user }}@{{ .Values.tacoDb.name }}:5432/{{ .Values.tacoClair.deployment.data.db }}?password={{ .Values.tacoClair.deployment.data.password }}&sslmode=disable
+          source: postgresql://{{ .Values.tacoClair.deployment.data.user }}@{{ .Values.tacoDb.deployment.data.host }}:{{ .Values.tacoDb.deployment.data.port }}/{{ .Values.tacoClair.deployment.data.db }}?password={{ .Values.tacoClair.deployment.data.password }}&sslmode=disable
           cachesize: 16384
       api:
         healthport: 6061

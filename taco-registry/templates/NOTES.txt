@@ -1,7 +1,6 @@
 Deployed Taco-Registry
 
-1. taco-registry : registry
-2. taco-db : postgres
-3. taco-clair : clair
-4. taco-registry-builder : registry builder
-5. taco-registry-app : registry app (portal)
+1. taco-registry : registry, clair
+2. taco-db : postgresql
+3. taco-registry-builder : registry builder
+4. taco-registry-app : registry app (portal)

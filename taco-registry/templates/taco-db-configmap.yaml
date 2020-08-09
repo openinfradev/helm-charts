@@ -7,17 +7,31 @@ metadata:
 data:
   init.sh: |-
     #!/bin/bash
-
+    set -x
     CLAIR_DB="{{ .Values.tacoClair.deployment.data.db }}"
     CLAIR_USER="{{ .Values.tacoClair.deployment.data.user }}"
     CLAIR_PASS="{{ .Values.tacoClair.deployment.data.password }}"
 
-    psql ${POSTGRES_DB} ${POSTGRES_USER} << EOF
-      set time zone '${APP_TIME_ZONE}';
+    APP_DB="{{ .Values.tacoDb.deployment.data.db }}"
+    APP_USER="{{ .Values.tacoDb.deployment.data.user }}"
+    APP_PASS="{{ .Values.tacoDb.deployment.data.password }}"
+
+{{ if .Values.tacoDb.useExternalDb }}
+    until pg_isready -h {{ .Values.tacoDb.deployment.data.host }} -p {{ .Values.tacoDb.deployment.data.port }};
+        do echo waiting for database; sleep 2;
+    done;
+
+    PGPASSWORD={{ .Values.tacoDb.deployment.data.rootPassword }} psql -h {{ .Values.tacoDb.deployment.data.host }} -p {{ .Values.tacoDb.deployment.data.port }} -U {{ .Values.tacoDb.deployment.data.rootUser }} << EOF
       create database ${CLAIR_DB} encoding 'utf-8';
       create user ${CLAIR_USER} password '${CLAIR_PASS}';
       grant all privileges on database ${CLAIR_DB} to ${CLAIR_USER} with grant option;
 
+      create database ${APP_DB} encoding 'utf-8';
+      create user ${APP_USER} password '${APP_PASS}';
+      grant all privileges on database ${APP_DB} to ${APP_USER} with grant option;
+    EOF
+
+    PGPASSWORD=${APP_PASS} psql -h {{ .Values.tacoDb.deployment.data.host }} -p {{ .Values.tacoDb.deployment.data.port }} -U ${APP_USER} << EOF
       create table oauth_client_details (client_id VARCHAR(256) PRIMARY KEY,resource_ids VARCHAR(256),client_secret VARCHAR(256),scope VARCHAR(256),authorized_grant_types VARCHAR(256),web_server_redirect_uri VARCHAR(256),authorities VARCHAR(256),access_token_validity INTEGER,refresh_token_validity INTEGER,additional_information VARCHAR(4096),autoapprove VARCHAR(256));
       create table oauth_client_token (token_id VARCHAR(256),token bytea,authentication_id VARCHAR(256) PRIMARY KEY,user_name VARCHAR(256),client_id VARCHAR(256));
       create table oauth_access_token (token_id VARCHAR(256),token bytea,authentication_id VARCHAR(256) PRIMARY KEY,user_name VARCHAR(256),client_id VARCHAR(256),authentication bytea,refresh_token VARCHAR(256));
@@ -31,3 +45,30 @@ data:
       INSERT INTO common_code (code_seq, group_code, code, code_name, comment, enabled) VALUES (1, 'ROLE', 'A', 'ADMIN', 'ROLE 타입', true);
       INSERT INTO common_code (code_seq, group_code, code, code_name, comment, enabled) VALUES (2, 'ROLE', 'U', 'USER', 'ROLE 타입', true);
     EOF
+{{ else }}
+    psql -U {{ .Values.tacoDb.deployment.data.rootUser }} << EOF
+      create database ${CLAIR_DB} encoding 'utf-8';
+      create user ${CLAIR_USER} password '${CLAIR_PASS}';
+      grant all privileges on database ${CLAIR_DB} to ${CLAIR_USER} with grant option;
+
+      create database ${APP_DB} encoding 'utf-8';
+      create user ${APP_USER} password '${APP_PASS}';
+      grant all privileges on database ${APP_DB} to ${APP_USER} with grant option;
+    EOF
+
+    psql -U ${APP_USER} << EOF
+      create table oauth_client_details (client_id VARCHAR(256) PRIMARY KEY,resource_ids VARCHAR(256),client_secret VARCHAR(256),scope VARCHAR(256),authorized_grant_types VARCHAR(256),web_server_redirect_uri VARCHAR(256),authorities VARCHAR(256),access_token_validity INTEGER,refresh_token_validity INTEGER,additional_information VARCHAR(4096),autoapprove VARCHAR(256));
+      create table oauth_client_token (token_id VARCHAR(256),token bytea,authentication_id VARCHAR(256) PRIMARY KEY,user_name VARCHAR(256),client_id VARCHAR(256));
+      create table oauth_access_token (token_id VARCHAR(256),token bytea,authentication_id VARCHAR(256) PRIMARY KEY,user_name VARCHAR(256),client_id VARCHAR(256),authentication bytea,refresh_token VARCHAR(256));
+      create table oauth_refresh_token (token_id VARCHAR(256),token bytea,authentication bytea);
+      create table oauth_code (code VARCHAR(256), authentication bytea);
+      create table oauth_approvals (userId VARCHAR(256),clientId VARCHAR(256),scope VARCHAR(256),status VARCHAR(10),expiresAt TIMESTAMP,lastModifiedAt TIMESTAMP);
+
+      create table users (username VARCHAR(40) NOT NULL PRIMARY KEY, enabled BOOLEAN NOT NULL, password VARCHAR(255) NOT NULL, name VARCHAR(40) NOT NULL, email VARCHAR(255) NOT NULL, del_yn BOOLEAN NOT NULL, super_user BOOLEAN NOT NULL, minio_enabled BOOLEAN DEFAULT false, minio_host VARCHAR(255), minio_port INTEGER);
+      create table common_code (code_seq INTEGER NOT NULL PRIMARY KEY, group_code VARCHAR(10) NOT NULL, code VARCHAR(10) NOT NULL, code_name VARCHAR(30) NOT NULL, comment VARCHAR(255) NOT NULL, enabled BOOLEAN NOT NULL);
+      INSERT INTO users ( email, enabled, del_yn, name, password, username, super_user ) values ( 'admin@sktelecom.com', true, false, 'admin', '\$2a\$10\$IDw2a0sOsi8Zp6myDhAbYOKT1uDr11XYuVoi6ltOi85WME.lL7M9O', 'admin', true );
+      INSERT INTO common_code (code_seq, group_code, code, code_name, comment, enabled) VALUES (1, 'ROLE', 'A', 'ADMIN', 'ROLE 타입', true);
+      INSERT INTO common_code (code_seq, group_code, code, code_name, comment, enabled) VALUES (2, 'ROLE', 'U', 'USER', 'ROLE 타입', true);
+    EOF
+{{- end }}
+
