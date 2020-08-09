@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.tacoRegistryApp.name }}
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.tacoRegistryApp.name }}
 spec:
@@ -87,7 +87,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Values.tacoRegistryApp.name }}
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.tacoRegistryApp.name }}
 spec:
@@ -110,7 +110,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ .Values.tacoRegistryApp.name }}
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
   {{- with .Values.tacoRegistryApp.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -132,7 +132,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ .Values.tacoRegistryApp.name }}-pub
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
   {{- with .Values.tacoRegistryApp.ingressPub.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}

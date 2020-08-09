@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.tacoRegistry.name }}
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.tacoRegistry.name }}
 spec:
@@ -59,7 +59,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Values.tacoRegistry.name }}
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.tacoRegistry.name }}
 spec:
@@ -92,7 +92,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ .Values.tacoRegistry.name }}-1
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
   {{- with .Values.tacoRegistry.ingress1.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -115,7 +115,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ .Values.tacoRegistry.name }}-2
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
   {{- with .Values.tacoRegistry.ingress2.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -139,7 +139,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ .Values.tacoRegistry.name }}-pub-1
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
   {{- with .Values.tacoRegistry.ingressPub1.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -163,7 +163,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ .Values.tacoRegistry.name }}-pub-2
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
   {{- with .Values.tacoRegistry.ingressPub2.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -186,7 +186,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ .Values.tacoRegistry.name }}-data
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
 spec:
   storageClassName: {{ .Values.storageClassName }}
   accessModes:
