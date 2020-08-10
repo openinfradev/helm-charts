@@ -147,6 +147,14 @@ Parameter | Description | Default
 `prometheus.operator.prometheusRules.enabled` | Whether to create Prometheus Operator PrometheusRules object | `false`
 `prometheus.operator.prometheusRules.selector` | Labels to add to the Prometheus Operator PrometheusRules object depending on your Operator configuration | `{app: prometheus-operator", release: prometheus}`
 `prometheus.operator.prometheusRules.rules` | The Prometheus Operator rules to configure | `{}`
+`backup.enabled` | If `true`, backup cronjob get scheduled | `false`
+`backup.scheduler` | cron schedule | `5 5 * * *`
+`backup.successfulJobsHistoryLimit` | specify how many completed jobs should be kept | `3`
+`backup.failedJobsHistoryLimit` | specify how many failed jobs should be kept | `3`
+`backup.user` | The username of archive machine | `centos`
+`backup.host` | The hostname of archive machine | `localhost`
+`backup.destination` | The destination for archiving | `/data`
+`backup.sshKey` | The ssh key for connecting to archive machine | `""`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -416,7 +424,6 @@ It is possible to monitor Keycloak with Prometheus through the use of plugins su
 
 You can then either configure Prometheus to scrape the `/auth/realms/master/metrics` path on the normal HTTP port of JBoss, or if you use the [Prometheus Operator](https://github.com/helm/charts/tree/master/stable/prometheus-operator) you can enable `prometheus.operator.enabled` in `values.yaml` and use the example configuration.
 If you are using Prometheus Operator for configuring Prometheus Rules, the chart also supports this; see `prometheus.operator.prometheusRules` in `values.yaml` for more details.
-
 ## Why StatefulSet?
 
 The chart sets node identifiers to the system property `jboss.node.name` which is in fact the pod name.

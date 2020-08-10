@@ -404,3 +404,12 @@ prometheus:
       #    for: 5m
       #    labels:
       #      severity: critical
+backup:
+  enabled: false
+  scheduler: "5 4 * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  user: centos
+  host: localhost
+  destination: /data
+  sshKey: |

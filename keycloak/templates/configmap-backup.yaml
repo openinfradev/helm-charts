@@ -1,0 +1,18 @@
+{{ if and .Values.backup.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backup-sql-cm
+  labels:
+    {{- include "keycloak.commonLabels" . | nindent 4 }}
+data:
+  backup.sh: |
+    #!/bin/sh
+    set -x
+    ls -al /root/
+    filename="backup-$(date +%y-%m-%d-%H-%M)"
+    pg_dumpall -h $POSTGRESQL_HOST -U $POSTGRESQL_USER > /tmp/$filename.sql
+    tar cvzf /tmp/$filename.tar.gz /tmp/$filename.sql
+    ls -al /tmp
+    scp -o "StrictHostKeyChecking=no" /tmp/$filename.tar.gz ${BACKUP_USER}@${BACKUP_HOST}:${BACKUP_DESTINATION}/$filename.tar.gz
+{{ end }}
