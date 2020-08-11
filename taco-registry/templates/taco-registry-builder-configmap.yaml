@@ -41,8 +41,8 @@ data:
       auth: http://{{ .Values.tacoRegistryApp.name }}:8080/api/oauth/token
       mirrors:
         {{- range .Values.tacoRegistryBuilder.mirrors }}
-        - {{ .host }}:{{ .port }}
-        {{- end}}
+        - {{ .host }}{{ if ne (int .port) 80 }}:{{ .port }}{{- end }}
+        {{- end }}
 
 
     # webhook listener
