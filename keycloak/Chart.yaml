@@ -20,4 +20,4 @@ name: keycloak
 sources:
 - https://github.com/codecentric/helm-charts
 - https://github.com/jboss-dockerfiles/keycloak
-version: 8.2.2
+version: 8.2.2-skt
