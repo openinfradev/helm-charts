@@ -10,6 +10,7 @@ metadata:
 data:
   tacomo.conf: |-
     [system]
+    service.db.restorepath={{ .Values.config.service.db.restorepath }}
     service.port={{ .Values.config.service.port }}
     service.proxyportlist={{ .Values.config.service.proxyportlist }}
     service.proxyurl.format={{ .Values.config.service.proxyurl.format }}
