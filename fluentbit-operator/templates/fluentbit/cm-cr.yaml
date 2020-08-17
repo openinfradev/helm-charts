@@ -31,6 +31,15 @@ data:
     -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/template-{{.name}}.json 
 {{- end}}
 
+{{ range .Values.fluentbit.targetLogs }}
+{{ if .index}}
+    echo "trying to create initial index {{.index}}-000001..."
+    curl -k -u ${ES_USER}:${ES_PW} \
+    -X PUT "${ES_URL}/{{.index}}-000001" \
+    -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/index-{{.index}}.json
+{{- end }}
+{{- end }}
+
 {{ range .Values.fluentbit.esTemplate.ilms }}
   ilm-{{ .name }}.json: |- 
     {{ toJson .json }}
@@ -43,15 +52,12 @@ data:
 
 {{ range .Values.fluentbit.targetLogs }}
 {{ if .index}}
-  index-{{ .index.name }}.json: |-
+  index-{{ .index }}.json: |-
     {
       "aliases": {
-        "{{.index.aliases}}":{
+        "{{.index}}":{
           "is_write_index": true
         }
-{{- if .index.mappings }}
-        , "mappings":{{ toJson .index.mappings }}
-{{- end}}        
       }
     }
 {{- end }}

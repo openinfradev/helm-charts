@@ -60,8 +60,8 @@ spec:
         {{ range .Values.fluentbit.targetLogs }}
         {{if .index}}
         - name: {{ template "fluentbit-operator.name" $envAll }}-cr-cm
-          mountPath: /tmp/index-{{.index.name }}.json
-          subPath: index-{{.index.name }}.json
+          mountPath: /tmp/index-{{.index }}.json
+          subPath: index-{{.index }}.json
           readOnly: true
         {{ end }}
         {{ end }}
