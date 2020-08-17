@@ -1,0 +1,9 @@
+customResource:
+  elasticsearch:
+    enabled: false
+  kibana:
+    enabled: false
+elasticsearchOperator:
+  createCustomResource: true
+  createNamespace: false
+  enabled: true
