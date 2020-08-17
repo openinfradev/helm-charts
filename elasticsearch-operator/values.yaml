@@ -35,30 +35,15 @@ elasticsearchOperator:
 customResource:
   elasticsearch:
     enabled: true
-    # nodeSelector:
-    #   taco-lma: enabled
 
     ## admin user for Elasticsearch. Currently, unable to change user name
     defaultAuth:
       # username: elastic
       password: tacoword
 
-    javaOpts: "-Xms256m -Xmx256m"
-    limitCpu: 1
-    limitMem: 512m
     image:
       repository: docker.elastic.co/elasticsearch/elasticsearch
       tag: 7.5.1
-    
-    ## Elasticsearch instance count 
-    count: 3
-
-    ## Elasticsearch Config
-    config:
-      node.master: true
-      node.data: true
-      node.ingest: true
-      node.store.allow_mmap: false
 
     ## empty {} means podDisruptionBudget disabled
     podDisruptionBudget:
@@ -84,26 +69,92 @@ customResource:
     #     certificate:
     #       # provide your own certificate
     #       secretName: my-cert
- 
-    ## Storage definition for Elasticsearch instance.
-    ## Must be set
-    ##
-    volumeClaimTemplates:
-      - metadata:
-          name: elasticsearch-data
-        spec:
-          accessModes: ["ReadWriteOnce"]
-          resources:
-            requests:
-              storage: 5Gi
-          storageClassName: rbd
-    #   selector: {}
 
+    nodeSets:
+      master:
+        enabled: true
+        # nodeSelector:
+        #   taco-lma: enabled
+        ## Elasticsearch instance count 
+        count: 3
+        ## Elasticsearch Config
+        config:
+          node.master: true
+          node.data: false
+          node.ingest: false
+          node.store.allow_mmap: false
+        ## JVM Memory config
+        javaOpts: "-Xms256m -Xmx256m"
+        ## Resource Max
+        limitCpu: 1
+        limitMem: 0.5Gi  
+        ## Storage definition for Elasticsearch instance.
+        ## Must be set
+        ##
+        pvc:
+          storageClassName: rbd
+          size: 1Gi
+      hotdata: 
+        enabled: true
+        # nodeSelector:
+        #   taco-lma: enabled
+        ## Elasticsearch instance count 
+        count: 3
+        ## Elasticsearch Config
+        config:
+          node.data: true
+          node.ingest: true
+          node.master: false
+          node.store.allow_mmap: false
+          node.attr.hotwarm: hot
+        javaOpts: "-Xms2g -Xmx2g"
+        limitCpu: 1
+        limitMem: 4Gi
+        pvc:
+          storageClassName: rbd
+          size: 5Gi
+      warmdata: 
+        enabled: false
+        # nodeSelector:
+        #   taco-lma: enabled
+        ## Elasticsearch instance count 
+        count: 2
+        ## Elasticsearch Config
+        config:
+          node.data: true
+          node.ingest: true
+          node.master: false
+          node.store.allow_mmap: false
+          node.attr.hotwarm: warm 
+        javaOpts: "-Xms256m -Xmx256m"
+        limitCpu: 1
+        limitMem: 0.5Gi
+        pvc:
+          storageClassName: rbd
+          size: 10Gi
+      client: 
+        enabled: true
+        # nodeSelector:
+        #   taco-lma: enabled
+        ## Elasticsearch instance count 
+        count: 1
+        ## Elasticsearch Config
+        config:
+          node.data: false
+          node.ingest: false
+          node.master: false
+          node.store.allow_mmap: false 
+        javaOpts: "-Xms1g -Xmx1g"
+        limitCpu: 1
+        limitMem: 2Gi
   kibana:
     enabled: true
     image:
       repository: docker.elastic.co/kibana/kibana
       tag: 7.5.1
+
+    limitCpu: 1
+    limitMem: 2Gi
     ## container resources
     # resources:
     #   limits:

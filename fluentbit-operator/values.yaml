@@ -317,23 +317,23 @@ fluentbit:
     tag: kube.*
     path: /var/log/containers/*.log
     type: fluent
-    indexPrefix: container
+    index: container
     parser: docker
     memBufLimit: 20MB
     bufferChunkSize: 2M
     bufferMaxSize: 5M
-    index: 
-      name: container-0001
-      aliases: container-alias
   - name: syslog
     tag: kubenode.*
     path: /var/log/syslog
     type: syslog
-    indexPrefix: syslog
+    index: syslog
     parser: syslog-rfc5424
-    index: 
-      name: syslog-0001
-      aliases: container-alias
+  - name: etcd
+    tag: etcdnode.*
+    path: /var/log/etcd.log
+    type: etcd
+    index: etcd
+    parser: docker
   # - name: journal
   #   tag: journal.*
   #   path: /var/log/journal
@@ -382,8 +382,9 @@ fluentbit:
                 rollover:
                   max_size: 50gb
                   max_age: 1d
+                  max_docs: 5000000000
                 set_priority:
-                  priority: 50
+                  priority: 100
             delete:
               min_age: 7d
               actions:
@@ -393,18 +394,29 @@ fluentbit:
       json:
         index_patterns: "container*"
         settings:
-          index:
-            number_of_shards: 1
+          refresh_interval: 30s
+          number_of_shards: 3
+          number_of_replicas: 1
           index.lifecycle.name: hot-delete-7days
-          index.lifecycle.rollover_alias: container-alias
+          index.lifecycle.rollover_alias: container
     - name: syslog
       json:
         index_patterns: "syslog*"
         settings:
-          index:
-            number_of_shards: 1
+          refresh_interval: 30s
+          number_of_shards: 2
+          number_of_replicas: 1
           index.lifecycle.name: hot-delete-7days
-          index.lifecycle.rollover_alias: syslog-alias
+          index.lifecycle.rollover_alias: syslog
+    - name: etcd
+      json:
+        index_patterns: "etcd*"
+        settings:
+          refresh_interval: 30s
+          number_of_shards: 2
+          number_of_replicas: 1
+          index.lifecycle.name: hot-delete-7days
+          index.lifecycle.rollover_alias: etcd
   # Define cluster name which is shown in collected logs
   clusterName: unknown
 

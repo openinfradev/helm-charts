@@ -10,20 +10,39 @@ spec:
   podDisruptionBudget: {}
 {{- end }}
   nodeSets:
-  - name: default
-    count: {{ .Values.customResource.elasticsearch.count }}
+{{- range $name, $node := .Values.customResource.elasticsearch.nodeSets}}
+  {{- if $node.enabled}}
+  - name: {{ $name}}
+    count: {{ $node.count }}
     config:
-{{ toYaml .Values.customResource.elasticsearch.config | indent 6 }}
-{{- if .Values.customResource.elasticsearch.nodeSelector }}
+  {{- toYaml $node.config | nindent 6 }}
     podTemplate:
       spec:
+        containers:
+        - name: elasticsearch
+          # specify resource limits and requests
+          resources:
+            limits:
+              memory: {{ $node.limitMem | quote }}
+              cpu: {{ $node.limitCpu }}   
+          env:
+          - name: ES_JAVA_OPTS
+            value: {{ $node.javaOpts | quote }}
+  {{- if $node.nodeSelector }}
         nodeSelector:
-{{ toYaml .Values.customResource.elasticsearch.nodeSelector | indent 10 }}
-{{- end }}
-{{- if .Values.customResource.elasticsearch.volumeClaimTemplates }}
+    {{- toYaml $node.nodeSelector | nindent 10 }}
+  {{- end }}
+  {{- if $node.pvc }}
     volumeClaimTemplates:
-{{ toYaml .Values.customResource.elasticsearch.volumeClaimTemplates | indent 6 }}
-{{- end }}
+      - metadata:
+          name: elasticsearch-data
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: {{ $node.pvc.size }}
+          storageClassName: {{ $node.pvc.storageClassName }}
+  {{- end }}
         # this changes the kernel setting on the node to allow ES to use mmap
         # if you uncomment this init container you will likely also want to remove the
         # "node.store.allow_mmap: false" setting above
@@ -32,20 +51,10 @@ spec:
         #   securityContext:
         #     privileged: true
         #   command: ['sh', '-c', 'sysctl -w vm.max_map_count=262144']
-        containers:
-        - name: elasticsearch
-          # specify resource limits and requests
-          resources:
-            limits:
-              memory: 8Gi
-              cpu: 2
-          env:
-          - name: ES_JAVA_OPTS
-            value: {{ .Values.customResource.elasticsearch.javaOpts | quote }}
-          resources:
-            limits:
-              memory: {{ .Values.customResource.elasticsearch.limitMem | quote }}
-              cpu: {{ .Values.customResource.elasticsearch.limitCpu | quote }}          
+
+     
+  {{- end}}  
+{{- end}}  
   # - http:
   #   service:
   #     ports:
