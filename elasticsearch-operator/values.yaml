@@ -152,6 +152,9 @@ customResource:
     image:
       repository: docker.elastic.co/kibana/kibana
       tag: 7.5.1
+
+    limitCpu: 1
+    limitMem: 2Gi
     ## container resources
     # resources:
     #   limits:
