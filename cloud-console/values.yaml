@@ -2,8 +2,8 @@ replicaCount: 1
 
 image:
   tag: latest 
-  repository: sktdev/taco-watcher
-  tag: 1.0.1
+  repository: sktdev/cloud-console
+  tag: v1.0.3
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -86,7 +86,14 @@ config:
       ciphers: TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA
       enabledprotocols: TLSv1.2
     db:
-      restorepath: /home/tacomo/tacomo-webserver/dbdata/tacomodb_restore.db
+      backup:
+        username: "taco_backup"
+        password: "!@#$nextpaas"
+      restore:
+        path: /home/tacomo/tacomo-webserver/dbdata/tacomodb_restore.db
+        username: "taco_restore"
+        password: "nextpaas!@#$"
+    versions: /home/tacomo/tacomo-webserver/versions.conf
     
   log:
     level: LOG_DEBUG
@@ -120,7 +127,7 @@ config:
     ruleUrl: /apis/monitoring.coreos.com/v1/namespaces/fed/prometheusrules
 
   loggingfilter:
-    url: /apis/logging.banzaicloud.io/v1beta1/namespaces/fed/flows
+    url: /apis/logging.kubesphere.io/v1alpha2/namespaces/lma/filters/kubernetes
 
   filter:
     rule: "yes"
@@ -129,7 +136,7 @@ config:
     enabled: "yes"
     url: http://keycloak.example.com/auth
     realm: taco
-    clientId: taco-watcher
+    clientId: cloud-console
     hasRealmRole1: lma_system
     hasRealmRole2: lma_app
     hasRealmRole3: lma_viewer

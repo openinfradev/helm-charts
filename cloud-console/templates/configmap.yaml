@@ -10,7 +10,6 @@ metadata:
 data:
   tacomo.conf: |-
     [system]
-    service.db.restorepath={{ .Values.config.service.db.restorepath }}
     service.port={{ .Values.config.service.port }}
     service.proxyportlist={{ .Values.config.service.proxyportlist }}
     service.proxyurl.format={{ .Values.config.service.proxyurl.format }}
@@ -21,6 +20,12 @@ data:
     service.https.keystore.alias={{ .Values.config.service.https.keystore.alias }}
     service.https.ciphers={{ .Values.config.service.https.ciphers }}
     service.https.enabledprotocols={{ .Values.config.service.https.enabledprotocols }}
+    service.db.backup.username={{ .Values.config.service.db.backup.username }}
+    service.db.backup.password={{ .Values.config.service.db.backup.password }}
+    service.db.restore.path={{ .Values.config.service.db.restore.path }}
+    service.db.restore.username={{ .Values.config.service.db.restore.username }}
+    service.db.restore.password={{ .Values.config.service.db.restore.password }}
+    service.versions={{ .Values.config.service.versions }}
     [logs]
     log.level={{ .Values.config.log.level }}
     log.path={{ .Values.config.log.path }}
@@ -140,53 +145,53 @@ data:
 
   tacomodb_1.sql: |-
     CREATE TABLE IF NOT EXISTS "properties" (
-      "prop_key"	TEXT NOT NULL,
-      "prop_value"	TEXT DEFAULT NULL,
+      "prop_key"  TEXT NOT NULL,
+      "prop_value"  TEXT DEFAULT NULL,
       PRIMARY KEY("prop_key")
     );
     CREATE TABLE IF NOT EXISTS "user" (
-      "id"	TEXT NOT NULL,
-      "passwd"	TEXT NOT NULL,
+      "id"  TEXT NOT NULL,
+      "passwd"  TEXT NOT NULL,
       PRIMARY KEY("id")
     );
     CREATE TABLE IF NOT EXISTS "cluster" (
-      "id"	TEXT NOT NULL,
-      "kibana_url"	TEXT DEFAULT NULL,
-      "grafana_url"	TEXT DEFAULT NULL,
-      "k8s_url"	TEXT DEFAULT NULL,
-      "k8s_token"	TEXT DEFAULT NULL,
-      "is_main"	INTEGER NOT NULL DEFAULT 0,
-      "main_page_type"	TEXT DEFAULT NULL,
-      "main_page_link"	TEXT DEFAULT NULL,
-      "k8s_page_type"	TEXT DEFAULT NULL,
-      "k8s_page_link"	TEXT DEFAULT NULL,
-      "openstack_page_type"	TEXT DEFAULT NULL,
-      "openstack_page_link"	TEXT DEFAULT NULL,
-      "ceph_page_type"	TEXT DEFAULT NULL,
-      "ceph_page_link"	TEXT DEFAULT NULL,
-      "k8s_ca_cert" TEXT DEFAULT NULL,
-      "k8s_url_lenz" TEXT DEFAULT NULL,
+      "id"  TEXT NOT NULL,
+      "kibana_url"  TEXT DEFAULT NULL,
+      "grafana_url"  TEXT DEFAULT NULL,
+      "k8s_url"  TEXT DEFAULT NULL,
+      "k8s_token"  TEXT DEFAULT NULL,
+      "is_main"  INTEGER NOT NULL DEFAULT 0,
+      "main_page_type"  TEXT DEFAULT NULL,
+      "main_page_link"  TEXT DEFAULT NULL,
+      "k8s_page_type"  TEXT DEFAULT NULL,
+      "k8s_page_link"  TEXT DEFAULT NULL,
+      "openstack_page_type"  TEXT DEFAULT NULL,
+      "openstack_page_link"  TEXT DEFAULT NULL,
+      "ceph_page_type"  TEXT DEFAULT NULL,
+      "ceph_page_link"  TEXT DEFAULT NULL,
+      "k8s_ca_cert"  TEXT DEFAULT NULL,
+      "k8s_url_lenz"  TEXT DEFAULT NULL,
       PRIMARY KEY("id")
     );
     CREATE TABLE IF NOT EXISTS "cluster_menu" (
-      "cluster_id"	TEXT NOT NULL,
-      "id"	INTEGER NOT NULL,
-      "parent_id"	INTEGER NOT NULL,
-      "name"	TEXT NOT NULL,
-      "seq"	INTEGER NOT NULL,
-      "link"	TEXT DEFAULT NULL,
-      "url_type"	TEXT DEFAULT NULL,
-      "popup_type"	TEXT DEFAULT NULL,
-      "default_yn"	INTEGER NOT NULL DEFAULT 1,
-      PRIMARY KEY("cluster_id","id"),
-      CONSTRAINT "fk_cluster" FOREIGN KEY("cluster_id") REFERENCES "cluster"("id") ON DELETE CASCADE
+      "cluster_id"  TEXT NOT NULL,
+      "id"  INTEGER NOT NULL,
+      "parent_id"  INTEGER NOT NULL,
+      "name"  TEXT NOT NULL,
+      "seq"  INTEGER NOT NULL,
+      "link"  TEXT DEFAULT NULL,
+      "url_type"  TEXT DEFAULT NULL,
+      "popup_type"  TEXT DEFAULT NULL,
+      "default_yn"  INTEGER NOT NULL DEFAULT 1,
+      CONSTRAINT "fk_cluster" FOREIGN KEY("cluster_id") REFERENCES "cluster"("id") ON DELETE CASCADE,
+      PRIMARY KEY("cluster_id","id")
     );
     CREATE TABLE IF NOT EXISTS "main_menu" (
-      "cluster_id"	TEXT NOT NULL,
-      "overview_yn"	TEXT NOT NULL,
-      "k8s_yn"	TEXT NOT NULL,
-      "openstack_yn"	TEXT NOT NULL,
-      "ceph_yn"	TEXT NOT NULL,
+      "cluster_id"  TEXT NOT NULL,
+      "overview_yn"  TEXT NOT NULL,
+      "k8s_yn"  TEXT NOT NULL,
+      "openstack_yn"  TEXT NOT NULL,
+      "ceph_yn"  TEXT NOT NULL,
       PRIMARY KEY("cluster_id")
     );
     

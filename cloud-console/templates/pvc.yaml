@@ -1,3 +1,5 @@
+{{- if eq .Values.volume.storageClassName "!hostpath" }}
+{{- else }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -16,3 +18,4 @@ spec:
       storage: {{ .Values.volume.limits.storage }} 
     requests:
       storage: {{ .Values.volume.requests.storage }}
+{{- end }}
