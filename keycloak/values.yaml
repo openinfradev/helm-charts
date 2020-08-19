@@ -406,6 +406,13 @@ prometheus:
       #      severity: critical
 backup:
   enabled: false
+  image:
+    repository: sktdev/backup-postgresql
+    tag: 0.1.0
+  init:
+    image:
+      repository: busybox
+      tag: 1.31
   scheduler: "5 4 * * *"
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
