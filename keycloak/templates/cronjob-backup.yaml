@@ -16,7 +16,7 @@ spec:
             runAsUser: 0
           initContainers:
           - name: init-ssh-key
-            image: busybox
+            image: "{{ .Values.backup.init.image.repository }}:{{ .Values.backup.init.image.tag }}"
             args:
             - /bin/sh
             - -c
@@ -29,7 +29,7 @@ spec:
             - name: secret-ssh
               mountPath: /tmp/ssh
           - name: init-passwd
-            image: busybox
+            image: "{{ .Values.backup.init.image.repository }}:{{ .Values.backup.init.image.tag }}"
             args:
             - /bin/sh
             - -c
@@ -44,7 +44,7 @@ spec:
               mountPath: "/work-dir"
           containers:
           - name: backup
-            image: docker.io/jaesanglee/backup-postgresql
+            image: "{{ .Values.backup.image.repository }}:{{ .Values.backup.image.tag }}"
             command:
             - sh
             - -c 

@@ -155,6 +155,10 @@ Parameter | Description | Default
 `backup.host` | The hostname of archive machine | `localhost`
 `backup.destination` | The destination for archiving | `/data`
 `backup.sshKey` | The ssh key for connecting to archive machine | `""`
+`backup.image.repository` | Backup image repository | `sktdev/backup-postgresql`
+`backup.image.tag` | Backup image tag | `0.1.0`
+`backup.init.image.repository` | Backup init image repository | `busybox`
+`backup.init.image.tag` | Backup init image tag | `1.31`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
