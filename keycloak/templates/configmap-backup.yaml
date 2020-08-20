@@ -10,9 +10,13 @@ data:
     #!/bin/sh
     set -x
     ls -al /root/
+    for DB in $BACKUP_DATABASES
+    do
+      filename="backup-${DB}-$(date +%y-%m-%d-%H-%M)"
+      pg_dump -h $POSTGRESQL_HOST -U $POSTGRESQL_USER -d ${DB} -F t > /tmp/$filename.tar
+    done
     filename="backup-$(date +%y-%m-%d-%H-%M)"
-    pg_dumpall -h $POSTGRESQL_HOST -U $POSTGRESQL_USER > /tmp/$filename.sql
-    tar cvzf /tmp/$filename.tar.gz /tmp/$filename.sql
+    tar cvzf /tmp/$filename.tar.gz /tmp/*.tar
     ls -al /tmp
     scp -o "StrictHostKeyChecking=no" /tmp/$filename.tar.gz ${BACKUP_USER}@${BACKUP_HOST}:${BACKUP_DESTINATION}/$filename.tar.gz
 {{ end }}

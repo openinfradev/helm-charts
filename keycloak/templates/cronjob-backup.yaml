@@ -60,6 +60,8 @@ spec:
                 value: {{ .Values.backup.host }}
               - name: BACKUP_DESTINATION
                 value: {{ .Values.backup.destination }}
+              - name: BACKUP_DATABASES
+                value: {{ .Values.backup.databases }}
             volumeMounts:
             - name: workdir
               mountPath: "/root"

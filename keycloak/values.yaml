@@ -416,6 +416,7 @@ backup:
   scheduler: "5 4 * * *"
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
+  databases: clair registry keycloak postgres
   user: centos
   host: localhost
   destination: /data
