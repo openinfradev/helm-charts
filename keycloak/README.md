@@ -151,6 +151,7 @@ Parameter | Description | Default
 `backup.scheduler` | cron schedule | `5 5 * * *`
 `backup.successfulJobsHistoryLimit` | specify how many completed jobs should be kept | `3`
 `backup.failedJobsHistoryLimit` | specify how many failed jobs should be kept | `3`
+`backup.databases` | specify database should be backup | `clair registry keycloak postgres`
 `backup.user` | The username of archive machine | `centos`
 `backup.host` | The hostname of archive machine | `localhost`
 `backup.destination` | The destination for archiving | `/data`
