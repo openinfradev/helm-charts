@@ -1,0 +1,35 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+job:
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  concurrencyPolicy: Forbid
+  schedule: "* */1 * * *"
+  spec:
+    containers:
+      transfer:
+        name: transfer
+        command:
+        - /app/shell/transfer.sh
+        image: 
+          repository: pseudojo/docker-sshd-with-curl
+          tag: alpine3.12
+        imagePullPolicy: Always
+    restartPolicy: Never
+
+configmap:
+  entrypoint: transfer.sh.tpl
+  cloudconsoleUrl: "http://btvpaas-dev-cloudconsole.skbroadband.com"
+  #cloudconsoleUrl: "http://btvpaas-suy-cloudconsole.skbroadband.com"
+  backup:
+    filename:
+      format: "tacomodb-backup-%BACKUP_DATE%.db"
+    servers:
+    - doj-dev@10.10.217.20
+    #- taco@10.13.1.99
+    #- taco@10.12.1.99
+    destinationDir: cloudconsole_bak
+
+secret:
+  password: "npinfra1!"
+
