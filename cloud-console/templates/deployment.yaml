@@ -43,6 +43,11 @@ spec:
           httpGet:
             path: /
             port: {{ .Values.service.targetPort }} 
+        env:
+        - name: TACOMODB_RESTORE_PATH
+          value: {{ .Values.config.service.db.restore.path }}
+        - name: VERSIONS_FILE
+          value: {{ .Values.config.service.versions }}
         volumeMounts:
         - name: conf
           mountPath: /home/tacomo/tacomo-webserver/conf/tacomo.conf
@@ -60,6 +65,8 @@ spec:
           mountPath: /home/tacomo/tacomo-webserver/dbdata
         - name: log-volume
           mountPath: /home/tacomo/tacomo-webserver/logs
+        - name: taco-system-version
+          mountPath: /home/tacomo/tacomo-webserver/.version
       volumes:
       - name: conf
         configMap:
@@ -78,12 +85,21 @@ spec:
           - key: tacomodb_1.sql
             path: tacomodb_1.sql
       - name: db-volume
+      {{- if eq .Values.volume.storageClassName "!hostpath" }}
+        hostPath:
+          path: /tmp
+          type: Directory
+      {{- else }}
         persistentVolumeClaim:
           claimName: {{ template "cloud-console.fullname" . }}-pvc
+      {{- end }}
       - name: log-volume
         hostPath:
           path: /tmp
           type: Directory
+      - name: taco-system-version
+        configMap:
+          name: taco-system-version
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
