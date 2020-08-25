@@ -1,0 +1,8 @@
+Deployed Backup
+
+1. backup-jenkins-sa : ServiceAccount
+2. backup-jenkins-binding : ClusterRoleBinding
+3. backup-sh : ConfigMap
+4. scp-sh : ConfigMap
+5. ssh-secret : Secret
+6. cronjob-backup-jenkins : CronJob
