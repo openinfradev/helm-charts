@@ -8,7 +8,7 @@ data:
   config.yml: |-
     version: 0.1
     log:
-      level: debug
+      level: {{ .Values.tacoRegistry.logLevel }}
       formatter: text
       fields:
         service: registry

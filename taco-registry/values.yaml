@@ -7,6 +7,7 @@ storageClassName: ceph
 
 # Taco-Registry
 tacoRegistry:
+  logLevel: INFO
   name: taco-private-registry
   deployment:
     image: registry:2
