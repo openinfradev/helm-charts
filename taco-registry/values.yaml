@@ -25,6 +25,7 @@ tacoRegistry:
         targetPort: 5000
         nodePort:    
   ingress1:
+    enabled: false
     annotations:
       nginx.ingress.kubernetes.io/proxy-body-size: 10240m
     host: taco-registry.com

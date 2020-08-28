@@ -87,6 +87,7 @@ spec:
     {{- end}}
   selector:
     app: {{ .Values.tacoRegistry.name }}
+{{ if .Values.tacoRegistry.ingress1.enabled }}
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -109,6 +110,7 @@ spec:
             serviceName: {{ $root.Values.tacoRegistry.name }}
             servicePort: {{ .port }}
         {{- end }}
+{{- end }}
 {{ if .Values.tacoRegistry.ingress2.enabled }}
 ---
 apiVersion: extensions/v1beta1
