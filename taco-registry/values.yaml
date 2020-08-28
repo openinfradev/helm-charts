@@ -7,7 +7,7 @@ storageClassName: ceph
 
 # Taco-Registry
 tacoRegistry:
-  logLevel: INFO
+  logLevel: info
   name: taco-private-registry
   deployment:
     image: registry:2
@@ -112,6 +112,7 @@ tacoClair:
 
 # Taco-registry-builder : Builder
 tacoRegistryBuilder:
+  logLevel: INFO
   name: taco-registry-builder
   deployment:
     image: boozer83/taco-registry-builder:latest
