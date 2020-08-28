@@ -45,7 +45,7 @@ spec:
           - name: BUILDER_CONFIG
             value: "/etc/conf/config.yml"
           - name: BUILDER_LOG_LEVEL
-            value: "DEBUG"
+            value: {{ .Values.tacoRegistryBuilder.logLevel }}
 ---
 apiVersion: v1
 kind: Service

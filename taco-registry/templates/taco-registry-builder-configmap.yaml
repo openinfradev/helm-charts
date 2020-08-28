@@ -15,7 +15,7 @@ data:
       domain: taco-registry-builder
       port: 4000
       # DEBUG, INFO, ERROR
-      loglevel: {{ .Values.tacoRegistry.logLevel }}
+      loglevel: {{ .Values.tacoRegistryBuilder.logLevel }}
       tmp: "/tmp"
 
     # database configuration
