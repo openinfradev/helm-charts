@@ -163,6 +163,7 @@ tacoRegistryApp:
         targetPort: 8080
         nodePort:
   ingress:
+    enabled: false
     host: taco.com
     paths:
       - path: /
