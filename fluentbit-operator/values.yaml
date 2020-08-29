@@ -419,7 +419,9 @@ fluentbit:
           index.lifecycle.rollover_alias: etcd
   # Define cluster name which is shown in collected logs
   clusterName: unknown
-
+  exclude:
+  - key: "$kubernetes['container_name']"
+    value: kibana
 logExporter:
   enabled: false
 # nodeSelector: 

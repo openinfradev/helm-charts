@@ -33,9 +33,15 @@ spec:
       removePrefix: kubernetes_
   - rewriteTag:
       rules:
+{{- range .Values.fluentbit.exclude }}
+      - key: {{.key}}
+        newTag: m_intended_drop.$TAG
+        regex: ^({{.value}})$
+        keep: false
+{{- end }}
 {{- range .Values.fluentbit.alerts.rules }}
       - key: "$log"
-        regex: "({{.regex}})"  #"(.*error.*)"
+        regex: "({{.regex}})"
         newTag: m_{{.severity}}.$TAG
         keep: true
 {{- end }}
