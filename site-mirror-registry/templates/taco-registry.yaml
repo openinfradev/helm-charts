@@ -64,7 +64,7 @@ metadata:
 spec:
   storageClassName: {{ .Values.tacoRegistry.volume.storageClassName }}
   accessModes:
-    - ReadWriteOnce
+    - {{ .Values.tacoRegistry.volume.accessModes }}
   resources:
     requests:
       storage: {{ .Values.tacoRegistry.volume.data.size }}

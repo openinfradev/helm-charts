@@ -16,6 +16,7 @@ tacoRegistry:
         nodePort:    
   volume:
     storageClassName: taco-sc
+    accessModes: ReadWriteMany
     data:
       size: 10Gi
 
