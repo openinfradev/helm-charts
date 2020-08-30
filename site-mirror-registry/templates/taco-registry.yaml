@@ -56,100 +56,6 @@ spec:
   selector:
     app: {{ .Values.tacoRegistry.name }}
 ---
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: {{ .Values.tacoRegistry.name }}-1
-  namespace: {{ .Release.Namespace }}
-  {{- with .Values.tacoRegistry.ingress1.annotations }}
-  annotations:
-{{ toYaml . | indent 4 }}
-  {{- end }}
-spec:
-  rules:
-    - host: {{ .Values.tacoRegistry.ingress1.host }}
-      http:
-        paths:
-        {{- $root := . -}}
-        {{- range .Values.tacoRegistry.ingress1.paths }}
-        - path: {{ .path }}
-          backend:
-            serviceName: {{ $root.Values.tacoRegistry.name }}
-            servicePort: {{ .port }}
-        {{- end }}
-{{ if .Values.tacoRegistry.ingress2.enabled }}
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: {{ .Values.tacoRegistry.name }}-2
-  namespace: {{ .Release.Namespace }}
-  {{- with .Values.tacoRegistry.ingress2.annotations }}
-  annotations:
-{{ toYaml . | indent 4 }}
-  {{- end }}
-spec:
-  rules:
-    - host: {{ .Values.tacoRegistry.ingress2.host }}
-      http:
-        paths:
-        {{- $root := . -}}
-        {{- range .Values.tacoRegistry.ingress2.paths }}
-        - path: {{ .path }}
-          backend:
-            serviceName: {{ $root.Values.tacoRegistry.name }}
-            servicePort: {{ .port }}
-        {{- end }}
-{{- end }}
-{{ if .Values.tacoRegistry.ingressPub1.enabled }}
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: {{ .Values.tacoRegistry.name }}-pub-1
-  namespace: {{ .Release.Namespace }}
-  {{- with .Values.tacoRegistry.ingressPub1.annotations }}
-  annotations:
-{{ toYaml . | indent 4 }}
-  {{- end }}
-spec:
-  rules:
-    - host: {{ .Values.tacoRegistry.ingressPub1.host }}
-      http:
-        paths:
-        {{- $root := . -}}
-        {{- range .Values.tacoRegistry.ingressPub1.paths }}
-        - path: {{ .path }}
-          backend:
-            serviceName: {{ $root.Values.tacoRegistry.name }}
-            servicePort: {{ .port }}
-        {{- end }}
-{{- end}}
-{{ if .Values.tacoRegistry.ingressPub2.enabled }}
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: {{ .Values.tacoRegistry.name }}-pub-2
-  namespace: {{ .Release.Namespace }}
-  {{- with .Values.tacoRegistry.ingressPub2.annotations }}
-  annotations:
-{{ toYaml . | indent 4 }}
-  {{- end }}
-spec:
-  rules:
-    - host: {{ .Values.tacoRegistry.ingressPub2.host }}
-      http:
-        paths:
-        {{- $root := . -}}
-        {{- range .Values.tacoRegistry.ingressPub2.paths }}
-        - path: {{ .path }}
-          backend:
-            serviceName: {{ $root.Values.tacoRegistry.name }}
-            servicePort: {{ .port }}
-        {{- end }}
-{{- end}}
----
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -158,7 +64,7 @@ metadata:
 spec:
   storageClassName: {{ .Values.tacoRegistry.volume.storageClassName }}
   accessModes:
-    - ReadWriteOnce
+    - {{ .Values.tacoRegistry.volume.accessModes }}
   resources:
     requests:
       storage: {{ .Values.tacoRegistry.volume.data.size }}
