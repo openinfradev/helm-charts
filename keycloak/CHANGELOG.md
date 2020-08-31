@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.2.2-skt03 (08/31/2020)
+
+### Bugfix
+
+- Revert database chart from postgresql-ha to postgresql
+
 ## 8.2.2.skt02 (08/20/2020)
 
 ### Enhancements

@@ -36,9 +36,9 @@ spec:
             - echo "*:*:*:$(POSTGRESQL_USER):$(POSTGRESQL_PASSWD)" > /work-dir/.pgpass;chmod 600 /work-dir/.pgpass
             env:
               - name: POSTGRESQL_USER
-                value: {{ index .Values "postgresql-ha" "postgresql" "username" | quote }}
+                value: "postgres"
               - name: POSTGRESQL_PASSWD
-                value: {{ index .Values "postgresql-ha" "postgresql" "password" | quote }}
+                value: {{ index .Values "postgresql" "postgresqlPostgresPassword" | quote }}
             volumeMounts:
             - name: workdir
               mountPath: "/work-dir"
@@ -51,9 +51,9 @@ spec:
             - /scripts/backup.sh
             env:
               - name: POSTGRESQL_HOST
-                value: {{ printf "%s-pgpool" (include "keycloak.postgresql-ha.fullname" .) }}
+                value: {{ include "keycloak.postgresql.fullname" . }}
               - name: POSTGRESQL_USER
-                value: {{ index .Values "postgresql-ha" "postgresql" "username" | quote }}
+                value: "postgres"
               - name: BACKUP_USER
                 value: {{ .Values.backup.user }}
               - name: BACKUP_HOST

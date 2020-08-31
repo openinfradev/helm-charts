@@ -66,8 +66,8 @@ spec:
           command:
             - sh
             - -c
-            - | 
-              until printf "." && nc -z -w 2 {{ printf "%s-pgpool" (include "keycloak.postgresql-ha.fullname" .) }} {{ index .Values "postgresql-ha" "service" "port" }}; do
+            - |
+              until printf "." && nc -z -w 2 {{ include "keycloak.postgresql.fullname" . }} {{ .Values.postgresql.service.port }}; do
                   sleep 2;
               done;
 
