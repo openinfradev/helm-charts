@@ -9,6 +9,7 @@ export POD_NAME="$( kubectl -n ${NAMESPACE} get pod -o name -l ${SELECTOR} )"
 
 CHECK_LOG_REGEX='Started [0-9]* of [0-9]* services '
 CHECK_LOG_CMD="grep -rn '${CHECK_LOG_REGEX}' ${TMP_LOGFILE} &>/dev/null ; echo $?"
+CHECK_EXPORT_FILE_CMD="[ -f /tmp/keycloak-export-${TARGET_REALM}.json ] && echo OK || echo FAIL"
 
 export EXPORT_CMD1="JBOSS_PIDFILE=/tmp/export.pid /opt/jboss/keycloak/bin/standalone.sh -Dkeycloak.migration.action=export -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.file=/tmp/keycloak-export-${TARGET_REALM}.json -Dkeycloak.migration.realmName=${TARGET_REALM} -Djboss.http.port=8888 -Djboss.https.port=9999 -Djboss.management.http.port=7777"
 
@@ -18,7 +19,7 @@ export EXPORT_CMD3="kill \$(cat /tmp/export.pid) ; mv /tmp/export.pid /tmp/expor
 
 export KILL_SCUM_CMD="PIDS=( \$( ls /proc/ | grep -E '[0-9]+' ) ) ; TARGET=\"\$( for pid in \${PIDS[@]}; do cat /proc/\${pid}/cmdline 2>/dev/null | sed 's/\x0/ /g' | grep -v grep | grep java | grep ${TARGET_REALM} >/dev/null ; [ \$? -eq 0 ] && echo -n \"\$pid \" ; done )\" ; kill -9 \$TARGET ; sleep 5 ; unset PIDS TARGET ;"
 
-TIMEOUT=300
+TIMEOUT=3600
 _count=0
 
 ###############################
@@ -33,9 +34,13 @@ while [ "$( grep -rn "${CHECK_LOG_REGEX}" ${TRACE_LOGFILE} &>/dev/null ; echo $?
   if [ "${_count}" -ge ${TIMEOUT} ]; then
     echo "Timeout to run exporting job for ${TARGET_REALM} realm."
     break;
-  else
-    ((_count++))
   fi
+  
+  if [ "$( kubectl -n ${NAMESPACE} exec ${POD_NAME} -i -- /bin/bash -c "${CHECK_EXPORT_FILE_CMD}" )" == "OK" ]; then
+    break;
+  fi
+  
+  ((_count++))
 done
 sleep 5 ; echo ;
 
