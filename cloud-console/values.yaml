@@ -52,6 +52,7 @@ ingress:
 
 volume:
   storageClassName: rbd
+  accessMode: ReadWriteOnce
 
   limits:
     storage: 100Mi
