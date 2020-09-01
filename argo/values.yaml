@@ -43,3 +43,8 @@ workflowArchive:
       name: argo-mysql-config
       key: password
 
+mysql:
+  enabled: false
+  mysqlUser: argo
+  mysqlDatabase: argo
+  mysqlPassword: dkrhpw

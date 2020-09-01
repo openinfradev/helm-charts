@@ -27,8 +27,17 @@ data:
     nodeStatusOffLoad: true
     archive: true
     archiveTTL: {{ .Values.workflowArchive.archiveTTL }}
-{{- with .Values.workflowArchive.mysql }}
+{{- if .Values.mysql.enabled }}
     mysql:
-{{ toYaml . | indent 6 }}
+      host: mysql
+      port: 3306
+      database: {{ .Values.mysql.mysqlDatabase }}
+      tableName: argo_workflows
+      userNameSecret:
+        name: argo-mysql-config
+        key: username
+      passwordSecret:
+        name: argo-mysql-config
+        key: password
 {{- end }}
 {{- end }}
