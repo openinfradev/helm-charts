@@ -12,6 +12,10 @@ argoServer:
   image:
     repository: argoproj/argocli
     tag: v2.9.4
+  
+  service:
+    type: NodePort
+    nodePort: 30004
 
 nodeSelector: {}
 
