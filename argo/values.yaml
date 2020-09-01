@@ -31,17 +31,6 @@ artifactRepository:
 workflowArchive: 
   enabled: false
   archiveTTL: 30d
-  mysql:
-    host: argo-mysql
-    port: 3306
-    database: argo
-    tableName: argo_workflows
-    userNameSecret:
-      name: argo-mysql-config
-      key: username
-    passwordSecret:
-      name: argo-mysql-config
-      key: password
 
 mysql:
   enabled: false

@@ -29,7 +29,7 @@ data:
     archiveTTL: {{ .Values.workflowArchive.archiveTTL }}
 {{- if .Values.mysql.enabled }}
     mysql:
-      host: mysql
+      host: {{ .Release.Name }}-mysql
       port: 3306
       database: {{ .Values.mysql.mysqlDatabase }}
       tableName: argo_workflows
