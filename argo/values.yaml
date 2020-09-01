@@ -32,7 +32,7 @@ workflowArchive:
   enabled: false
   archiveTTL: 30d
   mysql:
-    host: mysql
+    host: argo-mysql
     port: 3306
     database: argo
     tableName: argo_workflows
@@ -48,3 +48,7 @@ mysql:
   mysqlUser: argo
   mysqlDatabase: argo
   mysqlPassword: dkrhpw
+  persistence:
+    storageClass: rbd
+    accessMode: ReadWriteOnce
+    size: 8Gi
