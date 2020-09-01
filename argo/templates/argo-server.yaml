@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argo-server
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: argo-server
+  template:
+    metadata:
+      labels:
+        app: argo-server
+    spec:
+      containers:
+      - args:
+        - server
+        - --namespaced
+        - --auth-mode
+        - server
+        - --auth-mode
+        - client
+        image: {{ .Values.argoServer.image.repository }}:{{ .Values.argoServer.image.tag }}
+        name: argo-server
+        ports:
+        - containerPort: 2746
+          name: web
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 2746
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 20
+      nodeSelector:
+        kubernetes.io/os: linux
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      serviceAccountName: argo-server
+
