@@ -34,9 +34,8 @@ spec:
           periodSeconds: 20
       nodeSelector:
         kubernetes.io/os: linux
-      serviceAccountName: argo-server
 {{- with .Values.nodeSelector }}
-      nodeSelector:
 {{ toYaml . | indent 8 }}
 {{- end }}
+      serviceAccountName: argo-server
 
