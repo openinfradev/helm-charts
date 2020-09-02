@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   tag: latest 
   repository: sktdev/cloud-console
-  tag: v1.0.3
+  tag: v1.0.4
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
