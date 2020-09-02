@@ -98,48 +98,76 @@ data:
 
   loggingfilter.json: |-
     {
-      "apiVersion" : "logging.banzaicloud.io/v1beta1",
-      "kind" : "Flow",
-      "metadata" : {
-        "name" : "",
-        "namespace" : "mon"
+      "apiVersion": "logging.kubesphere.io/v1alpha2",
+      "kind": "Filter",
+      "metadata": {
+        "labels": {
+          "logging.kubesphere.io/enabled": "true"
+        },
+        "name": "%_filter_resource_name_%",
+        "namespace": "%_namespace_%"
       },
-      "spec" : {
-        "filters":[ {
-          "parser" : {
-            "parse" : {
-              "type" : "nginx"
-            },
-            "remove_key_name_field" : true
+      "spec": {
+        "filters": [
+          {
+            "kubernetes": {
+              "annotations": false,
+              "kubeURL": "%_kube_api_url_%",
+              "labels": false,
+              "mergeLog": true
+            }
+          },
+          {
+            "nest": {
+              "addPrefix": "kubernetes_",
+              "nestedUnder": "kubernetes",
+              "operation": "lift"
+            }
+          },
+          {
+            "modify": {
+              "rules": [
+                {
+                  "remove": "stream"
+                },
+                {
+                  "remove": "kubernetes_pod_id"
+                },
+                {
+                  "remove": "kubernetes_docker_id"
+                },
+                {
+                  "remove": "kubernetes_container_hash"
+                }
+              ]
+            }
+          },
+          {
+            "nest": {
+              "nestUnder": "kubernetes",
+              "operation": "nest",
+              "removePrefix": "kubernetes_",
+              "wildcard": [
+                "kubernetes_*"
+              ]
+            }
+          },
+          {
+            "rewriteTag": {
+              "emitterName": "alertrule_match",
+              "emitterStorageType": "memory",
+              "rules": [
+                {
+                  "keep": true,
+                  "key": "$log",
+                  "newTag": "m_critical.$TAG",
+                  "regex": "(update.?error)"
+                }
+              ]
+            }
           }
-        },
-        {
-          "tag_normaliser" : {
-            "format" : "${namespace_name}.${pod_name}.${container_name}"
-          }
-        },
-        {
-          "grep" : {
-            "and" : [ {
-              "regexp" : [ {
-                "key" : "",
-                "pattern" : ""
-              } ]
-            },
-            {
-              "exclude" : [ {
-                "key" : "",
-                "pattern" : ""
-              } ]
-            } ]
-          }
-        } ],
-        "outputRefs" : [
-          "es-output"
         ],
-        "selectors" : {
-          "app":"nginx"
-        }
+        "match": "kube.*"
       }
     }
 
