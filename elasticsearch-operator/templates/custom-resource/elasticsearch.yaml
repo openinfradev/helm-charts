@@ -37,7 +37,7 @@ spec:
       - metadata:
           name: elasticsearch-data
         spec:
-          accessModes: ["ReadWriteOnce"]
+          accessModes: [{{ $node.pvc.accessModes }}]
           resources:
             requests:
               storage: {{ $node.pvc.size }}

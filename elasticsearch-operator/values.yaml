@@ -92,6 +92,7 @@ customResource:
         ## Must be set
         ##
         pvc:
+          accessModes: "ReadWriteOnce"
           storageClassName: rbd
           size: 1Gi
       hotdata: 
@@ -111,6 +112,7 @@ customResource:
         limitCpu: 1
         limitMem: 4Gi
         pvc:
+          accessModes: "ReadWriteOnce"
           storageClassName: rbd
           size: 5Gi
       warmdata: 
