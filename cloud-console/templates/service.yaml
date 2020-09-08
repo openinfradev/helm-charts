@@ -1,5 +1,5 @@
 {{- $envAll := . }}
-{{- if eq .Values.ingress.enabled true }}
+{{- if eq .Values.service.separateAll true }}
 apiVersion: v1
 kind: Service
 metadata:

@@ -23,6 +23,7 @@ hostAliases: []
 #  - "grafana.example.com"
 
 service:
+  separateAll: true
   type: NodePort
   port: 32000
   targetPort: 32000
@@ -31,7 +32,7 @@ service:
   proxy_to: 32009
 
 ingress:
-  enabled: true
+  enabled: false
   endpoints:
   - name: public
     annotations:
@@ -52,7 +53,6 @@ ingress:
 
 volume:
   storageClassName: rbd
-  accessMode: ReadWriteOnce
 
   limits:
     storage: 100Mi
