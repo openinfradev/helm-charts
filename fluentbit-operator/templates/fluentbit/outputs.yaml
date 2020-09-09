@@ -13,41 +13,17 @@ data:
   password: {{ .Values.fluentbit.outputs.es.password }}
 {{- range $i, $input := $envAll.Values.fluentbit.targetLogs }}
 ---
-apiVersion: logging.kubesphere.io/v1alpha2
-kind: Output
-metadata:
-  name: {{ template "fluentbit-operator.fullname" $envAll  }}-es-{{ $input.name }}
-  namespace: {{ $envAll.Release.Namespace }}
-  labels:
-    logging.kubesphere.io/enabled: "true"
-    app.kubernetes.io/version: v0.0.1
-spec:
-  match: "{{ $input.tag }}"
-  es: 
-{{- if $input.indexPrefix }}
-    logstashPrefix: {{ $input.indexPrefix }}
-    logstashFormat: true
-{{- else if $input.index }}
-    index: {{ $input.index }}
-{{- end}}
-    host: {{ $envAll.Values.fluentbit.outputs.es.host }}
-    port: {{ $envAll.Values.fluentbit.outputs.es.port }}
-    type: {{ $input.type }}
-    httpUser: 
-      valueFrom:
-        secretKeyRef:
-          name: {{ template "fluentbit-operator.fullname" $envAll }}-es-secret
-          key: username
-    httpPassword: 
-      valueFrom: 
-        secretKeyRef:
-          name: {{ template "fluentbit-operator.fullname" $envAll  }}-es-secret
-          key: password
-    tls: 
-      verify: false
+# Elasticsearch index
+{{- tuple  $envAll $input $input.index $input.tag | include "fluentbit-operator.fluentbit.output.es" }}
+  {{- range $input.multi_index }}
+--- 
+    {{ $newTag := (printf "seperate.%v.*" .index) }}
+    {{- tuple  $envAll $input .index $newTag| include "fluentbit-operator.fluentbit.output.es" }}
+  {{- end }}
 {{- end }}
 {{- if and $envAll.Values.fluentbit.outputs.http.enabled }}
 ---
+# regex-based log exporter
 apiVersion: logging.kubesphere.io/v1alpha2
 kind: Output
 metadata:
@@ -67,6 +43,7 @@ spec:
 {{- end }}
 {{- if and $envAll.Values.fluentbit.outputs.kafka.enabled }}
 ---
+# kafka support
 apiVersion: logging.kubesphere.io/v1alpha2
 kind: Output
 metadata:

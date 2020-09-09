@@ -21,23 +21,30 @@ data:
 {{ range .Values.fluentbit.esTemplate.ilms }}
     echo "trying to setting policy {{.name}}..."
     curl -k -u ${ES_USER}:${ES_PW} \
-    -X PUT "${ES_URL}/_ilm/policy/{{.name}}" \
-    -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/ilm-{{.name}}.json 
+      -X PUT "${ES_URL}/_ilm/policy/{{.name}}" \
+      -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/ilm-{{.name}}.json
 {{- end}}
+
 {{ range .Values.fluentbit.esTemplate.templates }}
     echo "trying to setting Template {{.name}}..."
     curl -k -u ${ES_USER}:${ES_PW} \
-    -X PUT "${ES_URL}/_template/{{.name}}" \
-    -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/template-{{.name}}.json 
+      -X PUT "${ES_URL}/_template/{{.name}}" \
+      -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/template-{{.name}}.json
 {{- end}}
 
 {{ range .Values.fluentbit.targetLogs }}
-{{ if .index}}
+  {{ if .index}}
     echo "trying to create initial index {{.index}}-000001..."
     curl -k -u ${ES_USER}:${ES_PW} \
-    -X PUT "${ES_URL}/{{.index}}-000001" \
-    -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/index-{{.index}}.json
-{{- end }}
+      -X PUT "${ES_URL}/{{.index}}-000001" \
+      -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/index-{{.index}}.json
+  {{- end }}
+  {{ range .multi_index}}
+    echo "trying to create initial index {{.index}}-000001..."
+    curl -k -u ${ES_USER}:${ES_PW} \
+      -X PUT "${ES_URL}/{{.index}}-000001" \
+      -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/index-{{.index}}.json
+  {{- end }}
 {{- end }}
 
 {{ range .Values.fluentbit.esTemplate.ilms }}
@@ -51,7 +58,7 @@ data:
 {{- end }}
 
 {{ range .Values.fluentbit.targetLogs }}
-{{ if .index}}
+  {{ if .index}}
   index-{{ .index }}.json: |-
     {
       "aliases": {
@@ -60,6 +67,17 @@ data:
         }
       }
     }
-{{- end }}
+  {{- end }}
+
+  {{ range .multi_index}}
+  index-{{ .index }}.json: |-
+    {
+      "aliases": {
+        "{{.index}}":{
+          "is_write_index": true
+        }
+      }
+    }
+  {{- end }}
 {{- end }}
 {{- end}}

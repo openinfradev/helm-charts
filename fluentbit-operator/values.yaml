@@ -322,6 +322,10 @@ fluentbit:
     memBufLimit: 20MB
     bufferChunkSize: 2M
     bufferMaxSize: 5M
+    multi_index:
+    - key: "$kubernetes['namespace_name']"
+      value: "kube-system|lma|fed|argo|openstack"
+      index: platform
   - name: syslog
     tag: kubenode.*
     path: /var/log/syslog
@@ -373,6 +377,22 @@ fluentbit:
     username: elastic
     password: tacoword
     ilms:
+    - name: hot-delete-14days
+      json:
+        policy:
+          phases:
+            hot:
+              actions:
+                rollover:
+                  max_size: 30gb
+                  max_age: 1d
+                  max_docs: 5000000000
+                set_priority:
+                  priority: 100
+            delete:
+              min_age: 14d
+              actions:
+                delete: {}
     - name: hot-delete-7days
       json:
         policy:
@@ -380,7 +400,7 @@ fluentbit:
             hot:
               actions:
                 rollover:
-                  max_size: 50gb
+                  max_size: 30gb
                   max_age: 1d
                   max_docs: 5000000000
                 set_priority:
@@ -389,16 +409,99 @@ fluentbit:
               min_age: 7d
               actions:
                 delete: {}
+    - name: hot-delete-3hour
+      json:
+        policy:
+          phases:
+            hot:
+              actions:
+                rollover:
+                  max_size: 30gb
+                  max_age: 1h
+                  max_docs: 5000000000
+                set_priority:
+                  priority: 100
+            delete:
+              min_age: 3h
+              actions:
+                delete: {}
     templates:
-    - name: fluent
+    - name: platform
+      json:
+        index_patterns: "platform*"
+        settings:
+          refresh_interval: 30s
+          number_of_shards: 3
+          number_of_replicas: 1
+          index.lifecycle.name: hot-delete-14days
+          index.lifecycle.rollover_alias: platform
+        # mappings:
+        #   properties:
+        #     "@timestamp": 
+        #       type: date
+        #     cluster: 
+        #       type: text
+        #     kubernetes:
+        #       properties:
+        #         container_name:
+        #           type: keyword
+        #           index: true
+        #         container_name:
+        #           type: keyword
+        #           index: true
+        #         host: 
+        #           type: keyword
+        #           index: false
+        #         namespace:
+        #           type: keyword
+        #           index: false
+        #         pod_name:
+        #           type: keyword
+        #           index: true
+        #     log: 
+        #       type: text
+        #     status: 
+        #       type: long
+        #     time:
+        #       type: date
+    - name: application
       json:
         index_patterns: "container*"
         settings:
           refresh_interval: 30s
           number_of_shards: 3
           number_of_replicas: 1
-          index.lifecycle.name: hot-delete-7days
+          index.lifecycle.name: hot-delete-3hour
           index.lifecycle.rollover_alias: container
+        # mappings:
+        #   properties:
+        #     "@timestamp": 
+        #       type: date
+        #     cluster: 
+        #       type: text
+        #     kubernetes:
+        #       properties:
+        #         container_name:
+        #           type: keyword
+        #           index: true
+        #         container_name:
+        #           type: keyword
+        #           index: true
+        #         host: 
+        #           type: keyword
+        #           index: false
+        #         namespace:
+        #           type: keyword
+        #           index: false
+        #         pod_name:
+        #           type: keyword
+        #           index: true
+        #     log: 
+        #       type: text
+        #     status: 
+        #       type: long
+        #     time:
+        #       type: date
     - name: syslog
       json:
         index_patterns: "syslog*"
@@ -406,17 +509,19 @@ fluentbit:
           refresh_interval: 30s
           number_of_shards: 2
           number_of_replicas: 1
-          index.lifecycle.name: hot-delete-7days
+          index.lifecycle.name: hot-delete-14days
           index.lifecycle.rollover_alias: syslog
-    - name: etcd
-      json:
-        index_patterns: "etcd*"
-        settings:
-          refresh_interval: 30s
-          number_of_shards: 2
-          number_of_replicas: 1
-          index.lifecycle.name: hot-delete-7days
-          index.lifecycle.rollover_alias: etcd
+        # mappings:
+        #   properties:
+        #     "@timestamp": 
+        #       type: date
+        #     cluster: 
+        #       type: text
+        #     hostname: 
+        #       type: keyword
+        #       index: true
+        #     log: 
+        #       type: text
   # Define cluster name which is shown in collected logs
   clusterName: unknown
   exclude:

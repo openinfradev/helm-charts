@@ -63,6 +63,12 @@ spec:
           mountPath: /tmp/index-{{.index }}.json
           subPath: index-{{.index }}.json
           readOnly: true
+          {{- range .multi_index}}
+        - name: {{ template "fluentbit-operator.name" $envAll }}-cr-cm
+          mountPath: /tmp/index-{{.index }}.json
+          subPath: index-{{.index }}.json
+          readOnly: true
+          {{- end }}
         {{ end }}
         {{ end }}
       volumes:
