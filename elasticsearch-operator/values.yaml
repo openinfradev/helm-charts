@@ -132,6 +132,7 @@ customResource:
         limitCpu: 1
         limitMem: 0.5Gi
         pvc:
+          accessModes: "ReadWriteOnce"
           storageClassName: rbd
           size: 10Gi
       client: 
@@ -149,6 +150,10 @@ customResource:
         javaOpts: "-Xms1g -Xmx1g"
         limitCpu: 1
         limitMem: 2Gi
+        pvc:
+          accessModes: "ReadWriteOnce"
+          storageClassName: rbd
+          size: 10Gi
   kibana:
     enabled: true
     image:
