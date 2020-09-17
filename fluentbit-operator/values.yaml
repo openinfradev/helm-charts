@@ -322,6 +322,7 @@ fluentbit:
     memBufLimit: 20MB
     bufferChunkSize: 2M
     bufferMaxSize: 5M
+    do_not_store_as_default: false
     multi_index:
     - key: "$kubernetes['namespace_name']"
       value: "kube-system|lma|fed|argo|openstack"

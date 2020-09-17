@@ -1,6 +1,6 @@
-{{- if and .Values.fluentbit.enabled }}
+{{- if .Values.fluentbit.enabled }}
 {{- $envAll := . }}
-{{- if and $envAll.Values.fluentbit.outputs.es.enabled }}
+{{- if $envAll.Values.fluentbit.outputs.es.enabled }}
 ---
 apiVersion: v1
 kind: Secret
@@ -12,16 +12,19 @@ data:
   username: {{ .Values.fluentbit.outputs.es.username }}
   password: {{ .Values.fluentbit.outputs.es.password }}
 {{- range $i, $input := $envAll.Values.fluentbit.targetLogs }}
+{{- if not $input.do_not_store_as_default}}
 ---
-# Elasticsearch index
-{{- tuple  $envAll $input $input.index $input.tag | include "fluentbit-operator.fluentbit.output.es" }}
-  {{- range $input.multi_index }}
+  {{- tuple  $envAll $input $input.index $input.tag | include "fluentbit-operator.fluentbit.output.es" }}
+{{- end }}
+
+  {{ range $input.multi_index }}
 --- 
-    {{ $newTag := (printf "seperate.%v.*" .index) }}
-    {{- tuple  $envAll $input .index $newTag| include "fluentbit-operator.fluentbit.output.es" }}
+    {{- $newTag := (printf "seperate.%s.*" .index) }}
+    {{- tuple  $envAll $input .index $newTag | include "fluentbit-operator.fluentbit.output.es" }}
   {{- end }}
 {{- end }}
-{{- if and $envAll.Values.fluentbit.outputs.http.enabled }}
+
+{{ if and $envAll.Values.fluentbit.outputs.http.enabled }}
 ---
 # regex-based log exporter
 apiVersion: logging.kubesphere.io/v1alpha2

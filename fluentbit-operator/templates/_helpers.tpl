@@ -88,6 +88,7 @@ heritage: {{ $.Release.Service | quote }}
 {{- $index := index . 2 -}}
 {{- $tag := index . 3 -}}
 ---
+# Elasticsearch index 
 apiVersion: logging.kubesphere.io/v1alpha2
 kind: Output
 metadata:
