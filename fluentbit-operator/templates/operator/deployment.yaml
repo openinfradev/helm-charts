@@ -14,7 +14,6 @@ spec:
     matchLabels:
       app: {{ template "fluentbit-operator.name" . }}-operator
       release: {{ $.Release.Name | quote }}
-      {{ include "fluentbit-operator.labels" . | indent 6 }}
   template:
     metadata:
       labels:
