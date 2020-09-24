@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "fluentbit-operator.fullname" . }}-operator
+  name: {{ template "fluentbit-operator.operator.fullname" . }}
   namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ template "fluentbit-operator.name" . }}-operator

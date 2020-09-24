@@ -34,6 +34,11 @@ The longest name that gets created adds and extra 37 characters, so truncation s
 {{- printf "%s-fluentbit" (include "fluentbit-operator.fullname" .) -}}
 {{- end }}
 
+{{/* Fullname suffixed with operator */}}
+{{- define "fluentbit-operator.exporter.fullname" -}}
+{{- printf "alerted-log-exporter" -}}
+{{- end }}
+
 {{/* Fullname suffixed with alertmanager */}}
 {{- define "fluentbit-operator.alertmanager.fullname" -}}
 {{- printf "%s-alertmanager" (include "fluentbit-operator.fullname" .) -}}
