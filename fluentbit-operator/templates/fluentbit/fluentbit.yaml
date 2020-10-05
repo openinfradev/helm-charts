@@ -9,19 +9,21 @@ metadata:
     app.kubernetes.io/version: v1.4.5
 spec:
   image: "{{ .Values.image.fluentbit.repository }}:{{ .Values.image.fluentbit.tag }}"
-
-#siim/fluent-bit-for-operator:1.4.6
   positionDB:
     hostPath:
       path: /var/log/flb_kube.db
       type: FileOrCreate
   fluentBitConfigName: fluent-bit-config
   containerLogRealPath: /var/lib/docker/containers
-{{- if and .Values.fluentbit.fluentbitSpec.tolerations}}
+{{- if and .Values.fluentbit.daemonset.spec.tolerations}}
   tolerations:
-{{- range $i, $toleration :=  .Values.fluentbit.fluentbitSpec.tolerations }}
+{{- range $i, $toleration :=  .Values.fluentbit.daemonset.spec.tolerations }}
   - key: {{ $toleration.key}} 
     operator: {{ $toleration.operator}} 
 {{- end}}
+{{- end}}
+{{- if and .Values.fluentbit.daemonset.spec.resource}}
+  resources: 
+{{- toYaml .Values.fluentbit.daemonset.spec.resource | nindent 4}}
 {{- end}}
 {{- end}}
