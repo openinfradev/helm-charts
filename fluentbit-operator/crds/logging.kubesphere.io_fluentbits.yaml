@@ -47,6 +47,11 @@ spec:
             imagePullPolicy:
               description: Fluent Bit image pull policy.
               type: string
+            nodeSelector:
+              additionalProperties:
+                type: string
+              description: NodeSelector
+              type: object
             positionDB:
               description: Storage for position db. You will use it if tail input
                 is enabled.
@@ -1198,6 +1203,25 @@ spec:
                       type: string
                   required:
                   - volumePath
+                  type: object
+              type: object
+            resources:
+              description: 'Compute Resources required by this container. Cannot be
+                updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
+              properties:
+                limits:
+                  additionalProperties:
+                    type: string
+                  description: 'Limits describes the maximum amount of compute resources
+                    allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
+                  type: object
+                requests:
+                  additionalProperties:
+                    type: string
+                  description: 'Requests describes the minimum amount of compute resources
+                    required. If Requests is omitted for a container, it defaults
+                    to Limits if that is explicitly specified, otherwise to an implementation-defined
+                    value. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
                   type: object
               type: object
             secrets:

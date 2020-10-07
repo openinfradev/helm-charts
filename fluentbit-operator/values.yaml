@@ -187,131 +187,129 @@ fluentbit:
   #ORI    name: ""
     name: "fluentbit-operator"
 
-  fluentbitSpec:
-    ## Tolerations for use with node taints
-    ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-    ##
-    tolerations: 
-    - key: node-role.kubernetes.io/master
-      operator: Exists
-    - key: node-role.kubernetes.io/node
-      operator: Exists
-    #  - key: "key"
-    #    operator: "Equal"
-    #    value: "value"
-    #    effect: "NoSchedule"
+  daemomset:
+    spec:
+      ## Tolerations for use with node taints
+      ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+      ##
+      tolerations: 
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+      - key: node-role.kubernetes.io/node
+        operator: Exists
+      #  - key: "key"
+      #    operator: "Equal"
+      #    value: "value"
+      #    effect: "NoSchedule"
 
-    ## External URL at which Fluentbit will be reachable.
-    ##
-    externalUrl: ""
+      ## External URL at which Fluentbit will be reachable.
+      ##
+      externalUrl: ""
 
-    ## Define which Nodes the Pods are scheduled on.
-    ## ref: https://kubernetes.io/docs/user-guide/node-selection/
-    ##
-  ## Define which Nodes the Pods are scheduled on.
-  ## ref: https://kubernetes.io/docs/user-guide/node-selection/
-  ##
-  # nodeSelector: 
-  #   taco-lma: enabled
+      ## Define which Nodes the Pods are scheduled on.
+      ## ref: https://kubernetes.io/docs/user-guide/node-selection/
+      ##
+      # nodeSelector: 
+      #   taco-lma: enabled
 
-    ## Secrets is a list of Secrets in the same namespace as the Fluentbit object, which shall be mounted into the Fluentbit Pods.
-    ## The Secrets are mounted into /etc/fluentbit/secrets/. Secrets changes after initial creation of a Fluentbit object are not
-    ## reflected in the running Pods. To change the secrets mounted into the Fluentbit Pods, the object must be deleted and recreated
-    ## with the new list of secrets.
-    ##
-    secrets: []
+      ## Secrets is a list of Secrets in the same namespace as the Fluentbit object, which shall be mounted into the Fluentbit Pods.
+      ## The Secrets are mounted into /etc/fluentbit/secrets/. Secrets changes after initial creation of a Fluentbit object are not
+      ## reflected in the running Pods. To change the secrets mounted into the Fluentbit Pods, the object must be deleted and recreated
+      ## with the new list of secrets.
+      ##
+      secrets: []
 
-    ## ConfigMaps is a list of ConfigMaps in the same namespace as the Fluentbit object, which shall be mounted into the Fluentbit Pods.
-    ## The ConfigMaps are mounted into /etc/fluentbit/configmaps/.
-    ##
-    configMaps: []
+      ## ConfigMaps is a list of ConfigMaps in the same namespace as the Fluentbit object, which shall be mounted into the Fluentbit Pods.
+      ## The ConfigMaps are mounted into /etc/fluentbit/configmaps/.
+      ##
+      configMaps: []
 
-    ## Standard object’s metadata. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#metadata
-    ## Metadata Labels and Annotations gets propagated to the fluentbit pods.
-    ##
-    podMetadata: {}
-    # labels:
-    #   app: fluentbit
-    #   k8s-app: fluentbit
+      ## Standard object’s metadata. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#metadata
+      ## Metadata Labels and Annotations gets propagated to the fluentbit pods.
+      ##
+      podMetadata: {}
+      # labels:
+      #   app: fluentbit
+      #   k8s-app: fluentbit
 
-    ## Pod anti-affinity can prevent the scheduler from placing Fluentbit replicas on the same node.
-    ## The default value "soft" means that the scheduler should *prefer* to not schedule two replica pods onto the same node but no guarantee is provided.
-    ## The value "hard" means that the scheduler is *required* to not schedule two replica pods onto the same node.
-    ## The value "" will disable pod anti-affinity so that no anti-affinity rules will be configured.
-    podAntiAffinity: ""
+      ## Pod anti-affinity can prevent the scheduler from placing Fluentbit replicas on the same node.
+      ## The default value "soft" means that the scheduler should *prefer* to not schedule two replica pods onto the same node but no guarantee is provided.
+      ## The value "hard" means that the scheduler is *required* to not schedule two replica pods onto the same node.
+      ## The value "" will disable pod anti-affinity so that no anti-affinity rules will be configured.
+      podAntiAffinity: ""
 
-    ## If anti-affinity is enabled sets the topologyKey to use for anti-affinity.
-    ## This can be changed to, for example, failure-domain.beta.kubernetes.io/zone
-    ##
-    podAntiAffinityTopologyKey: kubernetes.io/hostname
+      ## If anti-affinity is enabled sets the topologyKey to use for anti-affinity.
+      ## This can be changed to, for example, failure-domain.beta.kubernetes.io/zone
+      ##
+      podAntiAffinityTopologyKey: kubernetes.io/hostname
 
-    ## Assign custom affinity rules to the fluentbit instance
-    ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-    ##
-    affinity: {}
-    # nodeAffinity:
-    #   requiredDuringSchedulingIgnoredDuringExecution:
-    #     nodeSelectorTerms:
-    #     - matchExpressions:
-    #       - key: kubernetes.io/e2e-az-name
-    #         operator: In
-    #         values:
-    #         - e2e-az1
-    #         - e2e-az2
+      ## Assign custom affinity rules to the fluentbit instance
+      ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+      ##
+      affinity: {}
+      # nodeAffinity:
+      #   requiredDuringSchedulingIgnoredDuringExecution:
+      #     nodeSelectorTerms:
+      #     - matchExpressions:
+      #       - key: kubernetes.io/e2e-az-name
+      #         operator: In
+      #         values:
+      #         - e2e-az1
+      #         - e2e-az2
 
-    ## Enable/Disable Grafana dashboards provisioning for fluentbit remote write feature
-    remoteWriteDashboards: false
+      ## Enable/Disable Grafana dashboards provisioning for fluentbit remote write feature
+      remoteWriteDashboards: false
 
-    ## Resource limits & requests
-    ##
-    resources: {}
-    # requests:
-    #   memory: 400Mi
+      ## Resource limits & requests
+      ##
+      resources: {}
+      # requests:
+      #   memory: 400Mi
 
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 1000
-      fsGroup: 2000
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 2000
 
-    ## 	Priority class assigned to the Pods
-    ##
-    priorityClassName: ""
+      ## 	Priority class assigned to the Pods
+      ##
+      priorityClassName: ""
 
-    ## Thanos configuration allows configuring various aspects of a Fluentbit server in a Thanos environment.
-    ## This section is experimental, it may change significantly without deprecation notice in any release.
-    ## This is experimental and may change significantly without backward compatibility in any release.
-    ## ref: https://github.com/coreos/fluentbit-operator/blob/master/Documentation/api.md#thanosspec
-    ##
-    thanos: {}
+      ## Thanos configuration allows configuring various aspects of a Fluentbit server in a Thanos environment.
+      ## This section is experimental, it may change significantly without deprecation notice in any release.
+      ## This is experimental and may change significantly without backward compatibility in any release.
+      ## ref: https://github.com/coreos/fluentbit-operator/blob/master/Documentation/api.md#thanosspec
+      ##
+      thanos: {}
 
-    ## Containers allows injecting additional containers. This is meant to allow adding an authentication proxy to a Fluentbit pod.
-    ##  if using proxy extraContainer  update targetPort with proxy container port
-    containers: []
+      ## Containers allows injecting additional containers. This is meant to allow adding an authentication proxy to a Fluentbit pod.
+      ##  if using proxy extraContainer  update targetPort with proxy container port
+      containers: []
 
-    ## InitContainers allows injecting additional initContainers. This is meant to allow doing some changes
-    ## (permissions, dir tree) on mounted volumes before starting fluentbit
-    initContainers: []
+      ## InitContainers allows injecting additional initContainers. This is meant to allow doing some changes
+      ## (permissions, dir tree) on mounted volumes before starting fluentbit
+      initContainers: []
 
-    ## Enable additional scrape configs that are managed externally to this chart. Note that the fluentbit
-    ## will fail to provision if the correct secret does not exist.
-    ## This option requires that you are maintaining a secret in the same namespace as Fluentbit with
-    ## a name of 'fluentbit-operator-fluentbit-scrape-confg' and a key of 'additional-scrape-configs.yaml' that
-    ## contains a list of scrape_config's. The name of the secret may vary if you utilize the "fullnameOverride".
-    ## This feature cannot be used in conjunction with the additionalScrapeConfigs attribute (the helm-generated
-    ## secret will overwrite your self-maintained secret).
-    ##
-    ## scrape_config docs: https://fluentbit.io/docs/fluentbit/latest/configuration/configuration/#scrape_config
-    ## explanation of "confg" typo: https://github.com/helm/charts/issues/13368
-    additionalScrapeConfigsExternal: false
+      ## Enable additional scrape configs that are managed externally to this chart. Note that the fluentbit
+      ## will fail to provision if the correct secret does not exist.
+      ## This option requires that you are maintaining a secret in the same namespace as Fluentbit with
+      ## a name of 'fluentbit-operator-fluentbit-scrape-confg' and a key of 'additional-scrape-configs.yaml' that
+      ## contains a list of scrape_config's. The name of the secret may vary if you utilize the "fullnameOverride".
+      ## This feature cannot be used in conjunction with the additionalScrapeConfigs attribute (the helm-generated
+      ## secret will overwrite your self-maintained secret).
+      ##
+      ## scrape_config docs: https://fluentbit.io/docs/fluentbit/latest/configuration/configuration/#scrape_config
+      ## explanation of "confg" typo: https://github.com/helm/charts/issues/13368
+      additionalScrapeConfigsExternal: false
 
-    ## PortName to use for Fluentbit.
-    ##
-    portName: "web"
+      ## PortName to use for Fluentbit.
+      ##
+      portName: "web"
 
-    ## Default rulset to send exporter
-    ## format is "level: keyword"   for example "critical: error"
-    ## VERY VERY VERY IMPORTANT ==> At least one tuple should be defined
-  
+      ## Default rulset to send exporter
+      ## format is "level: keyword"   for example "critical: error"
+      ## VERY VERY VERY IMPORTANT ==> At least one tuple should be defined
+    
   targetLogs:
   - name: dockerlog
     tag: kube.*
