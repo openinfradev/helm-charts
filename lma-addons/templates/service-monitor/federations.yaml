@@ -1,0 +1,85 @@
+{{- if and .Values.serviceMonitor.enabled .Values.serviceMonitor.federations }}
+{{- range $key, $val := .Values.serviceMonitor.federations }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ $val.name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ $val.name }}
+spec:
+  endpoints:
+  - interval: {{ default "30s" $val.interval }}
+    port: metrics
+    path: {{ default "/federate" $val.path }}
+    honorLabels: true
+    params:
+    params:
+      match[]:
+      - '{job=~".*exporter|.*kube-state-metrics|ceph.*|openstack.*|kube-etcd|kubelet|kube-scheduler|coredns|kube-proxy|kube-controller-manager|bigip-controller|f5.*|trident-csi"}'
+      - '{__name__=~"etcd_server_has_leader|node_cpu_seconds_total|node_memory_MemTotal_bytes|node_memory_MemFree_bytes|node_memory_MemFree_bytes|node_network_receive_bytes_total|node_network_transmit_bytes_total|namedprocess_namegroup_cpu_user_seconds_total|coredns_build_info|up|ceph_health_status|container_cpu_user_seconds_total|container_cpu_usage_seconds_total|kube_pod_container_resource_requests_cpu_cores|kube_pod_container_resource_limits_cpu_cores|container_memory_working_set_bytes|kube_pod_container_resource_requests_memory_bytes|kube_pod_container_resource_limits_memory_bytes|container_network_transmit_bytes_total|container_network_receive_bytes_total|container_fs_usage_bytes|container_fs_limit_bytes|container_spec_cpu_shares|container_memory_working_set_bytes|container_spec_memory_limit_bytes|container_network_transmit_bytes_total|container_fs_writes_bytes_total|container_fs_reads_bytes_total|kubelet_pod_start_latency_microseconds_sum|kubelet_pod_start_latency_microseconds_count|node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate|container_memory_working_set_bytes|container_network_transmit_bytes_total|mixin_pod_workload|node_namespace_pod_container:container_cpu_usage_seconds_tottal:sum_rate|container_memory_working_set_bytes|container_network_transmit_bytes_total|container_fs_writes_bytes_total|container_fs_reads_bytes_total|workqueue_depth|workqueue_queue_duration_seconds_bucket|workqueue_adds_total|apiserver_response_sizes_bucket|apiserver_response_sizes_sum|apiserver_response_sizes_count|apiserver_request_duration_seconds_bucket|apiserver_request_count|apiserver_request_latencies_summary_sum|apiserver_request_latencies_summary_count|etcd_server_id|etcd_debugging_mvcc_keys_total|etcd_network_client_grpc_received_bytes_total|etcd_network_client_grpc_sent_bytes_total|etcd_network_peer_received_bytes_total|etcd_network_peer_sent_bytes_total|etcd_mvcc_db_total_size_in_bytes|etcd_server_slow_apply_total|etcd_server_slow_read_indexes_total|etcd_disk_wal_fsync_duration_seconds_sum|etcd_disk_backend_commit_duration_seconds_sum|etcd_network_client_grpc_received_bytes_total|etcd_network_client_grpc_sent_bytes_total|etcd_debugging_mvcc_db_compaction_keys_total|scheduler_e2e_scheduling_duration_seconds_count|scheduler_binding_duration_seconds_count|scheduler_scheduling_algorithm_duration_seconds_count|scheduler_volume_scheduling_duration_seconds_count|rest_client_requests_total|scheduler_e2e_scheduling_duration_seconds_bucket|scheduler_binding_duration_seconds_bucket|scheduler_scheduling_algorithm_duration_seconds_bucket|scheduler_volume_scheduling_duration_seconds_bucket|rest_client_request_latency_seconds_bucket|coredns_dns_request_duration_seconds_bucket|coredns_cache_hits_total|coredns_dns_request_count_total|coredns_dns_request_type_count_total|kubeproxy_sync_proxy_rules_duration_seconds_count|kubeproxy_sync_proxy_rules_duration_seconds_bucket|kubeproxy_network_programming_duration_seconds_count|kubeproxy_network_programming_duration_seconds_bucket|rest_client_requests_to tal|rest_client_request_latency_seconds_bucket|container_network_transmit_bytes_total"}'
+
+  jobLabel: {{ $val.name }}
+  namespaceSelector:
+    matchNames:
+{{- if $val.namespace}}
+    - {{ $val.namespace }}
+{{- else}}
+    - {{ $.Release.Namespace }}
+{{- end}}
+  selector:
+    matchLabels:
+      app: {{ $val.name }}
+{{- if or $val.addresses $val.addresses}}
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: {{ $val.name }}
+  labels:
+    app: {{ $val.name }}
+{{- if $val.namespace}}
+  namespace: {{ $val.namespace }}
+{{- else}}
+  namespace: {{ $.Release.Namespace }}
+{{- end}}
+subsets:
+{{- if $val.addresses }}
+  - addresses:
+  {{ range $key, $ip := $val.addresses }}
+    - ip: {{ $ip }}
+  {{- end }}
+{{ else }}
+  - addresses:
+    - ip: {{ $val.address }}
+{{- end }}
+    ports:
+    - name: metrics
+      port: {{ default 30008 $val.port }}
+      protocol: TCP
+{{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $val.name }}
+{{- if $val.namespace}}
+  namespace: {{ $val.namespace }}
+{{- else}}
+  namespace: {{ $.Release.Namespace }}
+{{- end}}
+  labels:
+    app: {{ $val.name }}
+spec:
+  ports:
+  - name: metrics 
+    port: {{ default 30008 $val.port }}
+    protocol: TCP
+    targetPort: {{ default 30008 $val.port }}
+{{- if $val.selector }}
+  selector:
+    {{- toYaml $val.selector | nindent 4 }}  
+{{- end }}
+{{- end }}
+{{- end }}

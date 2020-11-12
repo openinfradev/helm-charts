@@ -1,0 +1,74 @@
+{{- if and .Values.serviceMonitor.enabled .Values.serviceMonitor.kubelet.enabled }}
+apiVersion: {{ printf "%s/v1" (.Values.prometheus.crdApiGroup | default "monitoring.coreos.com")  }}
+kind: ServiceMonitor
+metadata:
+  name: kubelet
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: kubelet
+spec:
+  endpoints:
+  - port: https-metrics
+    scheme: https
+    {{- if .Values.serviceMonitor.kubelet.interval }}
+    interval: {{ .Values.serviceMonitor.kubelet.interval }}
+    {{- end }}
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecureSkipVerify: true
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    honorLabels: true
+{{- if .Values.serviceMonitor.kubelet.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.serviceMonitor.kubelet.metricRelabelings | indent 4) . }}
+{{- end }}
+{{- if .Values.serviceMonitor.kubelet.relabelings }}
+    relabelings:
+{{ toYaml .Values.serviceMonitor.kubelet.relabelings | indent 4 }}
+{{- end }}
+  - port: https-metrics
+    scheme: https
+    path: /metrics/cadvisor
+    {{- if .Values.serviceMonitor.kubelet.interval }}
+    interval: {{ .Values.serviceMonitor.kubelet.interval }}
+    {{- end }}
+    honorLabels: true
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecureSkipVerify: true
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+{{- if .Values.serviceMonitor.kubelet.cAdvisorMetricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.serviceMonitor.kubelet.cAdvisorMetricRelabelings | indent 4) . }}
+{{- end }}
+{{- if .Values.serviceMonitor.kubelet.cAdvisorRelabelings }}
+    relabelings:
+{{ toYaml .Values.serviceMonitor.kubelet.cAdvisorRelabelings | indent 4 }}
+{{- end }}
+  - port: https-metrics
+    scheme: https
+    path: /metrics/probes
+    {{- if .Values.serviceMonitor.kubelet.interval }}
+    interval: {{ .Values.serviceMonitor.kubelet.interval }}
+    {{- end }}
+    honorLabels: true
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecureSkipVerify: true
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+{{- if .Values.serviceMonitor.kubelet.probesMetricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.serviceMonitor.kubelet.probesMetricRelabelings | indent 4) . }}
+{{- end }}
+{{- if .Values.serviceMonitor.kubelet.probesRelabelings }}
+    relabelings:
+{{ toYaml .Values.serviceMonitor.kubelet.probesRelabelings | indent 4 }}
+{{- end }}
+  jobLabel: k8s-app
+  namespaceSelector:
+    matchNames:
+    - kube-system
+  selector:
+    matchLabels:
+      k8s-app: kubelet
+{{- end}}

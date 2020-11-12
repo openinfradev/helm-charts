@@ -1,0 +1,39 @@
+{{- if and .Values.prometheusRules.alert.enabled .Values.prometheusRules.alert.rule.alertmanager }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  annotations:
+    prometheus-operator-validated: "true"
+  name: alertmanager
+  namespace: {{ $.Release.Namespace }}
+spec:
+#alertmanager:
+  groups:
+  - name: alertmanager.rules
+    rules:
+    - alert: FailedReload
+      expr: alertmanager_config_last_reload_successful == 0
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        message: Reloading Alertmanager's configuration has failed for {{`{{ $labels.namespace }}/{{ $labels.pod }}`}}.
+        summary: Alertmanager configuration reload has failed
+    # alert manager를 멀티로 사용시 필요해 보임, 설정의 hash값으로 모든 replica가 같은지 확인하는 것
+    # - alert: AlertmanagerConfigInconsistent
+    #   expr: count_values("config_hash", alertmanager_config_hash) BY (service) / ON(service) GROUP_LEFT() label_replace(prometheus_operator_alertmanager_spec_replicas, "service", "alertmanager-$1", "alertmanager", "(.*)") != 1
+    #   for: 5m
+    #   labels:
+    #     severity: critical
+    #   annotations:
+    #     message: The configuration of the instances of the Alertmanager cluster `{{`{{ $labels.service}}`}}` are out of sync.
+    #     summary: Alertmanager configurations are inconsistent
+    # - alert: AlertmanagerDownOrMissing
+    #   expr: label_replace(prometheus_operator_alertmanager_spec_replicas, "job", "alertmanager-$1", "alertmanager", "(.*)") / ON(job) GROUP_RIGHT() sum(up) BY (job) != 1
+    #   for: 5m
+    #   labels:
+    #     severity: warning
+    #   annotations:
+    #     message: An unexpected number of Alertmanagers are scraped or Alertmanagers disappeared from discovery.
+    #     summary: Alertmanager down or not discovered
+{{- end }}

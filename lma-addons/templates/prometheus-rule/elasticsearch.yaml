@@ -1,0 +1,52 @@
+{{- if and .Values.prometheusRules.alert.enabled .Values.prometheusRules.alert.rule.elasticsearch }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  annotations:
+    prometheus-operator-validated: "true"
+  name: elasticsearch
+  namespace:  {{ .Values.prometheusRules.alert.namespace }}
+spec:
+#elasticsearch:
+  groups:
+  - name: elasticsearch.rules
+    rules:
+    - alert: es_high_process_open_files_count
+      expr: sum(elasticsearch_process_open_files_count) by(name,taco_cluster) > 64000
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        message: Elasticsearch at {{`{{ $labels.name }}`}} has more than 64000 process open file count. ({{`{{ $labels.taco_cluster }}`}})
+        summary: Elasticsearch has a very high process open file count. ({{`{{ $labels.taco_cluster }}`}})
+    - alert: es_high_process_cpu_percent
+      expr: elasticsearch_process_cpu_percent > 95
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        message: Elasticsearch at {{`{{ $labels.name }}`}} has high process cpu percent of {{`{{ $value }}`}}. ({{`{{ $labels.taco_cluster }}`}})
+        summary: Elasticsearch process cpu usage is more than 95 percent. ({{`{{ $labels.taco_cluster }}`}})
+    - alert: es_fs_usage_high
+      expr: (100 * (elasticsearch_filesystem_data_size_bytes - elasticsearch_filesystem_data_free_bytes) / elasticsearch_filesystem_data_size_bytes) > 80
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        message: Elasticsearch at {{`{{ $labels.name }}`}} has filesystem usage of {{`{{ $value }}`}}. ({{`{{ $labels.taco_cluster }}`}})
+        summary: Elasticsearch filesystem usage is high. ({{`{{ $labels.taco_cluster }}`}})
+    - alert: es_unassigned_shards
+      expr: elasticsearch_cluster_health_unassigned_shards > 0
+      for: 10m
+      labels:
+        message: There are only {{`{{ $value}}`}} < 3 ElasticSearch data nodes running ({{`{{ $labels.taco_cluster }}`}})
+        summary: ElasticSearch running on less than 3 data nodes ({{`{{ $labels.taco_cluster }}`}})
+    - alert: es_cluster_health_too_few_data_nodes_running
+      expr: elasticsearch_cluster_health_number_of_data_nodes < 3
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        message: There are only {{`{{ $value}}`}} < 3 ElasticSearch data nodes running ({{`{{ $labels.taco_cluster }}`}})
+        summary: ElasticSearch running on less than 3 data nodes ({{`{{ $labels.taco_cluster }}`}})
+{{- end }}

@@ -1,0 +1,534 @@
+{{- if .Values.grafanaDashboard.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-taco-tridentstatus
+  namespace: {{ .Values.grafanaDashboard.namespace }}
+  labels:
+    {{- if $.Values.grafanaDashboard.sidecar.dashboards.label }}
+    {{ $.Values.grafanaDashboard.sidecar.dashboards.label }}: "1"
+    {{- end }}
+    app: grafana
+data:
+  taco-tridentstatus.json: |-
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": "-- Grafana --",
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "editable": true,
+      "gnetId": null,
+      "graphTooltip": 0,
+      "id": 27,
+      "links": [],
+      "panels": [
+        {
+          "cacheTimeout": null,
+          "datasource": null,
+          "gridPos": {
+            "h": 8,
+            "w": 7,
+            "x": 0,
+            "y": 0
+          },
+          "id": 20,
+          "links": [],
+          "options": {
+            "colorMode": "value",
+            "fieldOptions": {
+              "calcs": [
+                "last"
+              ],
+              "defaults": {
+                "mappings": [
+                  {
+                    "id": 0,
+                    "op": "=",
+                    "text": "N/A",
+                    "type": 1,
+                    "value": "null"
+                  }
+                ],
+                "nullValueMode": "connected",
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#299c46",
+                      "value": null
+                    },
+                    {
+                      "color": "#EAB839",
+                      "value": 0.3
+                    },
+                    {
+                      "color": "dark-orange",
+                      "value": 1
+                    }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": [],
+              "values": false
+            },
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "horizontal"
+          },
+          "pluginVersion": "6.6.2",
+          "targets": [
+            {
+              "expr": "100-(sum (trident_rest_ops_seconds_total_count{status_code=~\"2..\"} OR on() vector(0)) / sum (trident_rest_ops_seconds_total_count)) * 100",
+              "instant": false,
+              "refId": "A"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Percentage of Failed HTTP responses from Trident",
+          "type": "stat"
+        },
+        {
+          "cacheTimeout": null,
+          "datasource": null,
+          "gridPos": {
+            "h": 8,
+            "w": 15,
+            "x": 7,
+            "y": 0
+          },
+          "id": 21,
+          "links": [],
+          "options": {
+            "fieldOptions": {
+              "calcs": [
+                "mean"
+              ],
+              "defaults": {
+                "mappings": [
+                  {
+                    "id": 0,
+                    "op": "=",
+                    "text": "N/A",
+                    "type": 1,
+                    "value": "null"
+                  }
+                ],
+                "nullValueMode": "connected",
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    }
+                  ]
+                },
+                "unit": "none"
+              },
+              "overrides": [],
+              "values": false
+            },
+            "orientation": "horizontal",
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "pluginVersion": "6.6.2",
+          "targets": [
+            {
+              "aggregation": "Last",
+              "decimals": 2,
+              "displayAliasType": "Warning / Critical",
+              "displayType": "Regular",
+              "displayValueWithAlias": "Never",
+              "expr": "(sum (trident_rest_ops_seconds_total_count) by (status_code)  / scalar (sum (trident_rest_ops_seconds_total_count))) * 100",
+              "instant": false,
+              "refId": "A",
+              "units": "none",
+              "valueHandler": "Number Threshold"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Percentage of HTTP responses from Trident",
+          "type": "gauge"
+        },
+        {
+          "cacheTimeout": null,
+          "datasource": null,
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 0,
+            "y": 8
+          },
+          "id": 22,
+          "links": [],
+          "options": {
+            "displayMode": "basic",
+            "fieldOptions": {
+              "calcs": [
+                "mean"
+              ],
+              "defaults": {
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              "overrides": [],
+              "values": false
+            },
+            "orientation": "horizontal",
+            "showUnfilled": true
+          },
+          "pluginVersion": "6.6.2",
+          "targets": [
+            {
+              "aggregation": "Last",
+              "decimals": 2,
+              "displayAliasType": "Warning / Critical",
+              "displayType": "Regular",
+              "displayValueWithAlias": "Never",
+              "expr": "sum by (operation) (trident_operation_duration_milliseconds_sum{success=\"true\"}) / sum by (operation) (trident_operation_duration_milliseconds_count{success=\"true\"})",
+              "instant": false,
+              "refId": "A",
+              "units": "none",
+              "valueHandler": "Number Threshold"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Average duration in ms of operations performed by Trident",
+          "type": "bargauge"
+        },
+        {
+          "datasource": "Prometheus",
+          "gridPos": {
+            "h": 9,
+            "w": 5,
+            "x": 12,
+            "y": 8
+          },
+          "id": 12,
+          "options": {
+            "colorMode": "value",
+            "fieldOptions": {
+              "calcs": [
+                "mean"
+              ],
+              "defaults": {
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-blue",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": [],
+              "values": true
+            },
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto"
+          },
+          "pluginVersion": "6.6.2",
+          "targets": [
+            {
+              "expr": "sort (trident_core_volume_count)",
+              "instant": true,
+              "legendFormat": "{{`{{taco_cluster}}`}}",
+              "refId": "A"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "# Volumes currently managed",
+          "type": "stat"
+        },
+        {
+          "datasource": "Prometheus",
+          "gridPos": {
+            "h": 9,
+            "w": 5,
+            "x": 17,
+            "y": 8
+          },
+          "id": 14,
+          "options": {
+            "colorMode": "value",
+            "fieldOptions": {
+              "calcs": [
+                "mean"
+              ],
+              "defaults": {
+                "decimals": 2,
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-blue",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              "overrides": [],
+              "values": true
+            },
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto"
+          },
+          "pluginVersion": "6.6.2",
+          "targets": [
+            {
+              "expr": "trident_core_volume_total_bytes / 1024 / 1024 / 1024",
+              "instant": true,
+              "legendFormat": "{{`{{taco_cluster}}`}}",
+              "refId": "A"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Capacity currently managed (GB)",
+          "type": "stat"
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 8,
+            "w": 11,
+            "x": 0,
+            "y": 17
+          },
+          "hiddenSeries": false,
+          "id": 16,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pluginVersion": "6.6.2",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "trident_core_volume_count_by_backend",
+              "instant": false,
+              "interval": "",
+              "legendFormat": "{{`{{backend}}`}}:{{`{{taco_cluster}}`}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Number of volumes by Trident driver type",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": 0,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fill": 1,
+          "fillGradient": 1,
+          "gridPos": {
+            "h": 8,
+            "w": 11,
+            "x": 11,
+            "y": 17
+          },
+          "hiddenSeries": false,
+          "id": 18,
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "trident_core_volume_total_bytes_by_backend / 1024 / 1024 / 1024",
+              "legendFormat": "{{`{{backend}}`}}:{{`{{taco_cluster}}`}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Total Capacity by Trident driver type",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "GB",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "refresh": "30s",
+      "schemaVersion": 22,
+      "style": "dark",
+      "tags": [],
+      "templating": {
+        "list": []
+      },
+      "time": {
+        "from": "now-30m",
+        "to": "now"
+      },
+      "timepicker": {
+        "refresh_intervals": [
+          "5s",
+          "10s",
+          "30s",
+          "1m",
+          "5m",
+          "15m",
+          "30m",
+          "1h",
+          "2h",
+          "1d"
+        ]
+      },
+      "timezone": "",
+      "title": "4. Trident Stats",
+      "uid": "taco-tridentstatus",
+      "version": 22
+    }
+{{- end}}
