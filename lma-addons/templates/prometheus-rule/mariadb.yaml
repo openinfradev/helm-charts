@@ -1,0 +1,46 @@
+{{- if and .Values.prometheusRules.alert.enabled .Values.prometheusRules.alert.rule.mariadb }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  annotations:
+    prometheus-operator-validated: "true"
+  name: mariadb
+  namespace:  {{ .Values.prometheusRules.alert.namespace }}
+spec:
+#mariadb:
+  groups:
+  - name: mariadb.rules
+    rules:
+    - alert: mariadb_table_lock_wait_high
+      expr: 100 * mysql_global_status_table_locks_waited/(mysql_global_status_table_locks_waited + mysql_global_status_table_locks_immediate) > 30
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        message: Mariadb has high table lock waits of {{`{{ $value }}`}} percentage ({{`{{ $labels.taco_cluster }}`}})
+        summary: Mariadb table lock waits are high ({{`{{ $labels.taco_cluster }}`}})
+    - alert: mariadb_node_not_ready
+      expr: mysql_global_status_wsrep_ready != 1
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        message: '{{`{{ $labels.job}}`}} on {{`{{ $labels.instance}}`}} is not ready. ({{`{{ $labels.taco_cluster }}`}})'
+        summary: Galera cluster node not ready ({{`{{ $labels.taco_cluster }}`}})
+    - alert: mariadb_galera_node_out_of_sync
+      expr: mysql_global_status_wsrep_local_state != 4 AND mysql_global_variables_wsrep_desync == 0
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        message: '{{`{{ $labels.job}}`}} on {{`{{ $labels.instance}}`}} is not in sync ({{`{{ $value}}`}} != 4) ({{`{{ $labels.taco_cluster }}`}})'
+        summary: Galera cluster node out of sync ({{`{{ $labels.taco_cluster }}`}})
+    - alert: mariadb_innodb_replication_fallen_behind
+      expr: (mysql_global_variables_innodb_replication_delay > 30) AND on (instance) (predict_linear(mysql_global_variables_innodb_replication_delay[5m], 60*2) > 0)
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        message: The mysql innodb replication has fallen behind and is not recovering ({{`{{ $labels.taco_cluster }}`}})
+        summary: MySQL innod ({{`{{ $labels.taco_cluster }}`}})
+{{- end }}

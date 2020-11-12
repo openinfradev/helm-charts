@@ -1,0 +1,213 @@
+prometheus:
+  crdApiGroup: "monitoring.coreos.com"
+
+serviceMonitor:
+  enabled: true
+
+  ## Add Calico exporter as service
+  calco:
+    enabled: false
+
+  ## PocessExporter ServiceMonitor
+  pushgateway:
+    port: http
+    enabled: true
+    ### interval for scrape
+    #interval: "10s"
+    jobLabel: "pushgateway"
+    honorLabels: true
+    metricRelabelings: []
+    relabelings: []
+
+  ## PocessExporter ServiceMonitor
+  processExporter:
+    enabled: true
+    ### interval for scrape
+    #interval: "10s"
+    jobLabel: "process-exporter"
+    metricRelabelings: []
+    relabelings: []
+
+  ## Ceph ServiceMonitor
+  ceph:
+    enabled: true
+    interval: "30s"
+    # Default port is 9283.
+    # mon_port:
+
+    mon_hosts:
+    - ip: 192.168.97.118
+
+  ## KubeStateMetrics ServiceMonitor
+  kubeStateMetrics:
+    enabled: true
+    interval: "30s"
+
+  ## NodeExporter ServiceMonitor
+  nodeExporter:
+    enabled: true
+    interval: "30s"
+
+  grafana:
+    enabled: true
+    ### interval for scrape
+    #interval: "10s"
+    jobLabel: "grafana"
+    metricRelabelings: []
+    relabelings: []
+
+  openstack:
+    enabled: false
+    interval: "30s"
+    metricRelabelings: []
+    relabelings: []
+    namespace: openstack
+
+  trident:
+    enabled: false
+    # default interval is 30s
+    #interval: "30s"
+    #namespace: trident
+    #matchLabels:
+    #  app: xxx
+
+  calico:
+    enabled: false
+
+  ## It makes multiple ServiceMonitor / Endpoint / Service for each item in below array.
+  #additionalScrapeConfigs:
+  #- name: f5-ingress
+  #  path: /metrics
+  #  address: 192.168.97.22
+  #  port: 3000
+  #  params:
+  #    match[]:
+  #    - ''
+
+  #federations:
+  #- name: main
+  #  address: 192.168.97.22
+  #  interval: 30s
+
+  kubelet:
+    enabled: false
+    interval: "30s"
+    metricRelablings: []
+    relabelings: []
+    # cAdvisorMetricRelablings: []
+    # cAdvisorRelabelings: []
+    # probesMetricRelablings: []
+    # probesRelabelings: []
+
+grafanaDashboard:
+  enabled: true
+  # namespace installed grafana
+  namespace: fed
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+    datasources:
+      enabled: true
+      label: grafana_datasource
+      prometheusAddress: "lma-prometheus-fed-master-prometheus:9090" 
+
+metricbeat:
+  enabled: true
+  image:
+    repository: sktdev/metricbeat
+    tag: taco-1.0.0
+
+  ### metricbeat loglevel
+  loglevel: info
+
+  elasticsearch:
+    host: "https://elasticsearch-monitoring-es-http:9200"
+    username: taco
+    password: password
+    verification_mode: none
+
+  kibana:
+    host: "kibana-dashboard-kb-http:5601"
+
+  ### resources for metricbeat deployment 
+  # resources:
+  #   requests:
+  #     memory: "500Mi"
+  #     cpu: "250m"
+  #   limits:
+  #     memory: "500Mi"
+  #     cpu: "500m"  
+  
+  ### collect metrics from prometheus and save into elasticsearch
+  prometheus:
+    enabled: true
+    hosts: ["192.168.48.202:30018"]
+
+  additionalModules:
+    - module: kubernetes
+      enabled: true
+      metricsets: ["event"]
+      period: 10s
+
+kibanaInit:
+  enabled: false
+  image:
+    repository: sktdev/kibana-init
+    tag: v4
+  url: "http://192.168.97.54:30001"
+  username: elastic
+  password: tacoword
+
+tacoWatcher:
+  host: "192.168.97.54"
+  port: 32000
+  rbac:
+    create: true
+    name: taco-watcher
+
+  joinCluster:
+    image:
+      repository: curlimages/curl
+      tag: latest
+    enabled: false
+    # request body for cluster join API
+    body:
+      id: main  # cluster name
+      isMain: true
+      kibanaUrl: "http://192.168.97.54:30001"
+      grafanaUrl: "http://192.168.97.54:30009"
+      k8sUrl: "http://192.168.97.54:6443"
+      menu:
+        enabled: true
+
+      # main parameters
+      mainPageType: "kibana"
+      mainPageLink: "/app/canvas#/workpad/workpad-e5ec5f17-d3c1-4e4d-9aad-d21db6973ec2/page/1?__fullscreen=true" 
+      k8sPageType: "kibana" # kibana or grafana
+      k8sPageLink: "/app/canvas#/workpad/workpad-f976090d-df4d-450a-bb66-8dac7b25ae4f/page/1?__fullscreen=true"
+      openstackPageType: "kibana"
+      openstackPageLink: "/app/canvas#/workpad/workpad-57011c4b-16e5-4167-967a-8b3046547f8d/page/1?__fullscreen=true"
+      cephPageType: "kibana"
+      cephPageLink: "/app/canvas#/workpad/workpad-b556b524-ddb5-47f1-a0c4-ec18bf4b48e5/page/1?__fullscreen=true"
+
+prometheusRules:
+  aggregation:
+    enabled: false
+    rule:
+      kubernetes: true
+      kubeNodeResources: true
+  alert:
+    enabled: false
+    rule:
+      alertmanager: true
+      basicLinux: true
+      calico: true
+      ceph: true
+      elasticsearch: true
+      kubeApiserver: true
+      kubeControllerManager: true
+      kubelet: true
+      mariadb: true
+      rabbitmq: true
+

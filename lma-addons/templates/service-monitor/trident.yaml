@@ -1,0 +1,24 @@
+{{- if and .Values.serviceMonitor.enabled .Values.serviceMonitor.trident.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: trident
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: trident
+spec:
+  jobLabel: trident
+  selector:
+    matchLabels:
+{{- if .Values.serviceMonitor.trident.matchLabels }}
+{{ toYaml .Values.serviceMonitor.trident.matchLabels | indent 4  }}
+{{ else }}
+      app: controller.csi.trident.netapp.io 
+{{- end }}
+  namespaceSelector:
+    matchNames:
+    - {{ default "trident" .Values.serviceMonitor.trident.namespace }}
+  endpoints:
+  - port: metrics
+    interval: {{ default "15s" .Values.serviceMonitor.trident.interval }}
+{{- end }}

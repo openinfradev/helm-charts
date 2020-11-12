@@ -1,0 +1,47 @@
+{{- if .Values.tacoWatcher.joinCluster.enabled }}
+{{ $host := .Values.tacoWatcher.host }}
+{{ $port := .Values.tacoWatcher.port }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: taco-watcher-join-cluster
+  namespace: {{ $.Release.Namespace }}
+  annotations:
+    "helm.sh/hook-weight": "3"
+spec:
+  template:
+    metadata:
+      name: taco-watcher-join-cluster
+    spec:
+      containers:
+        - name: init
+          image: "{{ .Values.tacoWatcher.joinCluster.image.repository }}:{{ .Values.tacoWatcher.joinCluster.image.tag }}"
+          command:
+          - /bin/sh
+          - -c
+          - >
+              cp /home/curl_user/join-cluster.json /tmp/join-cluster.json &&  sed -i "s/CHANGE_K8S_TOKEN/$K8S_TOKEN/g" /tmp/join-cluster.json ;
+              curl -X POST -H "Content-Type: application/json" -d @/tmp/join-cluster.json http://{{ $host }}:{{ $port }}/api/v1/cluster/add ;
+          volumeMounts:
+            - name: readable-path
+              mountPath: /tmp
+            - name: config
+              mountPath: /home/curl_user
+              readOnly: false
+          env:
+            - name: K8S_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.tacoWatcher.rbac.name }}-manual-token
+                  key: token
+      volumes:
+      - name: readable-path
+        emptyDir: {}
+      - name: config
+        configMap:
+          name: taco-cluster-config
+          items:
+            - key: join-cluster.json
+              path: join-cluster.json
+      restartPolicy: OnFailure
+{{- end }}

@@ -1,0 +1,100 @@
+{{- if and .Values.serviceMonitor.enabled .Values.serviceMonitor.additionalScrapeConfigs }}
+{{- range $key, $val := .Values.serviceMonitor.additionalScrapeConfigs }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ $val.name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ $val.name }}
+spec:
+  endpoints:
+  - interval: {{ default "30s" $val.interval }}
+    port: metrics
+    path: {{ default "/metrics" $val.path }}
+    honorLabels: true
+{{- if $val.basicAuth }}
+    basicAuth:
+      password:
+        key: {{ $val.basicAuth.password.key }}
+        name: {{ $val.basicAuth.password.name }}
+      username:
+        key: {{ $val.basicAuth.username.key }}
+        name: {{ $val.basicAuth.username.name }}
+{{- end }}
+{{- if $val.params }}
+    params:
+{{ toYaml $val.params | indent 6 }}
+{{- end }}
+{{- if $val.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml $val.metricRelabelings | indent 6) . }}
+{{- end }}
+{{- if $val.relabelings }}
+    relabelings:
+{{ toYaml $val.relabelings | indent 6 }}
+{{- end }}
+  jobLabel: {{ $val.name }}
+  namespaceSelector:
+    matchNames:
+{{- if $val.namespace}}
+    - {{ $val.namespace }}
+{{- else}}
+    - {{ $.Release.Namespace }}
+{{- end}}
+  selector:
+    matchLabels:
+      app: {{ $val.name }}
+{{- if or $val.addresses $val.addresses}}
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: {{ $val.name }}
+  labels:
+    app: {{ $val.name }}
+{{- if $val.namespace}}
+  namespace: {{ $val.namespace }}
+{{- else}}
+  namespace: {{ $.Release.Namespace }}
+{{- end}}
+subsets:
+{{- if $val.addresses }}
+  - addresses:
+  {{ range $key, $ip := $val.addresses }}
+    - ip: {{ $ip }}
+  {{- end }}
+{{ else }}
+  - addresses:
+    - ip: {{ $val.address }}
+{{- end }}
+    ports:
+    - name: metrics
+      port: {{ default 30008 $val.port }}
+      protocol: TCP
+{{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $val.name }}
+{{- if $val.namespace}}
+  namespace: {{ $val.namespace }}
+{{- else}}
+  namespace: {{ $.Release.Namespace }}
+{{- end}}
+  labels:
+    app: {{ $val.name }}
+spec:
+  ports:
+  - name: metrics 
+    port: {{ default 30008 $val.port }}
+    protocol: TCP
+    targetPort: {{ default 30008 $val.port }}
+{{- if $val.selector }}
+  selector:
+    {{- toYaml $val.selector | nindent 4 }}  
+{{- end }}
+{{- end }}
+{{- end }}

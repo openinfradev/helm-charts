@@ -1,0 +1,38 @@
+{{- if and .Values.prometheusRules.alert.enabled .Values.prometheusRules.alert.rule.kubelet }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  annotations:
+    prometheus-operator-validated: "true"
+  generation: 1
+  name: kubelet
+  namespace:  {{ .Values.prometheusRules.alert.namespace }}
+spec:
+#kubelet:
+  groups:
+  - name: kubelet.rules
+    rules:
+    - alert: K8SNodeNotReady
+      expr: sum without(status) (kube_node_status_condition{condition="Ready", status=~"unknown|false"}) > 0
+      for: 1h
+      labels:
+        severity: warning
+      annotations:
+        message: The Kubelet on {{`{{ $labels.node }}`}} has not checked in with the API, or has set itself to NotReady, for more than an hour ({{`{{ $labels.taco_cluster }}`}})
+        summary: Node status is NotReady ({{`{{ $labels.taco_cluster }}`}})
+    - alert: K8SKubeletDown
+      expr: sum(up{job="kubelet"}) by(taco_cluster) / count(up{job="kubelet"}) by(taco_cluster) < 1.0
+      for: 1m
+      labels:
+        severity: page
+      annotations:
+        message: Prometheus failed to scrape {{`{{ $value }}`}}% of kubelets, or all Kubelets have disappeared from service discovery. ({{`{{ $labels.taco_cluster }}`}})
+        summary: Many Kubelets cannot be scraped ({{`{{ $labels.taco_cluster }}`}})
+    - alert: K8SKubeletTooManyPods
+      expr: kubelet_running_pod_count > 100
+      labels:
+        severity: warning
+      annotations:
+        message: Kubelet {{`{{ $labels.instance }}`}} is running {{`{{ $value }}`}} pods, close to the limit of 110 ({{`{{ $labels.taco_cluster }}`}})
+        summary: Kubelet is close to pod limit ({{`{{ $labels.taco_cluster }}`}})
+{{- end }}

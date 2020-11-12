@@ -1,0 +1,29 @@
+{{- if and .Values.serviceMonitor.enabled .Values.serviceMonitor.pushgateway.enabled }}
+apiVersion: {{ printf "%s/v1" (.Values.prometheus.crdApiGroup | default "monitoring.coreos.com") }}
+kind: ServiceMonitor
+metadata:
+  name: pushgateway
+  labels:
+    app: pushgateway
+spec:
+  jobLabel: {{ .Values.serviceMonitor.pushgateway.jobLabel }}
+  selector:
+    matchLabels:
+      app: prometheus-pushgateway
+  endpoints:
+  - port: {{ .Values.serviceMonitor.pushgateway.port }}
+    {{- if .Values.serviceMonitor.pushgateway.interval }}
+    interval: {{ .Values.serviceMonitor.pushgateway.interval }}
+    {{- end }}
+    {{- if .Values.serviceMonitor.pushgateway.honorLabels }}
+    honorLabels: {{ .Values.serviceMonitor.pushgateway.honorLabels }}
+    {{- end }}    
+{{- if .Values.serviceMonitor.pushgateway.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.serviceMonitor.pushgateway.metricRelabelings | indent 6) . }}
+{{- end }}
+{{- if .Values.serviceMonitor.pushgateway.relabelings }}
+    relabelings:
+{{ toYaml .Values.serviceMonitor.pushgateway.relabelings | indent 6 }}
+{{- end }}
+{{- end }}

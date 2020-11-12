@@ -1,0 +1,13 @@
+{{- if .Values.metricbeat.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: metricbeat-modules
+  labels:
+    k8s-app: metricbeat
+data:
+{{- if .Values.metricbeat.additionalModules }}
+  additional-modules.yml: |-
+{{ toYaml .Values.metricbeat.additionalModules | indent 4 }}
+{{- end }}
+{{- end }}

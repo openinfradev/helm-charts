@@ -1,0 +1,26 @@
+{{- if and .Values.serviceMonitor.enabled .Values.serviceMonitor.grafana.enabled }}
+apiVersion: {{ printf "%s/v1" (.Values.prometheus.crdApiGroup | default "monitoring.coreos.com") }}
+kind: ServiceMonitor
+metadata:
+  name: grafana
+  labels:
+    app: grafana
+spec:
+  selector:
+    matchLabels:
+      app: grafana
+  endpoints:
+  - port: service
+    {{- if .Values.serviceMonitor.grafana.interval }}
+    interval: {{ .Values.serviceMonitor.grafana.interval }}
+    {{- end }}
+    path: "/metrics"
+{{- if .Values.serviceMonitor.grafana.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.serviceMonitor.grafana.metricRelabelings | indent 6) . }}
+{{- end }}
+{{- if .Values.serviceMonitor.grafana.relabelings }}
+    relabelings:
+{{ toYaml .Values.serviceMonitor.grafana.relabelings | indent 6 }}
+{{- end }}
+{{- end }}

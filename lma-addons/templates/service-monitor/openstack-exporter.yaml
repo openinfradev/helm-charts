@@ -1,0 +1,28 @@
+{{- if and .Values.serviceMonitor.enabled .Values.serviceMonitor.openstack.enabled }}
+apiVersion: {{ printf "%s/v1" (.Values.prometheus.crdApiGroup | default "monitoring.coreos.com") }}
+kind: ServiceMonitor
+metadata:
+  name: openstack
+  labels:
+    app: openstack
+spec:
+  namespaceSelector:
+    matchNames:
+    - {{ default "openstack" .Values.serviceMonitor.openstack.namespace }}
+  selector:
+    matchLabels:
+      application: prometheus-openstack-exporter
+  endpoints:
+  - port: http
+    {{- if .Values.serviceMonitor.openstack.interval }}
+    interval: {{ default "30s" .Values.serviceMonitor.openstack.interval }}
+    {{- end }}
+{{- if .Values.serviceMonitor.openstack.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.serviceMonitor.openstack.metricRelabelings | indent 6) . }}
+{{- end }}
+{{- if .Values.serviceMonitor.openstack.relabelings }}
+    relabelings:
+{{ toYaml .Values.serviceMonitor.openstack.relabelings | indent 6 }}
+{{- end }}
+{{- end }}
