@@ -1,0 +1,19 @@
+{{- if .Values.fluentbitOperator.enabled }}
+{{- $envAll := . }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fluentbit-operator.name" . }}-bin
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ template "fluentbit-operator.name" . }}-operator
+{{ include "fluentbit-operator.labels" . | indent 4 }}
+data:
+  init-fluent-bit-env.sh: |-
+    #!/bin/sh
+    set -ev
+    echo DOCKER_ROOT_DIR=$(docker info -f '{{.DockerRootDir}}') > /fluentbit-operator/fluent-bit.env
+  pre-stop-hook-script.sh: |-
+  
+{{- end}}

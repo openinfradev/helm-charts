@@ -1,0 +1,86 @@
+{{- if and .Values.prometheusRules.alert.enabled .Values.prometheusRules.alert.rule.rabbitmq }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  annotations:
+    prometheus-operator-validated: "true"
+  name: rabbitmq
+  namespace:  {{ .Values.prometheusRules.alert.namespace }}
+spec:
+#rabbitmq:
+  groups:
+  - name: rabbitmq.rules
+    rules:
+    # - alert: rabbitmq_network_pratitions_detected
+    #   expr: min(partitions) by(instance) > 0
+    #   for: 10m
+    #   labels:
+    #     severity: warning
+    #   annotations:
+    #     message: RabbitMQ at {{`{{ $labels.instance }}`}} has {{`{{ $value }}`}} partitions ({{`{{ $labels.taco_cluster }}`}})
+    #     summary: RabbitMQ Network partitions detected ({{`{{ $labels.taco_cluster }}`}})
+    - alert: rabbitmq_down
+      expr: min(rabbitmq_up) by(instance) != 1
+      for: 10m
+      labels:
+        severity: page
+      annotations:
+        message: RabbitMQ Server instance {{`{{ $labels.instance }}`}} is down ({{`{{ $labels.taco_cluster }}`}})
+        summary: The RabbitMQ Server instance at {{`{{ $labels.instance }}`}} has been down the last 10 mins ({{`{{ $labels.taco_cluster }}`}})
+    - alert: rabbitmq_file_descriptor_usage_high
+      expr: node_filefd_allocated/node_filefd_maximum > 0.8
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        message: RabbitMQ Server instance {{`{{ $labels.instance }}`}} has high file descriptor usage of {{`{{ $value }}`}} percent. ({{`{{ $labels.taco_cluster }}`}})
+        summary: RabbitMQ file descriptors usage is high for last 10 mins ({{`{{ $labels.taco_cluster }}`}})
+    - alert: rabbitmq_node_disk_free_alarm
+      expr: rabbitmq_node_disk_free_alarm > 0
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        message: RabbitMQ Server instance {{`{{ $labels.instance }}`}} has low disk free space available. ({{`{{ $labels.taco_cluster }}`}})
+        summary: RabbitMQ disk space usage is high ({{`{{ $labels.taco_cluster }}`}})
+    - alert: rabbitmq_node_memory_alarm
+      expr: rabbitmq_node_mem_alarm > 0
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        message: RabbitMQ Server instance {{`{{ $labels.instance }}`}} has low free memory. ({{`{{ $labels.taco_cluster }}`}})
+        summary: RabbitMQ memory usage is high ({{`{{ $labels.taco_cluster }}`}})
+    - alert: rabbitmq_less_than_3_nodes
+      expr: count(rabbitmq_running==1) by(taco_cluster) < 3
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        message: RabbitMQ Server has less than 3 nodes running. ({{`{{ $labels.taco_cluster }}`}})
+        summary: RabbitMQ server is at risk of loosing data ({{`{{ $labels.taco_cluster }}`}})
+    - alert: rabbitmq_queue_messages_returned_high
+      expr: rabbitmq_queue_messages_returned_total/rabbitmq_queue_messages_published_total * 100 > 50
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        message: RabbitMQ Server is returing more than 50 percent of messages received. ({{`{{ $labels.taco_cluster }}`}})
+        summary: RabbitMQ server is returning more than 50 percent of messages received. ({{`{{ $labels.taco_cluster }}`}})
+    - alert: rabbitmq_consumers_low_utilization
+      expr: count(rabbitmq_queue_consumer_utilisation <.4 ) by(taco_cluster)
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        message: RabbitMQ consumers message consumption speed is low ({{`{{ $labels.taco_cluster }}`}})
+        summary: RabbitMQ consumers message consumption speed is low ({{`{{ $labels.taco_cluster }}`}})
+    - alert: rabbitmq_high_message_load
+      expr: count(rabbitmq_queue_messages_get_total > 17000 or increase(rabbitmq_queue_messages_get_total[5m]) > 4000) by(taco_cluster)
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        message: RabbitMQ has high message load. Total Queue depth > 17000 or growth more than 4000 messages. ({{`{{ $labels.taco_cluster }}`}})
+        summary: RabbitMQ has high message load ({{`{{ $labels.taco_cluster }}`}})
+{{- end }}

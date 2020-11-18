@@ -1,0 +1,20 @@
+{{- $chart_name := .Chart.Name }}
+{{- $chart_version := .Chart.Version | replace "+" "_" }}
+{{- $release_name := .Release.Name }}
+
+{{- $configmap := .Values.configmap }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ $release_name }}-sh"
+  labels:
+    helm.sh/chart: "{{ $chart_name }}-{{ $chart_version }}"
+    app.kubernetes.io/name: "{{ $chart_name }}"
+    app.kubernetes.io/instance: "{{ $release_name }}"
+    app.kubernetes.io/version: "{{ $chart_version }}"
+data:
+  export-realm.sh: |- {{ tpl (.Files.Get (printf "files/%s" $configmap.scripts.exportRealm)) . | indent 4 }}
+  backup.sh: |- {{ tpl (.Files.Get (printf "files/%s" $configmap.scripts.backup)) . | indent 4 }}
+  transfer.sh: |- {{ tpl (.Files.Get (printf "files/%s" $configmap.scripts.transfer)) . | indent 4 }}
+

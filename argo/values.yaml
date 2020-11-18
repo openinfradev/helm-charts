@@ -1,0 +1,47 @@
+workflowController:
+  image:
+    repository: argoproj/workflow-controller
+    tag: latest
+
+  executor:
+    image:
+      repository: argoproj/argoexec
+      tag: latest
+
+argoServer:
+  image:
+    repository: argoproj/argocli
+    tag: v2.9.4
+  
+  service:
+    type: NodePort
+    nodePort: 30004
+
+nodeSelector: {}
+
+artifactRepository:
+  enalbed: false
+  # s3:
+  #   bucket: my-bucket
+  #   endpoint: minio:9000
+  #   insecure: true
+  #   accessKeySecret:
+  #     name: my-minio-cred
+  #     key: accesskey
+  #   secretKeySecret:
+  #     name: my-minio-cred
+  #     key: secretkey
+
+workflowArchive: 
+  enabled: false
+  archiveTTL: 30d
+
+mysql:
+  enabled: false
+  mysqlUser: argo
+  mysqlDatabase: argo
+  mysqlPassword: dkrhpw
+  persistence:
+    storageClass: rbd
+    accessMode: ReadWriteOnce
+    size: 8Gi

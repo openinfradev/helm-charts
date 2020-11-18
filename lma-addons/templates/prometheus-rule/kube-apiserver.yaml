@@ -1,0 +1,30 @@
+{{- if and .Values.prometheusRules.alert.enabled .Values.prometheusRules.alert.rule.kubeApiserver }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  annotations:
+    prometheus-operator-validated: "true"
+  name: kube-apiserver
+  namespace:  {{ .Values.prometheusRules.alert.namespace }}
+spec:
+#kube_apiserver:
+  groups:
+  - name: kube-apiserver.rules
+    rules:
+    - alert: K8SApiserverDown
+      expr: count(up{job="apiserver"}) by(taco_cluster) - (count(up{job="apiserver"}==0) by(taco_cluster))==0
+      for: 5m
+      labels:
+        severity: page
+      annotations:
+        message: Prometheus failed to scrape API server(s), or all API servers have disappeared from service discovery. ({{`{{ $labels.taco_cluster }}`}})
+        summary: API server unreachable ({{`{{ $labels.taco_cluster }}`}})
+    - alert: K8SApiServerLatency
+      expr: histogram_quantile(0.99, sum(apiserver_request_latencies_bucket{verb!~"CONNECT|WATCHLIST|WATCH|PROXY"}) WITHOUT (instance, resource)) / 1e+06 > 1
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        message: 99th percentile Latency for {{`{{ $labels.verb }}`}} requests to the kube-apiserver is higher than 1s. ({{`{{ $labels.taco_cluster }}`}})
+        summary: Kubernetes apiserver latency is high ({{`{{ $labels.taco_cluster }}`}})
+{{- end }}

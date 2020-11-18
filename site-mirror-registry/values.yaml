@@ -1,0 +1,22 @@
+# Taco Registry Chart
+
+namespace: default
+
+# Taco-Registry
+tacoRegistry:
+  name: private-registry
+  deployment:
+    image: registry:2
+  service:
+    type: ClusterIP
+    ports:
+      - name: http
+        port: 5000
+        targetPort: 5000
+        nodePort:    
+  volume:
+    storageClassName: taco-sc
+    accessModes: ReadWriteMany
+    data:
+      size: 10Gi
+

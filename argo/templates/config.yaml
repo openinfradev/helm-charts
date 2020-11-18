@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: workflow-controller-configmap
+  namespace: {{ .Release.Namespace }}
+data:
+  metricsConfig: |
+    disableLegacy: true
+    enabled: true
+    path: /metrics
+    port: 9090
+{{- if .Values.artifactRepository.enabled }}
+  artifactRepository: |
+    archiveLogs: true
+{{- with .Values.artifactRepository.s3 }}
+    s3:
+{{ toYaml . | indent 6 }}
+{{- end }}
+{{- end }}
+
+{{- if .Values.workflowArchive.enabled }}
+  persistence: |
+    connectionPool:
+      maxIdleConns: 100
+      maxOpenConns: 0
+      connMaxLifetime: 0s
+    nodeStatusOffLoad: true
+    archive: true
+    archiveTTL: {{ .Values.workflowArchive.archiveTTL }}
+{{- if .Values.mysql.enabled }}
+    mysql:
+      host: {{ .Release.Name }}-mysql
+      port: 3306
+      database: {{ .Values.mysql.mysqlDatabase }}
+      tableName: argo_workflows
+      userNameSecret:
+        name: argo-mysql-config
+        key: username
+      passwordSecret:
+        name: argo-mysql-config
+        key: password
+{{- end }}
+{{- end }}

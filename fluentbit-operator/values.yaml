@@ -20,6 +20,30 @@ commonLabels: {}
 # scmhash: abc123
 # myLabel: aakkmd
 
+image:
+  operator:
+    repository: siim/fluentbit-operator
+    tag: v0.1.1
+    pullPolicy: IfNotPresent
+  init:
+    repository: docker
+    tag: 19.03
+    pullPolicy: IfNotPresent
+  hyperkube:
+    repository: k8s.gcr.io/hyperkube
+    tag: v1.12.1
+    pullPolicy: IfNotPresent
+  fluentbit:
+    repository: siim/fluent-bit-for-operator
+    tag: v1.4.6
+  exporter:
+    repository: siim/logalert-exporter
+    tag: v0.1.1
+    pullPolicy: IfNotPresent
+  elasticsearchTemplates: 
+    repository: docker.io/openstackhelm/heat
+    tag: newton
+    pullPolicy: IfNotPresent
 ##
 global:
   rbac:
@@ -41,13 +65,12 @@ global:
   imagePullSecrets: []
   # - name: "image-pull-secret"
 
+  base_cluster_url: cluster.local
+
 ## Manages Fluentbit and Alertmanager components
 ##
 fluentbitOperator:
   enabled: true
-
-  # If true fluentbit operator will create and update its CRDs on startup
-  manageCrds: true
 
   ## Namespaces to scope the interaction of the Fluentbit Operator and the apiserver (allow list).
   ## This is mutually exclusive with denyNamespaces. Setting this to an empty object will disable the configuration
@@ -68,43 +91,9 @@ fluentbitOperator:
     create: true
     name: ""
 
-  ## Configuration for Fluentbit operator service
+  ## Deploy CRDs used by Fluentbit Operator.
   ##
-  service:
-    annotations: {}
-    labels: {}
-    clusterIP: ""
-
-  ## Port to expose on each node
-  ## Only used if service.type is 'NodePort'
-  ##
-    nodePort: 30080
-    nodePortTls: 30443
-
-  ## Additional ports to open for Fluentbit service
-  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#multi-port-services
-  ##
-    additionalPorts: []
-
-  ## Loadbalancer IP
-  ## Only use if service.type is "loadbalancer"
-  ##
-    loadBalancerIP: ""
-    loadBalancerSourceRanges: []
-
-  ## Service type
-  ## NodePort, ClusterIP, loadbalancer
-  ##
-    type: ClusterIP
-
-    ## List of IP addresses at which the Fluentbit server service is available
-    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
-    ##
-    externalIPs: []
-
-  # ## Deploy CRDs used by Fluentbit Operator.
-  # ##
-  # createCustomResource: true
+  createCustomResource: true
 
   # ## Attempt to clean up CRDs created by Fluentbit Operator.
   # ##
@@ -128,42 +117,10 @@ fluentbitOperator:
   ## Decrease log verbosity to errors only
   # logLevel: error
 
-  ## If true, the operator will create and maintain a service for scraping kubelets
-  ## ref: https://github.com/coreos/fluentbit-operator/blob/master/helm/fluentbit-operator/README.md
-  ##
-  kubeletService:
-    enabled: true
-    namespace: kube-system
-
-  ## Create a servicemonitor for the operator
-  ##
-  serviceMonitor:
-    ## Scrape interval. If not set, the Fluentbit default scrape interval is used.
-    ##
-    interval: ""
-    selfMonitor: true
-
-    ## 	metric relabel configs to apply to samples before ingestion.
-    ##
-    metricRelabelings: []
-    # - action: keep
-    #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
-    #   sourceLabels: [__name__]
-
-    # 	relabel configs to apply to samples before ingestion.
-    ##
-    relabelings: []
-    # - sourceLabels: [__meta_kubernetes_pod_node_name]
-    #   separator: ;
-    #   regex: ^(.*)$
-    #   targetLabel: nodename
-    #   replacement: $1
-    #   action: replace
-
   ## Resource limits & requests
   ##
 
-#ORI  resources: {}
+  #ORI  resources: {}
   resources: 
     limits:
       cpu: 100m
@@ -181,7 +138,8 @@ fluentbitOperator:
   ## Define which Nodes the Pods are scheduled on.
   ## ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
-  nodeSelector: {}
+  # nodeSelector: 
+  #   taco-lma: enabled
 
   ## Tolerations for use with node taints
   ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -211,45 +169,11 @@ fluentbitOperator:
   #   runAsNonRoot: true
   #   runAsUser: 65534
 
-  ## Fluentbit-operator image
-  ##
-  image:
-    repository: siim/fluentbit-operator
-    tag: v0.1.0
-    pullPolicy: IfNotPresent
-
-  ## Configmap-reload image to use for reloading configmaps
-  ##
-  configmapReloadImage:
-    repository: quay.io/coreos/configmap-reload
-    tag: v0.0.1
-
-  ## Fluentbit-config-reloader image to use for config and rule reloading
-  ##
-  fluentbitConfigReloaderImage:
-    repository: quay.io/coreos/fluentbit-config-reloader
-    tag: v0.38.1
-
-  ## Set the fluentbit config reloader side-car CPU limit
-  ##
-  configReloaderCpu: 100m
-
-  ## Set the fluentbit config reloader side-car memory limit
-  ##
-  configReloaderMemory: 25Mi
-
-  ## Hyperkube image to use when cleaning up
-  ##
-  hyperkubeImage:
-    repository: k8s.gcr.io/hyperkube
-    tag: v1.12.1
-    pullPolicy: IfNotPresent
-
 ## Deploy a Fluentbit instance
 ##
 fluentbit:
 
-  enabled: true
+  enabled: false
 
   ## Annotations for Fluentbit
   ##
@@ -260,522 +184,352 @@ fluentbit:
   ##
   serviceAccount:
     create: true
-#ORI    name: ""
+  #ORI    name: ""
     name: "fluentbit-operator"
 
-  fluentbitSpec:
-    ## If true, pass --storage.tsdb.max-block-duration=2h to fluentbit. This is already done if using Thanos
-    ##
-    disableCompaction: false
-    ## APIServerConfig
-    ## ref: https://github.com/coreos/fluentbit-operator/blob/master/Documentation/api.md#apiserverconfig
-    ##
-    apiserverConfig: {}
-
-    ## Interval between consecutive scrapes.
-    ##
-    scrapeInterval: ""
-
-    ## Interval between consecutive evaluations.
-    ##
-    evaluationInterval: ""
-
-    ## ListenLocal makes the Fluentbit server listen on loopback, so that it does not bind against the Pod IP.
-    ##
-    listenLocal: false
-
-    ## EnableAdminAPI enables Fluentbit the administrative HTTP API which includes functionality such as deleting time series.
-    ## This is disabled by default.
-    ## ref: https://fluentbit.io/docs/fluentbit/latest/querying/api/#tsdb-admin-apis
-    ##
-    enableAdminAPI: false
-
-    ## Image of Fluentbit.
-    ##
-    image:
-      repository: quay.io/fluentbit/fluentbit
-      tag: v2.17.2
-
-    ## Tolerations for use with node taints
-    ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-    ##
-    tolerations: []
-    #  - key: "key"
-    #    operator: "Equal"
-    #    value: "value"
-    #    effect: "NoSchedule"
-
-    ## Alertmanagers to which alerts will be sent
-    ## ref: https://github.com/coreos/fluentbit-operator/blob/master/Documentation/api.md#alertmanagerendpoints
-    ##
-    ## Default configuration will connect to the alertmanager deployed as part of this release
-    ##
-    alertingEndpoints: []
-    # - name: ""
-    #   namespace: ""
-    #   port: http
-    #   scheme: http
-    #   pathPrefix: ""
-    #   tlsConfig: {}
-    #   bearerTokenFile: ""
-    #   apiVersion: v2
-
-    ## External labels to add to any time series or alerts when communicating with external systems
-    ##
-    externalLabels: {}
-
-    ## Name of the external label used to denote replica name
-    ##
-    replicaExternalLabelName: ""
-
-    ## If true, the Operator won't add the external label used to denote replica name
-    ##
-    replicaExternalLabelNameClear: false
-
-    ## Name of the external label used to denote Fluentbit instance name
-    ##
-    fluentbitExternalLabelName: ""
-
-    ## If true, the Operator won't add the external label used to denote Fluentbit instance name
-    ##
-    fluentbitExternalLabelNameClear: false
-
-    ## External URL at which Fluentbit will be reachable.
-    ##
-    externalUrl: ""
-
-    ## Define which Nodes the Pods are scheduled on.
-    ## ref: https://kubernetes.io/docs/user-guide/node-selection/
-    ##
-    nodeSelector: {}
-
-    ## Secrets is a list of Secrets in the same namespace as the Fluentbit object, which shall be mounted into the Fluentbit Pods.
-    ## The Secrets are mounted into /etc/fluentbit/secrets/. Secrets changes after initial creation of a Fluentbit object are not
-    ## reflected in the running Pods. To change the secrets mounted into the Fluentbit Pods, the object must be deleted and recreated
-    ## with the new list of secrets.
-    ##
-    secrets: []
-
-    ## ConfigMaps is a list of ConfigMaps in the same namespace as the Fluentbit object, which shall be mounted into the Fluentbit Pods.
-    ## The ConfigMaps are mounted into /etc/fluentbit/configmaps/.
-    ##
-    configMaps: []
-
-    ## QuerySpec defines the query command line flags when starting Fluentbit.
-    ## ref: https://github.com/coreos/fluentbit-operator/blob/master/Documentation/api.md#queryspec
-    ##
-    query: {}
-
-    ## Namespaces to be selected for FluentbitRules discovery.
-    ## If nil, select own namespace. Namespaces to be selected for ServiceMonitor discovery.
-    ## See https://github.com/coreos/fluentbit-operator/blob/master/Documentation/api.md#namespaceselector for usage
-    ##
-    ruleNamespaceSelector: {}
-
-    ## If true, a nil or {} value for fluentbit.fluentbitSpec.ruleSelector will cause the
-    ## fluentbit resource to be created with selectors based on values in the helm deployment,
-    ## which will also match the FluentbitRule resources created
-    ##
-    ruleSelectorNilUsesHelmValues: true
-
-    ## FluentbitRules to be selected for target discovery.
-    ## If {}, select all ServiceMonitors
-    ##
-    ruleSelector: {}
-    ## Example which select all fluentbitrules resources
-    ## with label "fluentbit" with values any of "example-rules" or "example-rules-2"
-    # ruleSelector:
-    #   matchExpressions:
-    #     - key: fluentbit
-    #       operator: In
-    #       values:
-    #         - example-rules
-    #         - example-rules-2
-    #
-    ## Example which select all fluentbitrules resources with label "role" set to "example-rules"
-    # ruleSelector:
-    #   matchLabels:
-    #     role: example-rules
-
-    ## If true, a nil or {} value for fluentbit.fluentbitSpec.serviceMonitorSelector will cause the
-    ## fluentbit resource to be created with selectors based on values in the helm deployment,
-    ## which will also match the servicemonitors created
-    ##
-    serviceMonitorSelectorNilUsesHelmValues: true
-
-    ## ServiceMonitors to be selected for target discovery.
-    ## If {}, select all ServiceMonitors
-    ##
-    serviceMonitorSelector: {}
-    ## Example which selects ServiceMonitors with label "fluentbit" set to "somelabel"
-    # serviceMonitorSelector:
-    #   matchLabels:
-    #     fluentbit: somelabel
-
-    ## Namespaces to be selected for ServiceMonitor discovery.
-    ## See https://github.com/coreos/fluentbit-operator/blob/master/Documentation/api.md#namespaceselector for usage
-    ##
-    serviceMonitorNamespaceSelector: {}
-
-    ## If true, a nil or {} value for fluentbit.fluentbitSpec.podMonitorSelector will cause the
-    ## fluentbit resource to be created with selectors based on values in the helm deployment,
-    ## which will also match the podmonitors created
-    ##
-    podMonitorSelectorNilUsesHelmValues: true
-
-    ## PodMonitors to be selected for target discovery.
-    ## If {}, select all PodMonitors
-    ##
-    podMonitorSelector: {}
-    ## Example which selects PodMonitors with label "fluentbit" set to "somelabel"
-    # podMonitorSelector:
-    #   matchLabels:
-    #     fluentbit: somelabel
-
-    ## Namespaces to be selected for PodMonitor discovery.
-    ## See https://github.com/coreos/fluentbit-operator/blob/master/Documentation/api.md#namespaceselector for usage
-    ##
-    podMonitorNamespaceSelector: {}
-
-    ## How long to retain metrics
-    ##
-    retention: 10d
-
-    ## Maximum size of metrics
-    ##
-    retentionSize: ""
-
-    ## Enable compression of the write-ahead log using Snappy.
-    ##
-    walCompression: false
-
-    ## If true, the Operator won't process any Fluentbit configuration changes
-    ##
-    paused: false
-
-    ## Number of Fluentbit replicas desired
-    ##
-    replicas: 1
-
-    ## Log level for Fluentbit be configured in
-    ##
-    logLevel: info
-
-    ## Log format for Fluentbit be configured in
-    ##
-    logFormat: logfmt
-
-    ## Prefix used to register routes, overriding externalUrl route.
-    ## Useful for proxies that rewrite URLs.
-    ##
-    routePrefix: /
-
-    ## Standard object’s metadata. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#metadata
-    ## Metadata Labels and Annotations gets propagated to the fluentbit pods.
-    ##
-    podMetadata: {}
-    # labels:
-    #   app: fluentbit
-    #   k8s-app: fluentbit
-
-    ## Pod anti-affinity can prevent the scheduler from placing Fluentbit replicas on the same node.
-    ## The default value "soft" means that the scheduler should *prefer* to not schedule two replica pods onto the same node but no guarantee is provided.
-    ## The value "hard" means that the scheduler is *required* to not schedule two replica pods onto the same node.
-    ## The value "" will disable pod anti-affinity so that no anti-affinity rules will be configured.
-    podAntiAffinity: ""
-
-    ## If anti-affinity is enabled sets the topologyKey to use for anti-affinity.
-    ## This can be changed to, for example, failure-domain.beta.kubernetes.io/zone
-    ##
-    podAntiAffinityTopologyKey: kubernetes.io/hostname
-
-    ## Assign custom affinity rules to the fluentbit instance
-    ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-    ##
-    affinity: {}
-    # nodeAffinity:
-    #   requiredDuringSchedulingIgnoredDuringExecution:
-    #     nodeSelectorTerms:
-    #     - matchExpressions:
-    #       - key: kubernetes.io/e2e-az-name
-    #         operator: In
-    #         values:
-    #         - e2e-az1
-    #         - e2e-az2
-
-    ## The remote_read spec configuration for Fluentbit.
-    ## ref: https://github.com/coreos/fluentbit-operator/blob/master/Documentation/api.md#remotereadspec
-    remoteRead: []
-    # - url: http://remote1/read
-
-    ## The remote_write spec configuration for Fluentbit.
-    ## ref: https://github.com/coreos/fluentbit-operator/blob/master/Documentation/api.md#remotewritespec
-    remoteWrite: []
-    # - url: http://remote1/push
-
-    ## Enable/Disable Grafana dashboards provisioning for fluentbit remote write feature
-    remoteWriteDashboards: false
-
-    ## Resource limits & requests
-    ##
-    resources: {}
-    # requests:
-    #   memory: 400Mi
-
-    ## Fluentbit StorageSpec for persistent data
-    ## ref: https://github.com/coreos/fluentbit-operator/blob/master/Documentation/user-guides/storage.md
-    ##
-    storageSpec: {}
-    #  volumeClaimTemplate:
-    #    spec:
-    #      storageClassName: gluster
-    #      accessModes: ["ReadWriteOnce"]
-    #      resources:
-    #        requests:
-    #          storage: 50Gi
-    #    selector: {}
-
-    ## AdditionalScrapeConfigs allows specifying additional Fluentbit scrape configurations. Scrape configurations
-    ## are appended to the configurations generated by the Fluentbit Operator. Job configurations must have the form
-    ## as specified in the official Fluentbit documentation:
-    ## https://fluentbit.io/docs/fluentbit/latest/configuration/configuration/#scrape_config. As scrape configs are
-    ## appended, the user is responsible to make sure it is valid. Note that using this feature may expose the possibility
-    ## to break upgrades of Fluentbit. It is advised to review Fluentbit release notes to ensure that no incompatible
-    ## scrape configs are going to break Fluentbit after the upgrade.
-    ##
-    ## The scrape configuraiton example below will find master nodes, provided they have the name .*mst.*, relabel the
-    ## port to 2379 and allow etcd scraping provided it is running on all Kubernetes master nodes
-    ##
-    additionalScrapeConfigs: []
-    # - job_name: kube-etcd
-    #   kubernetes_sd_configs:
-    #     - role: node
-    #   scheme: https
-    #   tls_config:
-    #     ca_file:   /etc/fluentbit/secrets/etcd-client-cert/etcd-ca
-    #     cert_file: /etc/fluentbit/secrets/etcd-client-cert/etcd-client
-    #     key_file:  /etc/fluentbit/secrets/etcd-client-cert/etcd-client-key
-    #   relabel_configs:
-    #   - action: labelmap
-    #     regex: __meta_kubernetes_node_label_(.+)
-    #   - source_labels: [__address__]
-    #     action: replace
-    #     targetLabel: __address__
-    #     regex: ([^:;]+):(\d+)
-    #     replacement: ${1}:2379
-    #   - source_labels: [__meta_kubernetes_node_name]
-    #     action: keep
-    #     regex: .*mst.*
-    #   - source_labels: [__meta_kubernetes_node_name]
-    #     action: replace
-    #     targetLabel: node
-    #     regex: (.*)
-    #     replacement: ${1}
-    #   metric_relabel_configs:
-    #   - regex: (kubernetes_io_hostname|failure_domain_beta_kubernetes_io_region|beta_kubernetes_io_os|beta_kubernetes_io_arch|beta_kubernetes_io_instance_type|failure_domain_beta_kubernetes_io_zone)
-    #     action: labeldrop
-
-    ## additionalFluentbitSecretsAnnotations allows to add annotations to the kubernetes secret. This can be useful
-    ## when deploying via spinnaker to disable versioning on the secret, strategy.spinnaker.io/versioned: 'false'
-    additionalFluentbitSecretsAnnotations: {}
-
-    ## AdditionalAlertManagerConfigs allows for manual configuration of alertmanager jobs in the form as specified
-    ## in the official Fluentbit documentation https://fluentbit.io/docs/fluentbit/latest/configuration/configuration/#<alertmanager_config>.
-    ## AlertManager configurations specified are appended to the configurations generated by the Fluentbit Operator.
-    ## As AlertManager configs are appended, the user is responsible to make sure it is valid. Note that using this
-    ## feature may expose the possibility to break upgrades of Fluentbit. It is advised to review Fluentbit release
-    ## notes to ensure that no incompatible AlertManager configs are going to break Fluentbit after the upgrade.
-    ##
-    additionalAlertManagerConfigs: []
-    # - consul_sd_configs:
-    #   - server: consul.dev.test:8500
-    #     scheme: http
-    #     datacenter: dev
-    #     tag_separator: ','
-    #     services:
-    #       - metrics-fluentbit-alertmanager
-
-    ## AdditionalAlertRelabelConfigs allows specifying Fluentbit alert relabel configurations. Alert relabel configurations specified are appended
-    ## to the configurations generated by the Fluentbit Operator. Alert relabel configurations specified must have the form as specified in the
-    ## official Fluentbit documentation: https://fluentbit.io/docs/fluentbit/latest/configuration/configuration/#alert_relabel_configs.
-    ## As alert relabel configs are appended, the user is responsible to make sure it is valid. Note that using this feature may expose the
-    ## possibility to break upgrades of Fluentbit. It is advised to review Fluentbit release notes to ensure that no incompatible alert relabel
-    ## configs are going to break Fluentbit after the upgrade.
-    ##
-    additionalAlertRelabelConfigs: []
-    # - separator: ;
-    #   regex: fluentbit_replica
-    #   replacement: $1
-    #   action: labeldrop
-
-    ## SecurityContext holds pod-level security attributes and common container settings.
-    ## This defaults to non root user with uid 1000 and gid 2000.
-    ## https://github.com/coreos/fluentbit-operator/blob/master/Documentation/api.md
-    ##
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 1000
-      fsGroup: 2000
-
-    ## 	Priority class assigned to the Pods
-    ##
-    priorityClassName: ""
-
-    ## Thanos configuration allows configuring various aspects of a Fluentbit server in a Thanos environment.
-    ## This section is experimental, it may change significantly without deprecation notice in any release.
-    ## This is experimental and may change significantly without backward compatibility in any release.
-    ## ref: https://github.com/coreos/fluentbit-operator/blob/master/Documentation/api.md#thanosspec
-    ##
-    thanos: {}
-
-    ## Containers allows injecting additional containers. This is meant to allow adding an authentication proxy to a Fluentbit pod.
-    ##  if using proxy extraContainer  update targetPort with proxy container port
-    containers: []
-
-    ## InitContainers allows injecting additional initContainers. This is meant to allow doing some changes
-    ## (permissions, dir tree) on mounted volumes before starting fluentbit
-    initContainers: []
-
-    ## Enable additional scrape configs that are managed externally to this chart. Note that the fluentbit
-    ## will fail to provision if the correct secret does not exist.
-    ## This option requires that you are maintaining a secret in the same namespace as Fluentbit with
-    ## a name of 'fluentbit-operator-fluentbit-scrape-confg' and a key of 'additional-scrape-configs.yaml' that
-    ## contains a list of scrape_config's. The name of the secret may vary if you utilize the "fullnameOverride".
-    ## This feature cannot be used in conjunction with the additionalScrapeConfigs attribute (the helm-generated
-    ## secret will overwrite your self-maintained secret).
-    ##
-    ## scrape_config docs: https://fluentbit.io/docs/fluentbit/latest/configuration/configuration/#scrape_config
-    ## explanation of "confg" typo: https://github.com/helm/charts/issues/13368
-    additionalScrapeConfigsExternal: false
-
-    ## PortName to use for Fluentbit.
-    ##
-    portName: "web"
-
-  additionalServiceMonitors: []
-  ## Name of the ServiceMonitor to create
-  ##
-  # - name: ""
-
-    ## Additional labels to set used for the ServiceMonitorSelector. Together with standard labels from
-    ## the chart
-    ##
-    # additionalLabels: {}
-
-    ## Service label for use in assembling a job name of the form <label value>-<port>
-    ## If no label is specified, the service name is used.
-    ##
-    # jobLabel: ""
-
-    ## labels to transfer from the kubernetes service to the target
-    ##
-    # targetLabels: ""
-
-    ## Label selector for services to which this ServiceMonitor applies
-    ##
-    # selector: {}
-
-    ## Namespaces from which services are selected
-    ##
-    # namespaceSelector:
-      ## Match any namespace
+  daemomset:
+    spec:
+      ## Tolerations for use with node taints
+      ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
       ##
-      # any: false
+      tolerations: 
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+      - key: node-role.kubernetes.io/node
+        operator: Exists
+      #  - key: "key"
+      #    operator: "Equal"
+      #    value: "value"
+      #    effect: "NoSchedule"
 
-      ## Explicit list of namespace names to select
+      ## External URL at which Fluentbit will be reachable.
       ##
-      # matchNames: []
+      externalUrl: ""
 
-    ## Endpoints of the selected service to be monitored
-    ##
-    # endpoints: []
-      ## Name of the endpoint's service port
-      ## Mutually exclusive with targetPort
-      # - port: ""
-
-      ## Name or number of the endpoint's target port
-      ## Mutually exclusive with port
-      # - targetPort: ""
-
-      ## File containing bearer token to be used when scraping targets
+      ## Define which Nodes the Pods are scheduled on.
+      ## ref: https://kubernetes.io/docs/user-guide/node-selection/
       ##
-      #   bearerTokenFile: ""
+      # nodeSelector: 
+      #   taco-lma: enabled
 
-      ## Interval at which metrics should be scraped
+      ## Secrets is a list of Secrets in the same namespace as the Fluentbit object, which shall be mounted into the Fluentbit Pods.
+      ## The Secrets are mounted into /etc/fluentbit/secrets/. Secrets changes after initial creation of a Fluentbit object are not
+      ## reflected in the running Pods. To change the secrets mounted into the Fluentbit Pods, the object must be deleted and recreated
+      ## with the new list of secrets.
       ##
-      #   interval: 30s
+      secrets: []
 
-      ## HTTP path to scrape for metrics
+      ## ConfigMaps is a list of ConfigMaps in the same namespace as the Fluentbit object, which shall be mounted into the Fluentbit Pods.
+      ## The ConfigMaps are mounted into /etc/fluentbit/configmaps/.
       ##
-      #   path: /metrics
+      configMaps: []
 
-      ## HTTP scheme to use for scraping
+      ## Standard object’s metadata. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#metadata
+      ## Metadata Labels and Annotations gets propagated to the fluentbit pods.
       ##
-      #   scheme: http
+      podMetadata: {}
+      # labels:
+      #   app: fluentbit
+      #   k8s-app: fluentbit
 
-      ## TLS configuration to use when scraping the endpoint
+      ## Pod anti-affinity can prevent the scheduler from placing Fluentbit replicas on the same node.
+      ## The default value "soft" means that the scheduler should *prefer* to not schedule two replica pods onto the same node but no guarantee is provided.
+      ## The value "hard" means that the scheduler is *required* to not schedule two replica pods onto the same node.
+      ## The value "" will disable pod anti-affinity so that no anti-affinity rules will be configured.
+      podAntiAffinity: ""
+
+      ## If anti-affinity is enabled sets the topologyKey to use for anti-affinity.
+      ## This can be changed to, for example, failure-domain.beta.kubernetes.io/zone
       ##
-      #   tlsConfig:
+      podAntiAffinityTopologyKey: kubernetes.io/hostname
 
-          ## Path to the CA file
-          ##
-          # caFile: ""
-
-          ## Path to client certificate file
-          ##
-          # certFile: ""
-
-          ## Skip certificate verification
-          ##
-          # insecureSkipVerify: false
-
-          ## Path to client key file
-          ##
-          # keyFile: ""
-
-          ## Server name used to verify host name
-          ##
-          # serverName: ""
-
-  additionalPodMonitors: []
-  ## Name of the PodMonitor to create
-  ##
-  # - name: ""
-
-    ## Additional labels to set used for the PodMonitorSelector. Together with standard labels from
-    ## the chart
-    ##
-    # additionalLabels: {}
-
-    ## Pod label for use in assembling a job name of the form <label value>-<port>
-    ## If no label is specified, the pod endpoint name is used.
-    ##
-    # jobLabel: ""
-
-    ## Label selector for pods to which this PodMonitor applies
-    ##
-    # selector: {}
-
-    ## PodTargetLabels transfers labels on the Kubernetes Pod onto the target.
-    ##
-    # podTargetLabels: {}
-
-    ## SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
-    ##
-    # sampleLimit: 0
-
-    ## Namespaces from which pods are selected
-    ##
-    # namespaceSelector:
-      ## Match any namespace
+      ## Assign custom affinity rules to the fluentbit instance
+      ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
       ##
-      # any: false
+      affinity: {}
+      # nodeAffinity:
+      #   requiredDuringSchedulingIgnoredDuringExecution:
+      #     nodeSelectorTerms:
+      #     - matchExpressions:
+      #       - key: kubernetes.io/e2e-az-name
+      #         operator: In
+      #         values:
+      #         - e2e-az1
+      #         - e2e-az2
 
-      ## Explicit list of namespace names to select
+      ## Enable/Disable Grafana dashboards provisioning for fluentbit remote write feature
+      remoteWriteDashboards: false
+
+      ## Resource limits & requests
       ##
-      # matchNames: []
+      resources: {}
+      # requests:
+      #   memory: 400Mi
 
-    ## Endpoints of the selected pods to be monitored
-    ## https://github.com/coreos/fluentbit-operator/blob/master/Documentation/api.md#podmetricsendpoint
-    ##
-    # podMetricsEndpoints: []
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 2000
+
+      ## 	Priority class assigned to the Pods
+      ##
+      priorityClassName: ""
+
+      ## Thanos configuration allows configuring various aspects of a Fluentbit server in a Thanos environment.
+      ## This section is experimental, it may change significantly without deprecation notice in any release.
+      ## This is experimental and may change significantly without backward compatibility in any release.
+      ## ref: https://github.com/coreos/fluentbit-operator/blob/master/Documentation/api.md#thanosspec
+      ##
+      thanos: {}
+
+      ## Containers allows injecting additional containers. This is meant to allow adding an authentication proxy to a Fluentbit pod.
+      ##  if using proxy extraContainer  update targetPort with proxy container port
+      containers: []
+
+      ## InitContainers allows injecting additional initContainers. This is meant to allow doing some changes
+      ## (permissions, dir tree) on mounted volumes before starting fluentbit
+      initContainers: []
+
+      ## Enable additional scrape configs that are managed externally to this chart. Note that the fluentbit
+      ## will fail to provision if the correct secret does not exist.
+      ## This option requires that you are maintaining a secret in the same namespace as Fluentbit with
+      ## a name of 'fluentbit-operator-fluentbit-scrape-confg' and a key of 'additional-scrape-configs.yaml' that
+      ## contains a list of scrape_config's. The name of the secret may vary if you utilize the "fullnameOverride".
+      ## This feature cannot be used in conjunction with the additionalScrapeConfigs attribute (the helm-generated
+      ## secret will overwrite your self-maintained secret).
+      ##
+      ## scrape_config docs: https://fluentbit.io/docs/fluentbit/latest/configuration/configuration/#scrape_config
+      ## explanation of "confg" typo: https://github.com/helm/charts/issues/13368
+      additionalScrapeConfigsExternal: false
+
+      ## PortName to use for Fluentbit.
+      ##
+      portName: "web"
+
+      ## Default rulset to send exporter
+      ## format is "level: keyword"   for example "critical: error"
+      ## VERY VERY VERY IMPORTANT ==> At least one tuple should be defined
+    
+  targetLogs:
+  - name: dockerlog
+    tag: kube.*
+    path: /var/log/containers/*.log
+    type: fluent
+    index: container
+    parser: docker
+    memBufLimit: 20MB
+    bufferChunkSize: 2M
+    bufferMaxSize: 5M
+    do_not_store_as_default: false
+    multi_index:
+    - key: "$kubernetes['namespace_name']"
+      value: "kube-system|lma|fed|argo|openstack"
+      index: platform
+  - name: syslog
+    tag: kubenode.*
+    path: /var/log/syslog
+    type: syslog
+    index: syslog
+    parser: syslog-rfc5424
+  - name: etcd
+    tag: etcdnode.*
+    path: /var/log/etcd.log
+    type: etcd
+    index: etcd
+    parser: docker
+  # - name: journal
+  #   tag: journal.*
+  #   path: /var/log/journal
+  outputs:
+    es: 
+      enabled: false
+      username: ZWxhc3RpYw==
+      password: dGFjb3dvcmQ=
+      host: taco-elasticsearch-es-http.lma.svc.cluster.local
+      port: 9200
+    kafka:
+      enabled: false
+      broker: my-kafka-0.my-kafka-headless.lma.svc.cluster.local:9092,
+      topics: taco
+    http:
+      enabled: false
+
+  alerts:
+    enabled: false
+    namespace: fed
+    message: |-
+      {{ $labels.container }} in {{ $labels.pod }} ({{ $labels.taco_cluster }}/{{ $labels.namespace }} ) generate a error due to log = {{ $labels.log }}
+    summary: |-
+      {{ $labels.container }} in {{ $labels.pod }} ({{ $labels.taco_cluster }}/{{ $labels.namespace }} ) generate a error
+    # ******************** VERY IMPORTANT ************
+    # current version of log-exporter(siim/logalert-exporter:v0.1.1) support only one notification
+    # so you should not define more than one rule at installation
+    # To define multiple phrase, make custom resouce for filter by hands
+    rules:
+    - name: example
+      severity: critical
+      regex: "update.?error"
+
+  esTemplate:
+    enabled: false
+    url: https://taco-elasticsearch-es-http.lma.svc.cluster.local:9200
+    username: elastic
+    password: tacoword
+    ilms:
+    - name: hot-delete-14days
+      json:
+        policy:
+          phases:
+            hot:
+              actions:
+                rollover:
+                  max_size: 30gb
+                  max_age: 1d
+                  max_docs: 5000000000
+                set_priority:
+                  priority: 100
+            delete:
+              min_age: 14d
+              actions:
+                delete: {}
+    - name: hot-delete-7days
+      json:
+        policy:
+          phases:
+            hot:
+              actions:
+                rollover:
+                  max_size: 30gb
+                  max_age: 1d
+                  max_docs: 5000000000
+                set_priority:
+                  priority: 100
+            delete:
+              min_age: 7d
+              actions:
+                delete: {}
+    - name: hot-delete-3hour
+      json:
+        policy:
+          phases:
+            hot:
+              actions:
+                rollover:
+                  max_size: 30gb
+                  max_age: 1h
+                  max_docs: 5000000000
+                set_priority:
+                  priority: 100
+            delete:
+              min_age: 3h
+              actions:
+                delete: {}
+    templates:
+    - name: platform
+      json:
+        index_patterns: "platform*"
+        settings:
+          refresh_interval: 30s
+          number_of_shards: 3
+          number_of_replicas: 1
+          index.lifecycle.name: hot-delete-14days
+          index.lifecycle.rollover_alias: platform
+        # mappings:
+        #   properties:
+        #     "@timestamp": 
+        #       type: date
+        #     cluster: 
+        #       type: text
+        #     kubernetes:
+        #       properties:
+        #         container_name:
+        #           type: keyword
+        #           index: true
+        #         container_name:
+        #           type: keyword
+        #           index: true
+        #         host: 
+        #           type: keyword
+        #           index: false
+        #         namespace:
+        #           type: keyword
+        #           index: false
+        #         pod_name:
+        #           type: keyword
+        #           index: true
+        #     log: 
+        #       type: text
+        #     status: 
+        #       type: long
+        #     time:
+        #       type: date
+    - name: application
+      json:
+        index_patterns: "container*"
+        settings:
+          refresh_interval: 30s
+          number_of_shards: 3
+          number_of_replicas: 1
+          index.lifecycle.name: hot-delete-3hour
+          index.lifecycle.rollover_alias: container
+        # mappings:
+        #   properties:
+        #     "@timestamp": 
+        #       type: date
+        #     cluster: 
+        #       type: text
+        #     kubernetes:
+        #       properties:
+        #         container_name:
+        #           type: keyword
+        #           index: true
+        #         container_name:
+        #           type: keyword
+        #           index: true
+        #         host: 
+        #           type: keyword
+        #           index: false
+        #         namespace:
+        #           type: keyword
+        #           index: false
+        #         pod_name:
+        #           type: keyword
+        #           index: true
+        #     log: 
+        #       type: text
+        #     status: 
+        #       type: long
+        #     time:
+        #       type: date
+    - name: syslog
+      json:
+        index_patterns: "syslog*"
+        settings:
+          refresh_interval: 30s
+          number_of_shards: 2
+          number_of_replicas: 1
+          index.lifecycle.name: hot-delete-14days
+          index.lifecycle.rollover_alias: syslog
+        # mappings:
+        #   properties:
+        #     "@timestamp": 
+        #       type: date
+        #     cluster: 
+        #       type: text
+        #     hostname: 
+        #       type: keyword
+        #       index: true
+        #     log: 
+        #       type: text
+  # Define cluster name which is shown in collected logs
+  clusterName: unknown
+  exclude:
+  - key: "$kubernetes['container_name']"
+    value: kibana
+logExporter:
+  enabled: false
+  serviceMonitor:
+    enabled: false
+    interval: 1m
+# nodeSelector: 
+#   taco-lma: enabled

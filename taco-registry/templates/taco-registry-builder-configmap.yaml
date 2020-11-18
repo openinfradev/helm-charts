@@ -1,0 +1,55 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.tacoRegistryBuilder.name }}
+  namespace: {{ .Release.Namespace }}
+data:
+  config.yml: |-
+    #####################################
+    # Taco-registry builder configuration
+    #####################################
+
+    # default configuration
+    default:
+      domain: taco-registry-builder
+      port: 4000
+      # DEBUG, INFO, ERROR
+      loglevel: {{ .Values.tacoRegistryBuilder.logLevel }}
+      tmp: "/tmp"
+
+    # database configuration
+    database:
+      # postgres, mysql
+      type: postgres
+      host: {{ .Values.tacoDb.deployment.data.host }}
+      port: {{ .Values.tacoDb.deployment.data.port }}
+      name: {{ .Values.tacoDb.deployment.data.db }}
+      user: {{ .Values.tacoDb.deployment.data.user }}
+      password: {{ .Values.tacoDb.deployment.data.password }}
+      xargs:
+
+    # docker private registry configuration
+    registry:
+      name: {{ .Values.tacoRegistry.deployment.auth.service }}
+      insecure: true
+      {{ if eq (int .Values.ingressPort) 80 }}
+      endpoint: "{{ .Values.tacoRegistry.ingress1.host }}"
+      {{ else }}
+      endpoint: "{{ .Values.tacoRegistry.ingress1.host }}:{{ .Values.ingressPort }}"
+      {{- end }}
+      auth: http://{{ .Values.tacoRegistryApp.name }}:8080/api/oauth/token
+      mirrors:
+        {{- range .Values.tacoRegistryBuilder.mirrors }}
+        - {{ .host }}{{ if ne (int .port) 80 }}:{{ .port }}{{- end }}
+        {{- end }}
+
+
+    # webhook listener
+    webhook:
+      listener:
+        - http://{{ .Values.tacoRegistryApp.name }}:8080/api/notification
+
+    # clair configuration
+    clair:
+      endpoint: "{{ .Values.tacoRegistry.name }}:6060"

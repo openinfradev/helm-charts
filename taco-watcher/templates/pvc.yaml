@@ -8,11 +8,11 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
-  storageClassName: {{ .Values.resources.storageClassName }}
+  storageClassName: {{ .Values.volume.storageClassName }}
   accessModes:
   - ReadWriteOnce
   resources:
     limits: 
-      storage: {{ .Values.resources.limits.storage }} 
+      storage: {{ .Values.volume.limits.storage }} 
     requests:
-      storage: {{ .Values.resources.requests.storage }}
+      storage: {{ .Values.volume.requests.storage }}

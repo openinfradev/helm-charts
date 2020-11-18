@@ -1,0 +1,97 @@
+# Taco Registry Chart
+# Registry, Postgres, Clair, Builder, App
+
+namespace: cicd
+
+# Taco-Registry
+tacoRegistry:
+  name: private-registry
+  deployment:
+    image: registry:2
+  service:
+    type: ClusterIP
+    ports:
+      - name: http
+        port: 5000
+        targetPort: 5000
+        nodePort:    
+  ingress1:
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: 10240m
+      virtual-server.f5.com/health: |
+        [
+          {
+            "path":     "skb-registry.taco/",
+            "send":     "HTTP GET /",
+            "interval": 5,
+            "timeout":  10
+          }
+        ]
+      virtual-server.f5.com/ip: 10.10.202.16
+      virtual-server.f5.com/partition: k8s-stg
+    host: skb-registry.taco
+    paths:
+      - path: /
+        port: 5000
+  ingress2:
+    enabled: true
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: 10240m
+      virtual-server.f5.com/health: |
+        [
+          {
+            "path":     "skb-registry.taco/",
+            "send":     "HTTP GET /",
+            "interval": 5,
+            "timeout":  10
+          }
+        ]
+      virtual-server.f5.com/ip: 175.113.150.29
+      virtual-server.f5.com/partition: k8s-stg
+    host: skb-registry.taco
+    paths:
+      - path: /
+        port: 5000
+  ingressPub1:
+    enabled: true
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: 10240m
+      virtual-server.f5.com/health: |
+        [
+          {
+            "path":     "registry.skb-doj-stg01.btvpaas.com/",
+            "send":     "HTTP GET /",
+            "interval": 5,
+            "timeout":  10
+          }
+        ]
+      virtual-server.f5.com/ip: 10.10.202.16
+      virtual-server.f5.com/partition: k8s-stg
+    host: registry.skb-doj-stg01.btvpaas.com
+    paths:
+      - path: /
+        port: 5000
+  ingressPub2:
+    enabled: true
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: 10240m
+      virtual-server.f5.com/health: |
+        [
+          {
+            "path":     "registry.skb-doj-stg01.btvpaas.com/",
+            "send":     "HTTP GET /",
+            "interval": 5,
+            "timeout":  10
+          }
+        ]
+      virtual-server.f5.com/ip: 175.113.150.29
+      virtual-server.f5.com/partition: k8s-stg
+    host: registry.skb-doj-stg01.btvpaas.com
+    paths:
+      - path: /
+        port: 5000
+  volume:
+    storageClassName: netapp
+    data:
+      size: 10Gi
+

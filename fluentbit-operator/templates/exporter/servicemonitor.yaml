@@ -1,0 +1,30 @@
+{{- if and .Values.logExporter.enabled .Values.logExporter.serviceMonitor.enabled }}
+---
+apiVersion: "monitoring.coreos.com/v1"
+kind: ServiceMonitor
+metadata:
+  name: {{ template "fluentbit-operator.exporter.fullname" . }}
+  labels:
+    app: {{ template "fluentbit-operator.name" . }}-exporter
+spec:
+  namespaceSelector:
+    matchNames:
+    - {{ $.Release.Namespace }}
+  selector:
+    matchLabels:
+      app: {{ template "fluentbit-operator.name" . }}-exporter
+  endpoints:
+  - port: service
+    {{- if .Values.logExporter.serviceMonitor.interval }}
+    interval: {{ .Values.logExporter.serviceMonitor.interval }}
+    {{- end }}
+    path: /metrics
+{{- if .Values.logExporter.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.logExporter.serviceMonitor.metricRelabelings | indent 6) . }}
+{{- end }}
+{{- if .Values.logExporter.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.logExporter.serviceMonitor.relabelings | indent 6 }}
+{{- end }}
+{{- end }}

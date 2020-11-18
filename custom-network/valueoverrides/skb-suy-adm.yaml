@@ -1,0 +1,150 @@
+f5_ingress:
+  enabled: true
+  ingresses:
+# Internal VIP  
+  - name: kibana
+    namespace: lma
+    f5:
+      ip: 172.32.150.8
+      public: 1.255.110.71
+      partition: k8s-admin
+      healthcheck: "keycloak.skb-suy-adm01.btvpaas.com/"
+    rules:
+    - host: kibana.skb-suy-adm01.btvpaas.com
+      paths:
+      - serviceName: taco-kibana-dashboard-kb-http
+        servicePort: 5601
+        path: /
+  - name: prometheus-svc
+    namespace: lma
+    f5:
+      ip: 172.32.150.8
+      public: 1.255.110.71
+      partition: k8s-admin
+    rules:
+    - host: prometheus-svc.skb-suy-adm01.btvpaas.com
+      paths:
+      - serviceName: lma-prometheus-prometheus-prometheus
+        servicePort: 9090
+        path: /
+  - name: prometheus
+    namespace: fed
+    f5:
+      ip: 172.32.150.8
+      public: 1.255.110.71
+      partition: k8s-admin
+    rules:
+    - host: prometheus.skb-suy-adm01.btvpaas.com
+      paths:
+      - serviceName: lma-prometheus-fed-master-prometheus
+        servicePort: 9090
+        path: /
+  - name: keycloak
+    namespace: fed
+    f5:
+      ip: 172.32.150.8
+      public: 1.255.110.71
+      partition: k8s-admin
+      healthcheck: "keycloak.skbroadband.com/"
+    rules:
+    - host: keycloak.skbroadband.com
+      paths:
+      - serviceName: keycloak-http
+        servicePort: 8443
+        path: /
+  - name: cloud-console
+    namespace: fed
+    f5:
+      ip: 172.32.150.8
+      public: 1.255.110.71
+      partition: k8s
+      annotations:
+        ingress.kubernetes.io/allow-http: true
+        ingress.kubernetes.io/ssl-redirect: false
+    rules:
+    - host: cloudconsole.skbroadband.com
+      paths:
+      - serviceName: lma-cloud-console
+        servicePort: 32000
+        path: /
+    - host: ccproxy-32001.skbroadband.com
+      paths:
+      - serviceName: lma-cloud-console-32001
+        servicePort: 320001
+        path: /
+    - host: ccproxy-32002.skbroadband.com
+      paths:
+      - serviceName: lma-cloud-console-32002
+        servicePort: 320002
+        path: /
+    - host: ccproxy-32003.skbroadband.com
+      paths:
+      - serviceName: lma-cloud-console-32003
+        servicePort: 320003
+        path: /
+    - host: ccproxy-32004.skbroadband.com
+      paths:
+      - serviceName: lma-cloud-console-32004
+        servicePort: 320004
+        path: /
+    - host: ccproxy-32005.skbroadband.com
+      paths:
+      - serviceName: lma-cloud-console-32005
+        servicePort: 320005
+        path: /
+    - host: ccproxy-32006.skbroadband.com
+      paths:
+      - serviceName: lma-cloud-console-32006
+        servicePort: 320006
+        path: /
+    - host: ccproxy-32007.skbroadband.com
+      paths:
+      - serviceName: lma-cloud-console-32007
+        servicePort: 320007
+        path: /
+    - host: ccproxy-32008.skbroadband.com
+      paths:
+      - serviceName: lma-cloud-console-32008
+        servicePort: 320008
+        path: /
+service:
+  enabled: false
+  endpoints:
+  - name: suy-prd-opr-kfk-01
+    namespace: lma
+    ips: 
+    - 10.10.214.39
+    type: ClusterIP
+    ports:
+    - name: broker
+      port: 9092
+      protocol: TCP
+  - name: suy-prd-opr-kfk-02
+    namespace: lma
+    ips: 
+    - 10.10.214.90
+    type: ClusterIP
+    ports:
+    - name: broker
+      port: 9092
+      protocol: TCP
+  - name: suy-prd-opr-kfk-03
+    namespace: lma
+    ips: 
+    - 10.10.214.99
+    type: ClusterIP
+    ports:
+    - name: broker
+      port: 9092
+      protocol: TCP
+  - name: f5-exporter
+    annotations:
+      prometheus.io/scrape: "true"
+    namespace: lma
+    ips: 
+    - 172.32.150.4
+    type: ClusterIP
+    ports:
+    - name: metric
+      port: 80
+      protocol: TCP

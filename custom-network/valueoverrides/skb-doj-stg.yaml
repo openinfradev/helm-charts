@@ -1,0 +1,69 @@
+f5_ingress:
+  enabled: true
+  ingresses:
+  - name: kibana
+    namespace: lma
+    f5:
+      ip: 10.10.202.16
+      public: 175.113.150.29
+      partition: k8s-stg
+      healthcheck: "kibana.skb-doj-dev01.btvpaas.com/"
+    rules:
+    - host: kibana.skb-doj-stg01.btvpaas.com
+      paths:
+      - serviceName: taco-kibana-dashboard-kb-http
+        servicePort: 5601
+        path: /
+  - name: prometheus-svc
+    namespace: lma
+    f5:
+      ip: 10.10.202.16
+      public: 175.113.150.29
+      partition: k8s-stg
+    rules:
+    - host: prometheus-svc.skb-doj-stg01.btvpaas.com
+      paths:
+      - serviceName: lma-prometheus-prometheus-prometheus
+        servicePort: 9090
+        path: /
+service:
+  enabled: true
+  endpoints:
+  - name: doj-dev-opr-kfk-01
+    namespace: lma
+    ips: 
+    - 10.10.214.39
+    type: ClusterIP
+    ports:
+    - name: broker
+      port: 9092
+      protocol: TCP
+  - name: doj-dev-opr-kfk-02
+    namespace: lma
+    ips: 
+    - 10.10.214.90
+    type: ClusterIP
+    ports:
+    - name: broker
+      port: 9092
+      protocol: TCP
+  - name: doj-dev-opr-kfk-03
+    namespace: lma
+    ips: 
+    - 10.10.214.99
+    type: ClusterIP
+    ports:
+    - name: broker
+      port: 9092
+      protocol: TCP
+  - name: f5-exporter
+    annotations:
+      prometheus.io/scrape: "true"
+    namespace: lma
+    ips: 
+    - 172.32.150.4
+    type: ClusterIP
+    ports:
+    - name: metric
+      port: 80
+      protocol: TCP

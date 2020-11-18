@@ -4,28 +4,45 @@ kind: Elasticsearch
 metadata:
   name: {{ template "elasticsearch-operator.name" . }}-elasticsearch
 spec:
-  version: {{ .Values.customResource.elasticsearch.version }}
-  image: {{ .Values.customResource.elasticsearch.image }}:{{ .Values.customResource.elasticsearch.version }}
-{{- if .Values.customResource.elasticsearch.nodeSelector }}
-  nodeSelector:
-{{ toYaml .Values.customResource.elasticsearch.nodeSelector | indent 4 }}
-{{- end }}
+  version: {{ .Values.customResource.elasticsearch.image.tag }}
+  image: {{ .Values.customResource.elasticsearch.image.repository }}:{{ .Values.customResource.elasticsearch.image.tag }}
 {{- if not .Values.customResource.elasticsearch.podDisruptionBudget.enabled }}
   podDisruptionBudget: {}
 {{- end }}
   nodeSets:
-  - name: default
-    count: {{ .Values.customResource.elasticsearch.count }}
+{{- range $name, $node := .Values.customResource.elasticsearch.nodeSets}}
+  {{- if $node.enabled}}
+  - name: {{ $name}}
+    count: {{ $node.count }}
     config:
-{{ toYaml .Values.customResource.elasticsearch.config | indent 6 }}
-{{- if .Values.customResource.elasticsearch.podTempate }}
+  {{- toYaml $node.config | nindent 6 }}
     podTemplate:
-{{ toYaml .Values.customResource.elasticsearch.podTempate | indent 4 }}
-{{- end }}
-{{- if .Values.customResource.elasticsearch.volumeClaimTemplates }}
+      spec:
+        containers:
+        - name: elasticsearch
+          # specify resource limits and requests
+          resources:
+            limits:
+              memory: {{ $node.limitMem | quote }}
+              cpu: {{ $node.limitCpu }}   
+          env:
+          - name: ES_JAVA_OPTS
+            value: {{ $node.javaOpts | quote }}
+  {{- if $node.nodeSelector }}
+        nodeSelector:
+    {{- toYaml $node.nodeSelector | nindent 10 }}
+  {{- end }}
+  {{- if $node.pvc }}
     volumeClaimTemplates:
-{{ toYaml .Values.customResource.elasticsearch.volumeClaimTemplates | indent 4 }}
-{{- end }}
+      - metadata:
+          name: elasticsearch-data
+        spec:
+          accessModes: [{{ $node.pvc.accessModes }}]
+          resources:
+            requests:
+              storage: {{ $node.pvc.size }}
+          storageClassName: {{ $node.pvc.storageClassName }}
+  {{- end }}
         # this changes the kernel setting on the node to allow ES to use mmap
         # if you uncomment this init container you will likely also want to remove the
         # "node.store.allow_mmap: false" setting above
@@ -34,16 +51,10 @@ spec:
         #   securityContext:
         #     privileged: true
         #   command: ['sh', '-c', 'sysctl -w vm.max_map_count=262144']
-        containers:
-        - name: elasticsearch
-          # specify resource limits and requests
-          resources:
-            limits:
-              memory: 8Gi
-              cpu: 2
-          env:
-          - name: ES_JAVA_OPTS
-            value: {{ .Values.customResource.elasticsearch.javaOpts | quote }}
+
+     
+  {{- end}}  
+{{- end}}  
   # - http:
   #   service:
   #     ports:

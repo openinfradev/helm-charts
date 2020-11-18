@@ -1,0 +1,56 @@
+{{- $chart_name := .Chart.Name }}
+{{- $chart_version := .Chart.Version | replace "+" "_" }}
+{{- $release_name := .Release.Name }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ $release_name }}-sa
+  labels:
+    helm.sh/chart: "{{ $chart_name }}-{{ $chart_version }}"
+    app.kubernetes.io/name: "{{ $chart_name }}"
+    app.kubernetes.io/instance: "{{ $release_name }}"
+    app.kubernetes.io/version: "{{ $chart_version }}"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ $release_name }}
+  labels:
+    helm.sh/chart: "{{ $chart_name }}-{{ $chart_version }}"
+    app.kubernetes.io/name: "{{ $chart_name }}"
+    app.kubernetes.io/instance: "{{ $release_name }}"
+    app.kubernetes.io/version: "{{ $chart_version }}"
+rules:
+- apiGroups: 
+  - ""
+  resources:
+  - pods
+  - pods/log
+  verbs:
+  - get
+  - list
+- apiGroups: 
+  - ""
+  resources:
+  - pods/exec
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ $release_name }}
+  labels:
+    helm.sh/chart: "{{ $chart_name }}-{{ $chart_version }}"
+    app.kubernetes.io/name: "{{ $chart_name }}"
+    app.kubernetes.io/instance: "{{ $release_name }}"
+    app.kubernetes.io/version: "{{ $chart_version }}"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ $release_name }}
+subjects:
+- kind: ServiceAccount
+  name: {{ $release_name }}-sa
+---

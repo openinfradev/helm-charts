@@ -1,0 +1,123 @@
+{{- if and .Values.fluentbit.enabled }}
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Filter
+metadata:
+  name: kubernetes
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    app.kubernetes.io/version: v0.0.1
+spec:
+  match: "kube.*"
+  filters:
+  - kubernetes:
+      kubeURL: https://kubernetes.default.svc.{{.Values.global.base_cluster_url }}:443
+      mergeLog: true
+      labels: false
+      annotations: false
+  - nest:
+      operation: lift
+      nestedUnder: kubernetes
+      addPrefix: kubernetes_
+  - modify:
+      rules:
+      - remove: stream
+      - remove: kubernetes_pod_id
+      - remove: kubernetes_docker_id
+      - remove: kubernetes_container_hash
+  - nest:
+      operation: nest
+      wildcard:
+      - kubernetes_*
+      nestUnder: kubernetes
+      removePrefix: kubernetes_
+  - rewriteTag:
+      rules:
+{{- range .Values.fluentbit.exclude }}
+      - key: {{.key}}
+        newTag: intended_drop.$TAG
+        regex: ^({{.value}})$
+        keep: false
+{{- end }}
+{{- range .Values.fluentbit.targetLogs }}
+  {{- range .multi_index }}
+      - key: {{.key}}
+        newTag:  {{ printf "seperate.%v.$TAG" .index }}
+        regex: ^({{.value}})$
+        keep: false
+  {{- end}}
+{{- end}}
+{{- range .Values.fluentbit.alerts.rules }}
+      - key: "$log"
+        regex: "({{.regex}})"
+        newTag: m_{{.severity}}.$TAG
+        keep: true
+{{- end }}
+      emitterName: alertrule_match
+      emitterStorageType: memory
+---
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Filter
+metadata:
+  name: simplify
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    app.kubernetes.io/version: v0.0.1
+spec:
+  match: "m_*"
+  filters:
+  - nest:
+      operation: lift
+      nestedUnder: kubernetes
+---
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Filter
+metadata:
+  name: add-info
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    app.kubernetes.io/version: v0.0.1
+spec:
+  match: "kube*"
+  filters:
+  - modify:
+      rules:
+      - add:
+          cluster: {{.Values.fluentbit.clusterName }}
+---
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Filter
+metadata:
+  name: add-hostname
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    app.kubernetes.io/version: v0.0.1
+spec:
+  match: "kubenode.*"
+  filters:
+  - modify:
+      rules:
+      - add:
+          hostname: ${HOSTNAME}
+{{- range .Values.fluentbit.alerts.rules }}
+---
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Filter
+metadata:
+  name: add-{{.severity}}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    app.kubernetes.io/version: v0.0.1
+spec:
+  match: "m_{{.severity}}.*"
+  filters:
+  - modify:
+      rules:
+      - add:
+          level: {{.severity}}
+{{- end}}
+{{- end}}

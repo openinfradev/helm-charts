@@ -1,0 +1,52 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+job:
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  concurrencyPolicy: Forbid
+  schedule: "* */1 * * *"
+  spec:
+    containers:
+      transfer:
+        name: transfer
+        command:
+        - /app/shell/transfer.sh
+        image: 
+          repository: pseudojo/docker-sshd-with-curl
+          tag: alpine3.12
+        imagePullPolicy: Always
+      backup:
+        name: k8s
+        command:
+        - /app/shell/backup.sh
+        image: 
+          repository: alpine/k8s
+          tag: "1.18.2"
+        imagePullPolicy: Always
+    restartPolicy: Never
+
+configmap:
+  scripts:
+    exportRealm: export-realm.sh.tpl
+    backup: backup.sh.tpl
+    transfer: transfer.sh.tpl
+
+  backup:
+    keycloak:
+      k8s:
+        certsPath: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        tokenPath: /var/run/secrets/kubernetes.io/serviceaccount/token
+        namespace: fed
+        selector: "app.kubernetes.io/name=keycloak"
+      targetRealm: nextpaas
+    filename:
+      format: "keycloak-export-%BACKUP_REALM%-%BACKUP_DATE%.json"
+    servers:
+    - doj-dev@10.10.217.20
+    #- taco@10.13.1.99
+    #- taco@10.12.1.99
+    destinationDir: keycloak_bak
+
+secret:
+  password: "npinfra1!"
+

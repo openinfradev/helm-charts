@@ -1,0 +1,83 @@
+{{- if .Values.fluentbit.esTemplate.enabled }}
+{{- $envAll := . }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fluentbit-operator.name" . }}-cr-cm
+  namespace: {{ $.Release.Namespace }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "3"
+    "helm.sh/hook-delete-policy": hook-succeeded  
+  labels:
+    app: {{ template "fluentbit-operator.name" . }}-operator
+{{ include "fluentbit-operator.labels" . | indent 4 }}
+data:
+  create_template.sh: |-
+    #!/bin/sh
+    set -ev
+
+{{ range .Values.fluentbit.esTemplate.ilms }}
+    echo "trying to setting policy {{.name}}..."
+    curl -k -u ${ES_USER}:${ES_PW} \
+      -X PUT "${ES_URL}/_ilm/policy/{{.name}}" \
+      -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/ilm-{{.name}}.json
+{{- end}}
+
+{{ range .Values.fluentbit.esTemplate.templates }}
+    echo "trying to setting Template {{.name}}..."
+    curl -k -u ${ES_USER}:${ES_PW} \
+      -X PUT "${ES_URL}/_template/{{.name}}" \
+      -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/template-{{.name}}.json
+{{- end}}
+
+{{ range .Values.fluentbit.targetLogs }}
+  {{ if .index}}
+    echo "trying to create initial index {{.index}}-000001..."
+    curl -k -u ${ES_USER}:${ES_PW} \
+      -X PUT "${ES_URL}/{{.index}}-000001" \
+      -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/index-{{.index}}.json
+  {{- end }}
+  {{ range .multi_index}}
+    echo "trying to create initial index {{.index}}-000001..."
+    curl -k -u ${ES_USER}:${ES_PW} \
+      -X PUT "${ES_URL}/{{.index}}-000001" \
+      -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/index-{{.index}}.json
+  {{- end }}
+{{- end }}
+
+{{ range .Values.fluentbit.esTemplate.ilms }}
+  ilm-{{ .name }}.json: |- 
+    {{ toJson .json }}
+{{- end }}
+
+{{ range .Values.fluentbit.esTemplate.templates }}
+  template-{{ .name }}.json: |-
+    {{ toJson .json }}
+{{- end }}
+
+{{ range .Values.fluentbit.targetLogs }}
+  {{ if .index}}
+  index-{{ .index }}.json: |-
+    {
+      "aliases": {
+        "{{.index}}":{
+          "is_write_index": true
+        }
+      }
+    }
+  {{- end }}
+
+  {{ range .multi_index}}
+  index-{{ .index }}.json: |-
+    {
+      "aliases": {
+        "{{.index}}":{
+          "is_write_index": true
+        }
+      }
+    }
+  {{- end }}
+{{- end }}
+{{- end}}

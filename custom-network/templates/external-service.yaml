@@ -1,0 +1,53 @@
+{{- if .Values.service.enabled }}
+{{- $envAll := . }}
+{{- range .Values.service.endpoints }}
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: {{.name}}
+{{- if .namespace}}
+  namespace: {{.namespace}}
+{{- end}}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded
+  labels:
+{{ include "custom-network.labels" $envAll  | indent 4 }}-{{.name}}
+subsets:
+  - addresses:
+  {{- range .ips}}
+    - ip: {{ . }}
+  {{- end }}
+    ports:
+{{- range .ports }}
+    - name: {{.name }}
+      port: {{.port }}
+      protocol: {{.protocol }}
+{{- end}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{.name}}
+{{- if .namespace}}
+  namespace: {{.namespace}}
+{{- end}}
+{{- if .annotations }}
+  annotations:
+{{toYaml .annotations | indent 4 }}
+{{- end}}
+  labels:
+{{ include "custom-network.labels" $envAll  | indent 4 }}-{{.name}}
+spec:
+  type: {{ .type }}
+  ports:
+{{- range .ports }}  
+  - name: {{.name }}
+    port: {{.port }}
+    protocol: {{.protocol}}
+    targetPort: {{.port}}
+{{- end }}
+{{- end}}
+{{- end}}

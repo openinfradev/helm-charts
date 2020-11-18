@@ -1,0 +1,31 @@
+{{- if .Values.tacoWatcher.joinCluster.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: taco-cluster-config
+  namespace: {{ .Release.Namespace }}
+data:
+  join-cluster.json: |-
+{{- with .Values.tacoWatcher.joinCluster.body }}
+    {
+       "isMain":{{ .isMain }},
+       "id":"{{ .id }}",
+       "kibanaUrl":"{{ .kibanaUrl }}",
+       "grafanaUrl":"{{ .grafanaUrl }}",
+       "k8sUrl":"{{ .k8sUrl }}",
+       "mainPageType":"{{ .mainPageType }}",
+       "mainPageLink":"{{ .mainPageLink }}",
+       "k8sPageType":"{{ .k8sPageType }}",
+       "k8sPageLink":"{{.k8sPageLink }}",
+       "openstackPageType":"{{.openstackPageType }}",
+       "openstackPageLink":"{{ .openstackPageLink }}",
+       "cephPageType":"{{ .cephPageType }}",
+       "cephPageLink":"{{ .cephPageLink }}",
+       "k8sToken":"CHANGE_K8S_TOKEN",
+{{- if .menu.enabled }}
+       "menu": "[{\"data\":-102,\"menuType\":\"folder\",\"link\":\"\",\"urlType\":\"\",\"popupType\":\"\",\"expanded\":true,\"id\":1,\"parentId\":0,\"name\":\"Kubernetes\"},{\"data\":-103,\"menuType\":\"link\",\"link\":\"/d/_IOiw2TWz/cluster-status-taco?orgId=1&var-taco_cluster={{ .id }}\",\"urlType\":\"grafana\",\"popupType\":\"embedded\",\"id\":2,\"parentId\":1,\"name\":\"Cluster Status\"},{\"data\":-104,\"menuType\":\"link\",\"link\":\"/d/tKgHHwoWk/node-status-taco?orgId=1&var-taco_cluster={{ .id }}\",\"urlType\":\"grafana\",\"popupType\":\"embedded\",\"id\":3,\"parentId\":1,\"name\":\"Node Status\"},{\"data\":-105,\"menuType\":\"link\",\"link\":\"/d/okotUJJWz/hosts-status-taco?orgId=1&var-taco_cluster={{ .id }}\",\"urlType\":\"grafana\",\"popupType\":\"embedded\",\"id\":4,\"parentId\":1,\"name\":\"Host Status\"},{\"data\":-106,\"menuType\":\"link\",\"link\":\"/d/Us97AHbWz/pod-status-taco?orgId=1&var-taco_cluster={{ .id }}\",\"urlType\":\"grafana\",\"popupType\":\"embedded\",\"expanded\":true,\"id\":5,\"parentId\":1,\"name\":\"Pod Status\"},{\"data\":-111,\"menuType\":\"link\",\"link\":\"/d/l1jN0FAZz/node-network-detail-taco?orgId=1&var-taco_cluster={{ .id }}\",\"urlType\":\"grafana\",\"popupType\":\"embedded\",\"id\":6,\"parentId\":1,\"name\":\"Node Network\"},{\"data\":-112,\"menuType\":\"link\",\"link\":\"/d/mBjfpOaWk/compute-resources-cluster-taco?orgId=1&var-taco_cluster={{ .id }}\",\"urlType\":\"grafana\",\"popupType\":\"embedded\",\"id\":7,\"parentId\":1,\"name\":\"Compute Resource\"},{\"data\":-114,\"menuType\":\"folder\",\"link\":\"\",\"urlType\":\"\",\"popupType\":\"\",\"expanded\":true,\"id\":8,\"parentId\":0,\"name\":\"OpenStack\"},{\"data\":-115,\"menuType\":\"link\",\"link\":\"/d/OPENSTACK_SERVICE/openstack-service?orgId=1&var-taco_cluster={{ .id }}\",\"urlType\":\"grafana\",\"popupType\":\"embedded\",\"id\":9,\"parentId\":8,\"name\":\"Service\"},{\"data\":-116,\"menuType\":\"folder\",\"link\":\"\",\"urlType\":\"\",\"popupType\":\"\",\"expanded\":true,\"id\":10,\"parentId\":0,\"name\":\"Network\"},{\"data\":-117,\"menuType\":\"link\",\"link\":\"/d/pF9vmrTWz/calico?orgId=1&var-taco_cluster={{ .id }}\",\"urlType\":\"grafana\",\"popupType\":\"embedded\",\"id\":11,\"parentId\":10,\"name\":\"Calico\"},{\"data\":-118,\"menuType\":\"link\",\"link\":\"/d/3RDlWZAZk/kubernetes-calico-taco?orgId=1&var-taco_cluster={{ .id }}\",\"urlType\":\"grafana\",\"popupType\":\"embedded\",\"id\":12,\"parentId\":10,\"name\":\"Felix Dataplane\"},{\"data\":-119,\"menuType\":\"folder\",\"link\":\"\",\"urlType\":\"\",\"popupType\":\"\",\"expanded\":true,\"id\":13,\"parentId\":0,\"name\":\"Ceph\"},{\"data\":-120,\"menuType\":\"link\",\"link\":\"/d/oDgmEzwZk/ceph-cluster-taco??orgId=1&var-taco_cluster={{ .id }}\",\"urlType\":\"grafana\",\"popupType\":\"embedded\",\"id\":14,\"parentId\":13,\"name\":\"Ceph Cluster\"},{\"data\":-121,\"menuType\":\"link\",\"link\":\"/app/kibana#/discover?_g=()&_a=(columns:!(_source),index:a5c5da70-2885-11ea-bc14-058cf5a7efd0,interval:auto,query:(language:kuery,query:''''),sort:!(!(''@timestamp'',desc)))\",\"urlType\":\"kibana_dash\",\"popupType\":\"embedded\",\"id\":15,\"parentId\":0,\"name\":\"Discovery\"}]" 
+{{- end }}
+    }
+{{- end }}
+{{- end }}
+

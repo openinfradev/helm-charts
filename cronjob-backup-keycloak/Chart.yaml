@@ -1,0 +1,4 @@
+apiVersion: v2
+name: cronjob-backup-keycloak
+description: A cronjob helm chart for backup realm in keycloak
+version: 1.0.2

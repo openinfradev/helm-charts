@@ -1,6 +1,0 @@
-{{- if and .Values.elasticsearchOperator.enabled .Values.elasticsearchOperator.createNamespace }}
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: {{ default .Release.Namespace .Values.elasticsearchOperator.namespace }}
-{{- end }}

@@ -1,0 +1,82 @@
+{{ if and .Values.backup.enabled }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: backup-sql
+  namespace: {{ .Release.Namespace }}
+spec:
+  schedule: "{{ .Values.backup.scheduler }}"
+  successfulJobsHistoryLimit: {{ .Values.backup.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.backup.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          securityContext:
+            runAsUser: 0
+          initContainers:
+          - name: init-ssh-key
+            image: "{{ .Values.backup.init.image.repository }}:{{ .Values.backup.init.image.tag }}"
+            args:
+            - /bin/sh
+            - -c
+            - mkdir /work-dir2/.ssh/; cp /tmp/ssh/sshKey /work-dir2/.ssh/id_rsa;chmod 600 /work-dir2/.ssh/id_rsa
+            volumeMounts:
+            - name: workdir
+              mountPath: "/work-dir2"
+            - name: backup-scripts
+              mountPath: /scripts
+            - name: secret-ssh
+              mountPath: /tmp/ssh
+          - name: init-passwd
+            image: "{{ .Values.backup.init.image.repository }}:{{ .Values.backup.init.image.tag }}"
+            args:
+            - /bin/sh
+            - -c
+            - echo "*:*:*:$(POSTGRESQL_USER):$(POSTGRESQL_PASSWD)" > /work-dir/.pgpass;chmod 600 /work-dir/.pgpass
+            env:
+              - name: POSTGRESQL_USER
+                value: "postgres"
+              - name: POSTGRESQL_PASSWD
+                value: {{ index .Values "postgresql" "postgresqlPostgresPassword" | quote }}
+            volumeMounts:
+            - name: workdir
+              mountPath: "/work-dir"
+          containers:
+          - name: backup
+            image: "{{ .Values.backup.image.repository }}:{{ .Values.backup.image.tag }}"
+            command:
+            - sh
+            - -c 
+            - /scripts/backup.sh
+            env:
+              - name: POSTGRESQL_HOST
+                value: {{ include "keycloak.postgresql.fullname" . }}
+              - name: POSTGRESQL_USER
+                value: "postgres"
+              - name: BACKUP_USER
+                value: {{ .Values.backup.user }}
+              - name: BACKUP_HOST
+                value: {{ .Values.backup.host }}
+              - name: BACKUP_DESTINATION
+                value: {{ .Values.backup.destination }}
+              - name: BACKUP_DATABASES
+                value: {{ .Values.backup.databases }}
+            volumeMounts:
+            - name: workdir
+              mountPath: "/root"
+            - name: backup-scripts
+              mountPath: /scripts
+              readOnly: true
+          restartPolicy: OnFailure
+          volumes:
+          - name: workdir
+            emptyDir: {}
+          - name: backup-scripts
+            configMap:
+              name: backup-sql-cm
+              defaultMode: 0555
+          - name: secret-ssh
+            secret:
+              secretName: secret-ssh
+{{ end }}

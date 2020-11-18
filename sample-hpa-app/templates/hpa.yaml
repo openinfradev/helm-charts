@@ -1,0 +1,21 @@
+kind: HorizontalPodAutoscaler
+apiVersion: autoscaling/v2beta1
+metadata:
+  name: sample-metrics-app-hpa
+  namespace: {{ .Release.Namespace }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: sample-metrics-app
+  minReplicas: {{ .Values.replicas.min }}
+  maxReplicas: {{ .Values.replicas.max }}
+  metrics:
+  - type: Object
+    object:
+      target:
+        kind: Service
+        name: sample-metrics-app
+      metricName: http_requests
+      targetValue: 100
+

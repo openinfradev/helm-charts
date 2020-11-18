@@ -1,0 +1,54 @@
+{{- if and .Values.serviceMonitor.enabled .Values.serviceMonitor.ceph.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ceph-metrics
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: ceph-metrics
+spec:
+  endpoints:
+  - interval: {{ default "30s" .Values.serviceMonitor.ceph.interval }}
+    port: metrics
+    path: /metrics
+  jobLabel: ceph-exporter
+  namespaceSelector:
+{{- if .Values.serviceMonitor.ceph.anyNamespace }}
+    any: true
+{{ else }}
+    matchNames:
+    - {{ .Release.Namespace }}
+{{- end }}
+  selector:
+    matchLabels:
+      app: ceph-metrics
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: ceph-metrics
+  labels:
+    app: ceph-metrics
+  namespace: {{ .Release.Namespace }}
+subsets:
+  - addresses:
+{{ toYaml .Values.serviceMonitor.ceph.mon_hosts | indent 4 }}
+    ports:
+    - name: metrics
+      port: {{ default 9283 .Values.serviceMonitor.ceph.mon_port }}
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ceph-metrics
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: ceph-metrics
+spec:
+  ports:
+  - name: metrics
+    port: {{ default 9283 .Values.serviceMonitor.ceph.mon_port }}
+    protocol: TCP
+    targetPort: {{ default 9283 .Values.serviceMonitor.ceph.mon_port }}
+{{- end }}

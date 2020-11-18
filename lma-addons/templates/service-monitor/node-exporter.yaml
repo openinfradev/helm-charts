@@ -1,0 +1,28 @@
+{{- if and .Values.serviceMonitor.enabled .Values.serviceMonitor.nodeExporter.enabled }}
+apiVersion: {{ printf "%s/v1" (.Values.prometheus.crdApiGroup | default "monitoring.coreos.com") }}
+kind: ServiceMonitor
+metadata:
+  name: node-exporter
+  labels:
+    app: node-exporter
+spec:
+  namespaceSelector:
+    matchNames:
+    - {{ $.Release.Namespace }}
+  selector:
+    matchLabels:
+      app: prometheus-node-exporter
+  endpoints:
+  - port: metrics
+    {{- if .Values.serviceMonitor.nodeExporter.interval }}
+    interval: {{ .Values.serviceMonitor.nodeExporter.interval }}
+    {{- end }}
+{{- if .Values.serviceMonitor.nodeExporter.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.serviceMonitor.nodeExporter.metricRelabelings | indent 6) . }}
+{{- end }}
+{{- if .Values.serviceMonitor.nodeExporter.relabelings }}
+    relabelings:
+{{ toYaml .Values.serviceMonitor.nodeExporter.relabelings | indent 6 }}
+{{- end }}
+{{- end }}

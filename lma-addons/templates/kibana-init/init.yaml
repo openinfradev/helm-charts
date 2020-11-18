@@ -1,0 +1,25 @@
+{{- if .Values.kibanaInit.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kibana-init
+  namespace: {{ $.Release.Namespace }}
+  annotations:
+    "helm.sh/hook-weight": "3"
+spec:
+  template:
+    metadata:
+      name: kibana-init
+    spec:
+      containers:
+        - name: init
+          image: "{{ .Values.kibanaInit.image.repository }}:{{ .Values.kibanaInit.image.tag }}"
+          env:
+            - name: KIBANA_URL
+              value: {{ .Values.kibanaInit.url }}
+            - name: KIBANA_USER
+              value: {{ .Values.kibanaInit.username }}
+            - name: KIBANA_PASSWORD
+              value: {{ .Values.kibanaInit.password }}
+      restartPolicy: OnFailure
+{{- end }}

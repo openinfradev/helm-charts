@@ -34,6 +34,11 @@ The longest name that gets created adds and extra 37 characters, so truncation s
 {{- printf "%s-fluentbit" (include "fluentbit-operator.fullname" .) -}}
 {{- end }}
 
+{{/* Fullname suffixed with operator */}}
+{{- define "fluentbit-operator.exporter.fullname" -}}
+{{- printf "alerted-log-exporter" -}}
+{{- end }}
+
 {{/* Fullname suffixed with alertmanager */}}
 {{- define "fluentbit-operator.alertmanager.fullname" -}}
 {{- printf "%s-alertmanager" (include "fluentbit-operator.fullname" .) -}}
@@ -79,4 +84,47 @@ heritage: {{ $.Release.Service | quote }}
 {{- else -}}
     {{ default "default" .Values.alertmanager.serviceAccount.name }}
 {{- end -}}
+{{- end -}}
+
+{{/* Generate output for elasticsearch */}}
+{{- define "fluentbit-operator.fluentbit.output.es" -}}
+{{- $envAll := index . 0 -}}
+{{- $input := index . 1 -}}
+{{- $index := index . 2 -}}
+{{- $tag := index . 3 -}}
+---
+# Elasticsearch index 
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Output
+metadata:
+  name: {{ template "fluentbit-operator.fullname" $envAll  }}-es-{{ $index }}
+  namespace: {{ $envAll.Release.Namespace }}
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    app.kubernetes.io/version: v0.0.1
+spec:
+  match: {{ $tag | quote }}
+  es:
+{{- if $input.logstashFormat}}
+    logstashPrefix: {{ $index }}
+    logstashFormat: true
+{{- else if $index }}
+    index: {{ $index }}
+{{- end}}
+    host: {{ $envAll.Values.fluentbit.outputs.es.host }}
+    port: {{ $envAll.Values.fluentbit.outputs.es.port }}
+    type: {{ $input.type }}
+    httpUser:
+      valueFrom:
+        secretKeyRef:
+          name: {{ template "fluentbit-operator.fullname" $envAll }}-es-secret
+          key: username
+    httpPassword:
+      valueFrom:
+        secretKeyRef:
+          name: {{ template "fluentbit-operator.fullname" $envAll  }}-es-secret
+          key: password
+    tls:
+      verify: false
+
 {{- end -}}
