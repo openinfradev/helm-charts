@@ -22,9 +22,10 @@ jobs:
       - name: Publish Helm chart
         uses: stefanprodan/helm-gh-pages@master
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.HANU }}
           charts_dir: .
           charts_url:  https://openinfradev.github.io/hanu-helm-repo
           owner: openinfradev
           repository: hanu-helm-repo
           branch: main
+          linting: off
