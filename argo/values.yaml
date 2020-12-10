@@ -1,12 +1,12 @@
 workflowController:
   image:
     repository: argoproj/workflow-controller
-    tag: latest
+    tag: v2.12.0-rc4
 
   executor:
     image:
       repository: argoproj/argoexec
-      tag: latest
+      tag: v2.12.0-rc4
 
 argoServer:
   image:
