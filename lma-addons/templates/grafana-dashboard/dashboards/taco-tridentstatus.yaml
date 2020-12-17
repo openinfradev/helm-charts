@@ -28,17 +28,752 @@ data:
       "editable": true,
       "gnetId": null,
       "graphTooltip": 0,
-      "id": 27,
+      "id": 90,
+      "iteration": 1608168611330,
       "links": [],
       "panels": [
+        {
+          "collapsed": true,
+          "datasource": null,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 0
+          },
+          "id": 39,
+          "panels": [],
+          "title": "Trident POD Status",
+          "type": "row"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "description": "",
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "fillGradient": 0,
+          "grid": {},
+          "gridPos": {
+            "h": 12,
+            "w": 11,
+            "x": 0,
+            "y": 1
+          },
+          "hiddenSeries": false,
+          "id": 25,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "sort": "current",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "options": {
+            "dataLinks": []
+          },
+          "paceLength": 10,
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum (rate(container_cpu_usage_seconds_total{taco_cluster=~\"skb-suy-adm.*\",container=~\"trident.*\",namespace=~\"trident\",pod=~\"trident.*\"}[1m])) by (pod)\r",
+              "format": "time_series",
+              "instant": false,
+              "intervalFactor": 2,
+              "legendFormat": "{{pod}}",
+              "refId": "A",
+              "step": 2
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "CPU Usage ($taco_cluster)",
+          "tooltip": {
+            "msResolution": true,
+            "shared": true,
+            "sort": 0,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "editable": false,
+          "error": false,
+          "fill": 0,
+          "fillGradient": 0,
+          "grid": {},
+          "gridPos": {
+            "h": 12,
+            "w": 11,
+            "x": 11,
+            "y": 1
+          },
+          "hiddenSeries": false,
+          "id": 27,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "options": {
+            "dataLinks": []
+          },
+          "paceLength": 10,
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum (container_memory_working_set_bytes{taco_cluster=\"$taco_cluster\", container=~\"trident.*\",namespace=~\"trident\",pod=~\"trident.*\"}) by (pod)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "{{pod}} ",
+              "metric": "container_memory_usage_bytes",
+              "refId": "A",
+              "step": 10
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Memory Usage ($taco_cluster)",
+          "tooltip": {
+            "msResolution": true,
+            "shared": true,
+            "sort": 0,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "collapsed": false,
+          "datasource": null,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 13
+          },
+          "id": 35,
+          "panels": [],
+          "title": "PV Status",
+          "type": "row"
+        },
+        {
+          "datasource": null,
+          "gridPos": {
+            "h": 12,
+            "w": 22,
+            "x": 0,
+            "y": 14
+          },
+          "id": 37,
+          "links": [],
+          "options": {
+            "displayMode": "gradient",
+            "fieldOptions": {
+              "calcs": [
+                "last"
+              ],
+              "defaults": {
+                "decimals": 1,
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "#EAB839",
+                      "value": 75
+                    },
+                    {
+                      "color": "red",
+                      "value": 85
+                    }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": [],
+              "values": false
+            },
+            "orientation": "horizontal",
+            "showUnfilled": true
+          },
+          "pluginVersion": "6.6.2",
+          "targets": [
+            {
+              "expr": "(kubelet_volume_stats_used_bytes {taco_cluster=\"$taco_cluster\"} / kubelet_volume_stats_capacity_bytes {taco_cluster=\"$taco_cluster\"}) * 100 ",
+              "instant": true,
+              "intervalFactor": 1,
+              "legendFormat": "{{persistentvolumeclaim}}",
+              "refId": "A"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "$taco_cluster : PV Usage (%) ",
+          "type": "bargauge"
+        },
+        {
+          "collapsed": false,
+          "datasource": null,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 26
+          },
+          "id": 33,
+          "panels": [],
+          "title": "NetApp Storage Status",
+          "type": "row"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fill": 0,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 22,
+            "x": 0,
+            "y": 27
+          },
+          "hiddenSeries": false,
+          "id": 23,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pluginVersion": "6.6.2",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "trident_core_backend_info{backend_type=\"ontap-nas\"}",
+              "instant": false,
+              "interval": "",
+              "legendFormat": "{{backend_name}}:{{taco_cluster}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "NetApp Backend Status",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": 0,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
         {
           "cacheTimeout": null,
           "datasource": null,
           "gridPos": {
+            "h": 9,
+            "w": 10,
+            "x": 0,
+            "y": 34
+          },
+          "id": 22,
+          "links": [],
+          "options": {
+            "displayMode": "basic",
+            "fieldOptions": {
+              "calcs": [
+                "mean"
+              ],
+              "defaults": {
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              "overrides": [],
+              "values": false
+            },
+            "orientation": "horizontal",
+            "showUnfilled": true
+          },
+          "pluginVersion": "6.6.2",
+          "targets": [
+            {
+              "aggregation": "Last",
+              "decimals": 2,
+              "displayAliasType": "Warning / Critical",
+              "displayType": "Regular",
+              "displayValueWithAlias": "Never",
+              "expr": "sum by (operation) (trident_operation_duration_milliseconds_sum{success=\"true\"}) / sum by (operation) (trident_operation_duration_milliseconds_count{success=\"true\"})",
+              "instant": false,
+              "legendFormat": "{{ operation }}",
+              "refId": "A",
+              "units": "none",
+              "valueHandler": "Number Threshold"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Average duration in ms of operations performed by Trident",
+          "type": "bargauge"
+        },
+        {
+          "datasource": "Prometheus",
+          "gridPos": {
+            "h": 9,
+            "w": 7,
+            "x": 10,
+            "y": 34
+          },
+          "id": 12,
+          "interval": "",
+          "options": {
+            "colorMode": "value",
+            "fieldOptions": {
+              "calcs": [
+                "mean"
+              ],
+              "defaults": {
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-blue",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": [],
+              "values": true
+            },
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto"
+          },
+          "pluginVersion": "6.6.2",
+          "targets": [
+            {
+              "expr": "sort (trident_core_volume_count{taco_cluster=~\"skb.*\"} + on(backend_uuid) group_left(backend_name) trident_backend_info {taco_cluster=~\"skb.*\"})",
+              "instant": true,
+              "legendFormat": "{{ taco_cluster }}::{{ backend_name }}",
+              "refId": "A"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "# Volumes currently managed",
+          "type": "stat"
+        },
+        {
+          "datasource": "Prometheus",
+          "gridPos": {
+            "h": 9,
+            "w": 5,
+            "x": 17,
+            "y": 34
+          },
+          "id": 14,
+          "options": {
+            "colorMode": "value",
+            "fieldOptions": {
+              "calcs": [
+                "mean"
+              ],
+              "defaults": {
+                "decimals": 2,
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-blue",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              "overrides": [],
+              "values": true
+            },
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto"
+          },
+          "pluginVersion": "6.6.2",
+          "targets": [
+            {
+              "expr": "trident_core_volume_total_bytes / 1024 / 1024 / 1024",
+              "instant": true,
+              "legendFormat": "{{taco_cluster}}",
+              "refId": "A"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Capacity currently managed (GB)",
+          "type": "stat"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fill": 0,
+          "fillGradient": 0,
+          "gridPos": {
             "h": 8,
+            "w": 11,
+            "x": 0,
+            "y": 43
+          },
+          "hiddenSeries": false,
+          "id": 16,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pluginVersion": "6.6.2",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "trident_core_volume_count_by_backend",
+              "instant": false,
+              "interval": "",
+              "legendFormat": "{{backend}}:{{taco_cluster}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Number of volumes by Cluster",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": 0,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fill": 0,
+          "fillGradient": 1,
+          "gridPos": {
+            "h": 8,
+            "w": 11,
+            "x": 11,
+            "y": 43
+          },
+          "hiddenSeries": false,
+          "id": 18,
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "trident_core_volume_total_bytes_by_backend / 1024 / 1024 / 1024",
+              "legendFormat": "{{backend}}:{{taco_cluster}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Total Capacity by Cluster",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "short",
+              "label": "GB",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "cacheTimeout": null,
+          "datasource": null,
+          "description": "",
+          "gridPos": {
+            "h": 6,
             "w": 7,
             "x": 0,
-            "y": 0
+            "y": 51
           },
           "id": 20,
           "links": [],
@@ -88,24 +823,25 @@ data:
           "pluginVersion": "6.6.2",
           "targets": [
             {
-              "expr": "100-(sum (trident_rest_ops_seconds_total_count{status_code=~\"2..\"} OR on() vector(0)) / sum (trident_rest_ops_seconds_total_count)) * 100",
+              "expr": "100-(sum (trident_rest_ops_seconds_total_count{taco_cluster=~\"$taco_cluster\", status_code=~\"2..\"} OR on() vector(0)) / sum (trident_rest_ops_seconds_total_count{taco_cluster=~\"$taco_cluster\"})) * 100",
               "instant": false,
               "refId": "A"
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Percentage of Failed HTTP responses from Trident",
+          "title": "Percentage of Failed HTTP responses ($taco_cluster)",
           "type": "stat"
         },
         {
           "cacheTimeout": null,
           "datasource": null,
+          "description": "",
           "gridPos": {
-            "h": 8,
+            "h": 6,
             "w": 15,
             "x": 7,
-            "y": 0
+            "y": 51
           },
           "id": 21,
           "links": [],
@@ -151,8 +887,9 @@ data:
               "displayAliasType": "Warning / Critical",
               "displayType": "Regular",
               "displayValueWithAlias": "Never",
-              "expr": "(sum (trident_rest_ops_seconds_total_count) by (status_code)  / scalar (sum (trident_rest_ops_seconds_total_count))) * 100",
+              "expr": "(sum (trident_rest_ops_seconds_total_count{taco_cluster=\"$taco_cluster\"}) by (status_code)  / scalar (sum (trident_rest_ops_seconds_total_count{taco_cluster=\"$taco_cluster\"}))) * 100",
               "instant": false,
+              "legendFormat": "{{ status_code }}",
               "refId": "A",
               "units": "none",
               "valueHandler": "Number Threshold"
@@ -160,345 +897,8 @@ data:
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Percentage of HTTP responses from Trident",
+          "title": "Percentage of HTTP responses ($taco_cluster)",
           "type": "gauge"
-        },
-        {
-          "cacheTimeout": null,
-          "datasource": null,
-          "gridPos": {
-            "h": 9,
-            "w": 12,
-            "x": 0,
-            "y": 8
-          },
-          "id": 22,
-          "links": [],
-          "options": {
-            "displayMode": "basic",
-            "fieldOptions": {
-              "calcs": [
-                "mean"
-              ],
-              "defaults": {
-                "mappings": [],
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "green",
-                      "value": null
-                    }
-                  ]
-                }
-              },
-              "overrides": [],
-              "values": false
-            },
-            "orientation": "horizontal",
-            "showUnfilled": true
-          },
-          "pluginVersion": "6.6.2",
-          "targets": [
-            {
-              "aggregation": "Last",
-              "decimals": 2,
-              "displayAliasType": "Warning / Critical",
-              "displayType": "Regular",
-              "displayValueWithAlias": "Never",
-              "expr": "sum by (operation) (trident_operation_duration_milliseconds_sum{success=\"true\"}) / sum by (operation) (trident_operation_duration_milliseconds_count{success=\"true\"})",
-              "instant": false,
-              "refId": "A",
-              "units": "none",
-              "valueHandler": "Number Threshold"
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Average duration in ms of operations performed by Trident",
-          "type": "bargauge"
-        },
-        {
-          "datasource": "Prometheus",
-          "gridPos": {
-            "h": 9,
-            "w": 5,
-            "x": 12,
-            "y": 8
-          },
-          "id": 12,
-          "options": {
-            "colorMode": "value",
-            "fieldOptions": {
-              "calcs": [
-                "mean"
-              ],
-              "defaults": {
-                "mappings": [],
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "dark-blue",
-                      "value": null
-                    },
-                    {
-                      "color": "red",
-                      "value": 80
-                    }
-                  ]
-                }
-              },
-              "overrides": [],
-              "values": true
-            },
-            "graphMode": "area",
-            "justifyMode": "auto",
-            "orientation": "auto"
-          },
-          "pluginVersion": "6.6.2",
-          "targets": [
-            {
-              "expr": "sort (trident_core_volume_count)",
-              "instant": true,
-              "legendFormat": "{{`{{taco_cluster}}`}}",
-              "refId": "A"
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "# Volumes currently managed",
-          "type": "stat"
-        },
-        {
-          "datasource": "Prometheus",
-          "gridPos": {
-            "h": 9,
-            "w": 5,
-            "x": 17,
-            "y": 8
-          },
-          "id": 14,
-          "options": {
-            "colorMode": "value",
-            "fieldOptions": {
-              "calcs": [
-                "mean"
-              ],
-              "defaults": {
-                "decimals": 2,
-                "mappings": [],
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "dark-blue",
-                      "value": null
-                    }
-                  ]
-                }
-              },
-              "overrides": [],
-              "values": true
-            },
-            "graphMode": "area",
-            "justifyMode": "auto",
-            "orientation": "auto"
-          },
-          "pluginVersion": "6.6.2",
-          "targets": [
-            {
-              "expr": "trident_core_volume_total_bytes / 1024 / 1024 / 1024",
-              "instant": true,
-              "legendFormat": "{{`{{taco_cluster}}`}}",
-              "refId": "A"
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Capacity currently managed (GB)",
-          "type": "stat"
-        },
-        {
-          "aliasColors": {},
-          "bars": true,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "Prometheus",
-          "fill": 1,
-          "fillGradient": 0,
-          "gridPos": {
-            "h": 8,
-            "w": 11,
-            "x": 0,
-            "y": 17
-          },
-          "hiddenSeries": false,
-          "id": 16,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "nullPointMode": "null",
-          "options": {
-            "dataLinks": []
-          },
-          "percentage": false,
-          "pluginVersion": "6.6.2",
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": true,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "trident_core_volume_count_by_backend",
-              "instant": false,
-              "interval": "",
-              "legendFormat": "{{`{{backend}}`}}:{{`{{taco_cluster}}`}}",
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Number of volumes by Trident driver type",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "decimals": 0,
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": true,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "Prometheus",
-          "fill": 1,
-          "fillGradient": 1,
-          "gridPos": {
-            "h": 8,
-            "w": 11,
-            "x": 11,
-            "y": 17
-          },
-          "hiddenSeries": false,
-          "id": 18,
-          "legend": {
-            "alignAsTable": false,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "nullPointMode": "null",
-          "options": {
-            "dataLinks": []
-          },
-          "percentage": false,
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": true,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "trident_core_volume_total_bytes_by_backend / 1024 / 1024 / 1024",
-              "legendFormat": "{{`{{backend}}`}}:{{`{{taco_cluster}}`}}",
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Total Capacity by Trident driver type",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "decimals": null,
-              "format": "short",
-              "label": "GB",
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
         }
       ],
       "refresh": "30s",
@@ -506,7 +906,34 @@ data:
       "style": "dark",
       "tags": [],
       "templating": {
-        "list": []
+        "list": [
+          {
+            "allValue": null,
+            "current": {
+              "selected": true,
+              "text": "skb-suy-adm01",
+              "value": "skb-suy-adm01"
+            },
+            "datasource": "Prometheus",
+            "definition": "label_values(up, taco_cluster)",
+            "hide": 0,
+            "includeAll": false,
+            "label": "taco_cluster",
+            "multi": false,
+            "name": "taco_cluster",
+            "options": [],
+            "query": "label_values(up, taco_cluster)",
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 0,
+            "tagValuesQuery": "",
+            "tags": [],
+            "tagsQuery": "",
+            "type": "query",
+            "useTags": false
+          }
+        ]
       },
       "time": {
         "from": "now-30m",

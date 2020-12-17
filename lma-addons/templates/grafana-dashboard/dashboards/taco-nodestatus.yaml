@@ -29,8 +29,8 @@ data:
       "editable": true,
       "gnetId": 11074,
       "graphTooltip": 0,
-      "id": 21,
-      "iteration": 1598238939088,
+      "id": 79,
+      "iteration": 1608168479091,
       "links": [],
       "panels": [
         {
@@ -51,7 +51,26 @@ data:
                 "last"
               ],
               "defaults": {
-                "mappings": [],
+                "mappings": [
+                  {
+                    "from": "",
+                    "id": 1,
+                    "operator": "",
+                    "text": "Up",
+                    "to": "",
+                    "type": 1,
+                    "value": "1"
+                  },
+                  {
+                    "from": "",
+                    "id": 2,
+                    "operator": "",
+                    "text": "Down",
+                    "to": "",
+                    "type": 1,
+                    "value": "0"
+                  }
+                ],
                 "max": 1,
                 "min": 0,
                 "thresholds": {
@@ -72,8 +91,8 @@ data:
               "overrides": [],
               "values": false
             },
-            "graphMode": "none",
-            "justifyMode": "auto",
+            "graphMode": "area",
+            "justifyMode": "center",
             "orientation": "vertical"
           },
           "pluginVersion": "6.6.2",
@@ -84,9 +103,10 @@ data:
               "displayAliasType": "Warning / Critical",
               "displayType": "Regular",
               "displayValueWithAlias": "Never",
-              "expr": "sum(kube_node_status_condition{status=\"true\",condition=\"Ready\",taco_cluster=~\"$taco_cluster\"}) by (node)",
+              "expr": "sort (sum(kube_node_status_condition{status=\"true\",condition=\"Ready\",taco_cluster=~\"$taco_cluster\"}) by (node))",
               "instant": true,
-              "legendFormat": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{node}}",
               "refId": "A",
               "units": "none",
               "valueHandler": "Number Threshold"
@@ -108,7 +128,7 @@ data:
           },
           "id": 187,
           "panels": [],
-          "title": "Resource Overview (associated JOB)，Host：【$show_hostname】",
+          "title": "Resource Overview",
           "type": "row"
         },
         {
@@ -133,7 +153,7 @@ data:
           "styles": [
             {
               "alias": "Hostname",
-              "align": "auto",
+              "align": "center",
               "colorMode": null,
               "colors": [
                 "rgba(245, 54, 54, 0.9)",
@@ -153,7 +173,7 @@ data:
             },
             {
               "alias": "IP addr",
-              "align": "auto",
+              "align": "center",
               "colorMode": null,
               "colors": [
                 "rgba(245, 54, 54, 0.9)",
@@ -169,12 +189,12 @@ data:
               "mappingType": 1,
               "pattern": "instance",
               "thresholds": [],
-              "type": "number",
+              "type": "string",
               "unit": "short"
             },
             {
               "alias": "Memory",
-              "align": "auto",
+              "align": "center",
               "colorMode": null,
               "colors": [
                 "rgba(245, 54, 54, 0.9)",
@@ -192,7 +212,7 @@ data:
             },
             {
               "alias": "CPU Cores",
-              "align": "auto",
+              "align": "center",
               "colorMode": null,
               "colors": [
                 "rgba(245, 54, 54, 0.9)",
@@ -209,7 +229,7 @@ data:
             },
             {
               "alias": "Uptime",
-              "align": "auto",
+              "align": "center",
               "colorMode": null,
               "colors": [
                 "rgba(245, 54, 54, 0.9)",
@@ -226,7 +246,7 @@ data:
             },
             {
               "alias": "Partition used%*",
-              "align": "auto",
+              "align": "center",
               "colorMode": "cell",
               "colors": [
                 "rgba(50, 172, 45, 0.97)",
@@ -246,7 +266,7 @@ data:
             },
             {
               "alias": "CPU used%",
-              "align": "auto",
+              "align": "center",
               "colorMode": "cell",
               "colors": [
                 "rgba(50, 172, 45, 0.97)",
@@ -266,7 +286,7 @@ data:
             },
             {
               "alias": "Memory used%",
-              "align": "auto",
+              "align": "center",
               "colorMode": "cell",
               "colors": [
                 "rgba(50, 172, 45, 0.97)",
@@ -286,7 +306,7 @@ data:
             },
             {
               "alias": "Disk read*",
-              "align": "auto",
+              "align": "center",
               "colorMode": "cell",
               "colors": [
                 "rgba(50, 172, 45, 0.97)",
@@ -298,15 +318,15 @@ data:
               "mappingType": 1,
               "pattern": "Value #H",
               "thresholds": [
-                "10485760",
-                "20485760"
+                "52428800",
+                "83886080"
               ],
               "type": "number",
               "unit": "Bps"
             },
             {
               "alias": "Disk write*",
-              "align": "auto",
+              "align": "center",
               "colorMode": "cell",
               "colors": [
                 "rgba(50, 172, 45, 0.97)",
@@ -318,15 +338,15 @@ data:
               "mappingType": 1,
               "pattern": "Value #I",
               "thresholds": [
-                "10485760",
-                "20485760"
+                "52428800",
+                "83886080"
               ],
               "type": "number",
               "unit": "Bps"
             },
             {
               "alias": "Download*",
-              "align": "auto",
+              "align": "center",
               "colorMode": "cell",
               "colors": [
                 "rgba(50, 172, 45, 0.97)",
@@ -338,15 +358,15 @@ data:
               "mappingType": 1,
               "pattern": "Value #J",
               "thresholds": [
-                "30485760",
-                "104857600"
+                "524288000",
+                "1048576000"
               ],
               "type": "number",
               "unit": "bps"
             },
             {
               "alias": "Upload*",
-              "align": "auto",
+              "align": "center",
               "colorMode": "cell",
               "colors": [
                 "rgba(50, 172, 45, 0.97)",
@@ -358,15 +378,15 @@ data:
               "mappingType": 1,
               "pattern": "Value #K",
               "thresholds": [
-                "30485760",
-                "104857600"
+                "524288000",
+                "1048576000"
               ],
               "type": "number",
               "unit": "bps"
             },
             {
               "alias": "5m load",
-              "align": "auto",
+              "align": "center",
               "colorMode": null,
               "colors": [
                 "rgba(245, 54, 54, 0.9)",
@@ -399,7 +419,7 @@ data:
           ],
           "targets": [
             {
-              "expr": "node_uname_info{job=~\"$job\"} - 0",
+              "expr": "node_uname_info{job=~\"$job\",taco_cluster=~\"$taco_cluster\"} - 0",
               "format": "table",
               "instant": true,
               "interval": "",
@@ -407,7 +427,7 @@ data:
               "refId": "A"
             },
             {
-              "expr": "sum(time() - node_boot_time_seconds{job=~\"$job\"})by(instance)",
+              "expr": "sum(time() - node_boot_time_seconds{job=~\"$job\",taco_cluster=~\"$taco_cluster\"})by(instance)",
               "format": "table",
               "hide": false,
               "instant": true,
@@ -416,7 +436,7 @@ data:
               "refId": "D"
             },
             {
-              "expr": "node_memory_MemTotal_bytes{job=~\"$job\"} - 0",
+              "expr": "node_memory_MemTotal_bytes{job=~\"$job\",taco_cluster=~\"$taco_cluster\"} - 0",
               "format": "table",
               "hide": false,
               "instant": true,
@@ -425,7 +445,7 @@ data:
               "refId": "B"
             },
             {
-              "expr": "count(node_cpu_seconds_total{job=~\"$job\",mode='system'}) by (instance)",
+              "expr": "count(node_cpu_seconds_total{job=~\"$job\",mode='system',taco_cluster=~\"$taco_cluster\"}) by (instance)",
               "format": "table",
               "hide": false,
               "instant": true,
@@ -434,7 +454,7 @@ data:
               "refId": "C"
             },
             {
-              "expr": "node_load5{job=~\"$job\"}",
+              "expr": "node_load5{job=~\"$job\",taco_cluster=~\"$taco_cluster\"}",
               "format": "table",
               "instant": true,
               "interval": "",
@@ -442,7 +462,7 @@ data:
               "refId": "L"
             },
             {
-              "expr": "(1 - avg(irate(node_cpu_seconds_total{job=~\"$job\",mode=\"idle\"}[5m])) by (instance)) * 100",
+              "expr": "(1 - avg(irate(node_cpu_seconds_total{job=~\"$job\",mode=\"idle\",taco_cluster=~\"$taco_cluster\"}[5m])) by (instance)) * 100",
               "format": "table",
               "hide": false,
               "instant": true,
@@ -451,7 +471,7 @@ data:
               "refId": "F"
             },
             {
-              "expr": "(1 - (node_memory_MemAvailable_bytes{job=~\"$job\"} / (node_memory_MemTotal_bytes{job=~\"$job\"})))* 100",
+              "expr": "(1 - (node_memory_MemAvailable_bytes{job=~\"$job\",taco_cluster=~\"$taco_cluster\"} / (node_memory_MemTotal_bytes{job=~\"$job\",taco_cluster=~\"$taco_cluster\"})))* 100",
               "format": "table",
               "hide": false,
               "instant": true,
@@ -460,7 +480,7 @@ data:
               "refId": "G"
             },
             {
-              "expr": "max((node_filesystem_size_bytes{job=~\"$job\",fstype=~\"ext.?|xfs\"}-node_filesystem_free_bytes{job=~\"$job\",fstype=~\"ext.?|xfs\"}) *100/(node_filesystem_avail_bytes {job=~\"$job\",fstype=~\"ext.?|xfs\"}+(node_filesystem_size_bytes{job=~\"$job\",fstype=~\"ext.?|xfs\"}-node_filesystem_free_bytes{job=~\"$job\",fstype=~\"ext.?|xfs\"})))by(instance)",
+              "expr": "max((node_filesystem_size_bytes{job=~\"$job\",fstype=~\"ext.?|xfs\",taco_cluster=~\"$taco_cluster\"}-node_filesystem_free_bytes{job=~\"$job\",fstype=~\"ext.?|xfs\",taco_cluster=~\"$taco_cluster\"}) *100/(node_filesystem_avail_bytes {job=~\"$job\",fstype=~\"ext.?|xfs\",taco_cluster=~\"$taco_cluster\"}+(node_filesystem_size_bytes{job=~\"$job\",fstype=~\"ext.?|xfs\",taco_cluster=~\"$taco_cluster\"}-node_filesystem_free_bytes{job=~\"$job\",fstype=~\"ext.?|xfs\",taco_cluster=~\"$taco_cluster\"})))by(instance)",
               "format": "table",
               "hide": false,
               "instant": true,
@@ -469,7 +489,7 @@ data:
               "refId": "E"
             },
             {
-              "expr": "max(irate(node_disk_read_bytes_total{job=~\"$job\"}[5m])) by (instance)",
+              "expr": "max(irate(node_disk_read_bytes_total{job=~\"$job\",taco_cluster=~\"$taco_cluster\"}[5m])) by (instance)",
               "format": "table",
               "hide": false,
               "instant": true,
@@ -478,7 +498,7 @@ data:
               "refId": "H"
             },
             {
-              "expr": "max(irate(node_disk_written_bytes_total{job=~\"$job\"}[5m])) by (instance)",
+              "expr": "max(irate(node_disk_written_bytes_total{job=~\"$job\",taco_cluster=~\"$taco_cluster\"}[5m])) by (instance)",
               "format": "table",
               "hide": false,
               "instant": true,
@@ -487,7 +507,7 @@ data:
               "refId": "I"
             },
             {
-              "expr": "max(irate(node_network_receive_bytes_total{job=~\"$job\"}[5m])*8) by (instance)",
+              "expr": "max(irate(node_network_receive_bytes_total{job=~\"$job\",taco_cluster=~\"$taco_cluster\"}[5m])*8) by (instance)",
               "format": "table",
               "hide": false,
               "instant": true,
@@ -496,7 +516,7 @@ data:
               "refId": "J"
             },
             {
-              "expr": "max(irate(node_network_transmit_bytes_total{job=~\"$job\"}[5m])*8) by (instance)",
+              "expr": "max(irate(node_network_transmit_bytes_total{job=~\"$job\",taco_cluster=~\"$taco_cluster\"}[5m])*8) by (instance)",
               "format": "table",
               "hide": false,
               "instant": true,
@@ -556,7 +576,7 @@ data:
               "expr": "(1 - avg(irate(node_cpu_seconds_total{job=~\"$job\",mode=\"idle\", taco_cluster=\"$taco_cluster\"}[5m])) by (instance)) * 100 + on(instance) group_left(nodename) \nnode_uname_info{taco_cluster=~\"$taco_cluster\"}",
               "format": "time_series",
               "intervalFactor": 3,
-              "legendFormat": "{{`{{nodename}}`}}",
+              "legendFormat": "{{nodename}}",
               "refId": "A"
             }
           ],
@@ -567,7 +587,7 @@ data:
           "title": "CPU Usage",
           "tooltip": {
             "shared": true,
-            "sort": 0,
+            "sort": 2,
             "value_type": "individual"
           },
           "type": "graph",
@@ -644,7 +664,7 @@ data:
           "targets": [
             {
               "expr": "(1 - (node_memory_MemAvailable_bytes{job=~\"$job\", taco_cluster=\"$taco_cluster\"} / (node_memory_MemTotal_bytes{job=~\"$job\", taco_cluster=\"$taco_cluster\"})))* 100 + on(instance) group_left(nodename) \nnode_uname_info{taco_cluster=~\"$taco_cluster\"}",
-              "legendFormat": "{{`{{nodename}}`}}",
+              "legendFormat": "{{nodename}}",
               "refId": "A"
             }
           ],
@@ -655,7 +675,7 @@ data:
           "title": "Mem Usage",
           "tooltip": {
             "shared": true,
-            "sort": 0,
+            "sort": 2,
             "value_type": "individual"
           },
           "type": "graph",
@@ -695,7 +715,7 @@ data:
           "dashLength": 10,
           "dashes": false,
           "datasource": "Prometheus",
-          "fill": 1,
+          "fill": 0,
           "fillGradient": 0,
           "gridPos": {
             "h": 7,
@@ -732,7 +752,7 @@ data:
           "targets": [
             {
               "expr": "max((node_filesystem_size_bytes{job=~\"$job\",fstype=~\"ext.?|xfs\",taco_cluster=\"$taco_cluster\"}-node_filesystem_free_bytes{job=~\"$job\",fstype=~\"ext.?|xfs\",taco_cluster=\"$taco_cluster\"}) *100/(node_filesystem_avail_bytes {job=~\"$job\",fstype=~\"ext.?|xfs\",taco_cluster=\"$taco_cluster\"}+(node_filesystem_size_bytes{job=~\"$job\",fstype=~\"ext.?|xfs\",taco_cluster=\"$taco_cluster\"}-node_filesystem_free_bytes{job=~\"$job\",fstype=~\"ext.?|xfs\",taco_cluster=\"$taco_cluster\"})))by(instance) + on(instance) group_left(nodename) \nnode_uname_info{taco_cluster=~\"$taco_cluster\"}",
-              "legendFormat": "{{`{{nodename}}`}}",
+              "legendFormat": "{{nodename}}",
               "refId": "A"
             }
           ],
@@ -743,7 +763,7 @@ data:
           "title": "Disk Usage",
           "tooltip": {
             "shared": true,
-            "sort": 0,
+            "sort": 2,
             "value_type": "individual"
           },
           "type": "graph",
@@ -820,7 +840,7 @@ data:
           "targets": [
             {
               "expr": "sum by (instance) (irate(node_network_transmit_bytes_total{device=~\"ens\\\\w*\", taco_cluster=~\"$taco_cluster\"}[5m])) * 8 + on(instance) group_left(nodename) \nnode_uname_info{taco_cluster=~\"$taco_cluster\"}",
-              "legendFormat": "{{`{{nodename}}`}}",
+              "legendFormat": "{{nodename}}",
               "refId": "A"
             }
           ],
@@ -908,7 +928,7 @@ data:
           "targets": [
             {
               "expr": "sum by (instance) (irate(node_network_receive_bytes_total{device=~\"ens\\\\w*\", taco_cluster=~\"$taco_cluster\"}[5m])) * 8 + on(instance) group_left(nodename) \nnode_uname_info{taco_cluster=~\"$taco_cluster\"}",
-              "legendFormat": "{{`{{nodename}}`}}",
+              "legendFormat": "{{nodename}}",
               "refId": "A"
             }
           ],
@@ -1993,7 +2013,7 @@ data:
               "instant": true,
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "{{`{{instance}}`}}",
+              "legendFormat": "{{instance}}",
               "refId": "A",
               "step": 20
             }
@@ -2645,7 +2665,7 @@ data:
               "instant": false,
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "{{`{{mountpoint}}`}}",
+              "legendFormat": "{{mountpoint}}",
               "refId": "A"
             }
           ],
@@ -2759,7 +2779,7 @@ data:
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "{{`{{device}}`}}_Read bytes",
+              "legendFormat": "{{device}}_Read bytes",
               "refId": "A",
               "step": 10
             },
@@ -2769,7 +2789,7 @@ data:
               "hide": false,
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "{{`{{device}}`}}_Written bytes",
+              "legendFormat": "{{device}}_Written bytes",
               "refId": "B",
               "step": 10
             }
@@ -2885,7 +2905,7 @@ data:
               "instant": false,
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "{{`{{device}}`}}_Read time",
+              "legendFormat": "{{device}}_Read time",
               "refId": "B"
             },
             {
@@ -2895,7 +2915,7 @@ data:
               "instant": false,
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "{{`{{device}}`}}_Write time",
+              "legendFormat": "{{device}}_Write time",
               "refId": "C"
             }
           ],
@@ -3008,7 +3028,7 @@ data:
               "hide": false,
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "{{`{{device}}`}}_Reads completed",
+              "legendFormat": "{{device}}_Reads completed",
               "refId": "A",
               "step": 10
             },
@@ -3018,7 +3038,7 @@ data:
               "hide": false,
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "{{`{{device}}`}}_Writes completed",
+              "legendFormat": "{{device}}_Writes completed",
               "refId": "B",
               "step": 10
             }
@@ -3140,7 +3160,7 @@ data:
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "{{`{{device}}`}}_ IO time",
+              "legendFormat": "{{device}}_ IO time",
               "refId": "C"
             }
           ],
@@ -3687,6 +3707,489 @@ data:
           "dashes": false,
           "datasource": "Prometheus",
           "decimals": 2,
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 0,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 11,
+            "w": 24,
+            "x": 0,
+            "y": 86
+          },
+          "height": "300",
+          "hiddenSeries": false,
+          "id": 213,
+          "interval": "",
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": null,
+            "sort": "current",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "{{ pod }}",
+              "fill": 1,
+              "fillGradient": 1
+            },
+            {
+              "alias": "suy-aw01",
+              "color": "#3274D9",
+              "lines": true
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sort_desc (sum by (pod) (rate(container_cpu_usage_seconds_total{taco_cluster=~\"$taco_cluster\", node=\"$show_hostname\", image!=\"\"}[2m])))",
+              "legendFormat": "{{ pod }}",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "CPU Usage of All Pods in $show_hostname (Rate of CPU Time)",
+          "tooltip": {
+            "shared": true,
+            "sort": 2,
+            "value_type": "individual"
+          },
+          "transformations": [],
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "192.168.200.241:9100_TCP_alloc": "semi-dark-blue",
+            "TCP": "#6ED0E0",
+            "TCP_alloc": "blue"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "decimals": 2,
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 0,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 11,
+            "w": 24,
+            "x": 0,
+            "y": 97
+          },
+          "height": "300",
+          "hiddenSeries": false,
+          "id": 214,
+          "interval": "",
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": null,
+            "sort": "current",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "avg by(pod) (container_memory_working_set_bytes{taco_cluster=~\"$taco_cluster\", node=\"$show_hostname\",container!=\"POD\",container!=\"\",image!=\"\"})",
+              "legendFormat": "{{ pod }}",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Memory Usage of All Pods in $show_hostname (2min avg)",
+          "tooltip": {
+            "shared": true,
+            "sort": 2,
+            "value_type": "individual"
+          },
+          "transformations": [],
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "decbytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "decbytes",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "192.168.200.241:9100_TCP_alloc": "semi-dark-blue",
+            "TCP": "#6ED0E0",
+            "TCP_alloc": "blue"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "decimals": 2,
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 0,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 10,
+            "w": 24,
+            "x": 0,
+            "y": 108
+          },
+          "height": "300",
+          "hiddenSeries": false,
+          "id": 158,
+          "interval": "",
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": null,
+            "sort": "current",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "/.*Sockets_used/",
+              "color": "#E02F44",
+              "lines": false,
+              "pointradius": 1,
+              "points": true,
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum by (pod) (rate(container_network_receive_bytes_total{taco_cluster=~\"$taco_cluster\", interface=~\"cali.*\", node=\"$show_hostname\"}[1m])) * 8",
+              "format": "time_series",
+              "hide": false,
+              "instant": false,
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{pod}}",
+              "refId": "A",
+              "step": 20
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "RX of All Pods in $show_hostname (from calico device)",
+          "tooltip": {
+            "shared": true,
+            "sort": 2,
+            "value_type": "individual"
+          },
+          "transformations": [],
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": "Total_Sockets_used",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "192.168.200.241:9100_TCP_alloc": "semi-dark-blue",
+            "TCP": "#6ED0E0",
+            "TCP_alloc": "blue"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "decimals": 2,
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 0,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 11,
+            "w": 24,
+            "x": 0,
+            "y": 118
+          },
+          "height": "300",
+          "hiddenSeries": false,
+          "id": 212,
+          "interval": "",
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": null,
+            "sort": "current",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "/.*Sockets_used/",
+              "color": "#E02F44",
+              "lines": false,
+              "pointradius": 1,
+              "points": true,
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum by (pod) (rate(container_network_transmit_bytes_total{taco_cluster=~\"$taco_cluster\", interface=~\"cali.*\", node=\"$show_hostname\"}[1m])) * 8",
+              "format": "time_series",
+              "hide": false,
+              "instant": false,
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{pod}}",
+              "refId": "A",
+              "step": 20
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "TX of All Pods in $show_hostname (from calico device)",
+          "tooltip": {
+            "shared": true,
+            "sort": 2,
+            "value_type": "individual"
+          },
+          "transformations": [],
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": "Total_Sockets_used",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "192.168.200.241:9100_TCP_alloc": "semi-dark-blue",
+            "TCP": "#6ED0E0",
+            "TCP_alloc": "blue"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "decimals": 2,
           "description": "Sockets_used - Sockets currently in use\n\nCurrEstab - TCP connections for which the current state is either ESTABLISHED or CLOSE- WAIT\n\nTCP_alloc - Allocated sockets\n\nTCP_tw - Sockets wating close\n\nUDP_inuse - Udp sockets currently in use\n\nRetransSegs - TCP retransmission packets\n\nOutSegs - Number of packets sent by TCP\n\nInSegs - Number of packets received by TCP",
           "fieldConfig": {
             "defaults": {
@@ -3700,11 +4203,11 @@ data:
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 86
+            "y": 129
           },
           "height": "300",
           "hiddenSeries": false,
-          "id": 158,
+          "id": 211,
           "interval": "",
           "legend": {
             "alignAsTable": true,
@@ -3790,14 +4293,14 @@ data:
               "expr": "irate(node_netstat_Tcp_PassiveOpens{instance=~'$node'}[5m])",
               "hide": true,
               "interval": "",
-              "legendFormat": "{{`{{instance}}`}}_Tcp_PassiveOpens",
+              "legendFormat": "{{instance}}_Tcp_PassiveOpens",
               "refId": "G"
             },
             {
               "expr": "irate(node_netstat_Tcp_ActiveOpens{instance=~'$node'}[5m])",
               "hide": true,
               "interval": "",
-              "legendFormat": "{{`{{instance}}`}}_Tcp_ActiveOpens",
+              "legendFormat": "{{instance}}_Tcp_ActiveOpens",
               "refId": "F"
             },
             {
@@ -3879,7 +4382,7 @@ data:
           {
             "allValue": null,
             "current": {
-              "selected": false,
+              "selected": true,
               "text": "skb-suy-adm01",
               "value": "skb-suy-adm01"
             },
@@ -3987,13 +4490,14 @@ data:
             "allFormat": "glob",
             "allValue": ".*",
             "current": {
-              "selected": false,
               "text": "All",
-              "value": "$__all"
+              "value": [
+                "$__all"
+              ]
             },
             "datasource": "Prometheus",
             "definition": "label_values(node_network_info{taco_cluster=~\"$taco_cluster\", device!~'tap.*|veth.*|br.*|docker.*|virbr.*|lo.*|cni.*'},device)",
-            "hide": 0,
+            "hide": 2,
             "includeAll": true,
             "index": -1,
             "label": "NIC",
@@ -4067,7 +4571,7 @@ data:
         ]
       },
       "time": {
-        "from": "now-12h",
+        "from": "now-1h",
         "to": "now"
       },
       "timepicker": {

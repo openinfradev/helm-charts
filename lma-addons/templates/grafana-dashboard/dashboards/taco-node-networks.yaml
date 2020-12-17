@@ -28,8 +28,8 @@ data:
       "editable": true,
       "gnetId": null,
       "graphTooltip": 0,
-      "id": 2,
-      "iteration": 1598238982315,
+      "id": 97,
+      "iteration": 1608168531443,
       "links": [],
       "panels": [
         {
@@ -43,6 +43,7 @@ data:
           "dashLength": 10,
           "dashes": false,
           "datasource": "$datasource",
+          "decimals": 0,
           "fill": 2,
           "fillGradient": 0,
           "gridPos": {
@@ -55,13 +56,13 @@ data:
           "id": 22,
           "legend": {
             "alignAsTable": true,
-            "avg": true,
+            "avg": false,
             "current": true,
             "max": true,
-            "min": true,
+            "min": false,
             "rightSide": true,
             "show": true,
-            "sideWidth": 300,
+            "sideWidth": null,
             "total": false,
             "values": true
           },
@@ -119,7 +120,7 @@ data:
               "format": "time_series",
               "hide": true,
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Receive",
+              "legendFormat": "{{device}} - Receive",
               "refId": "O",
               "step": 4
             },
@@ -128,7 +129,7 @@ data:
               "format": "time_series",
               "hide": true,
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Transmit",
+              "legendFormat": "{{device}} - Transmit",
               "refId": "P",
               "step": 4
             },
@@ -136,7 +137,7 @@ data:
               "expr": "irate(node_network_receive_packets_total{instance=~\"$server\"}[5m])",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Receive",
+              "legendFormat": "{{device}} - Receive",
               "refId": "A",
               "step": 4
             },
@@ -144,7 +145,7 @@ data:
               "expr": "irate(node_network_transmit_packets_total{instance=~\"$server\"}[5m])",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Transmit",
+              "legendFormat": "{{device}} - Transmit",
               "refId": "B",
               "step": 4
             }
@@ -208,15 +209,15 @@ data:
           "id": 20,
           "legend": {
             "alignAsTable": true,
-            "avg": true,
+            "avg": false,
             "current": true,
             "hideEmpty": false,
             "hideZero": false,
             "max": true,
-            "min": true,
+            "min": false,
             "rightSide": true,
             "show": true,
-            "sideWidth": 300,
+            "sideWidth": null,
             "sort": "current",
             "sortDesc": true,
             "total": false,
@@ -276,7 +277,7 @@ data:
               "format": "time_series",
               "hide": true,
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Receive errors",
+              "legendFormat": "{{device}} - Receive errors",
               "refId": "E",
               "step": 4
             },
@@ -285,7 +286,7 @@ data:
               "format": "time_series",
               "hide": true,
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Transmit errors",
+              "legendFormat": "{{device}} - Transmit errors",
               "refId": "F",
               "step": 4
             },
@@ -294,7 +295,7 @@ data:
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Receive errors",
+              "legendFormat": "{{device}} - Receive errors",
               "refId": "A",
               "step": 4
             },
@@ -303,7 +304,7 @@ data:
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Transmit errors",
+              "legendFormat": "{{device}} - Transmit errors",
               "refId": "B",
               "step": 4
             }
@@ -367,15 +368,15 @@ data:
           "id": 18,
           "legend": {
             "alignAsTable": true,
-            "avg": true,
+            "avg": false,
             "current": true,
             "hideEmpty": false,
             "hideZero": false,
             "max": true,
-            "min": true,
+            "min": false,
             "rightSide": true,
             "show": true,
-            "sideWidth": 300,
+            "sideWidth": null,
             "sort": "current",
             "sortDesc": true,
             "total": false,
@@ -435,7 +436,7 @@ data:
               "format": "time_series",
               "hide": true,
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Receive drop",
+              "legendFormat": "{{device}} - Receive drop",
               "refId": "G",
               "step": 4
             },
@@ -444,7 +445,7 @@ data:
               "format": "time_series",
               "hide": true,
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Transmit drop",
+              "legendFormat": "{{device}} - Transmit drop",
               "refId": "H",
               "step": 4
             },
@@ -452,7 +453,7 @@ data:
               "expr": "irate(node_network_receive_drop_total{instance=~\"$server\"}[5m])",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Receive drop",
+              "legendFormat": "{{device}} - Receive drop",
               "refId": "A",
               "step": 4
             },
@@ -460,7 +461,7 @@ data:
               "expr": "irate(node_network_transmit_drop_total{instance=~\"$server\"}[5m])",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Transmit drop",
+              "legendFormat": "{{device}} - Transmit drop",
               "refId": "B",
               "step": 4
             }
@@ -524,15 +525,15 @@ data:
           "id": 16,
           "legend": {
             "alignAsTable": true,
-            "avg": true,
+            "avg": false,
             "current": true,
             "hideEmpty": false,
             "hideZero": false,
             "max": true,
-            "min": true,
+            "min": false,
             "rightSide": true,
             "show": true,
-            "sideWidth": 300,
+            "sideWidth": null,
             "sort": "current",
             "sortDesc": true,
             "total": false,
@@ -592,7 +593,7 @@ data:
               "format": "time_series",
               "hide": true,
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Receive compressed",
+              "legendFormat": "{{device}} - Receive compressed",
               "refId": "C",
               "step": 4
             },
@@ -601,7 +602,7 @@ data:
               "format": "time_series",
               "hide": true,
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Transmit compressed",
+              "legendFormat": "{{device}} - Transmit compressed",
               "refId": "D",
               "step": 4
             },
@@ -609,7 +610,7 @@ data:
               "expr": "irate(node_network_receive_compressed_total{instance=~\"$server\"}[5m])",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Receive compressed",
+              "legendFormat": "{{device}} - Receive compressed",
               "refId": "A",
               "step": 4
             },
@@ -617,7 +618,7 @@ data:
               "expr": "irate(node_network_transmit_compressed_total{instance=~\"$server\"}[5m])",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Transmit compressed",
+              "legendFormat": "{{device}} - Transmit compressed",
               "refId": "B",
               "step": 4
             }
@@ -669,6 +670,7 @@ data:
           "dashLength": 10,
           "dashes": false,
           "datasource": "$datasource",
+          "decimals": 1,
           "fill": 2,
           "fillGradient": 0,
           "gridPos": {
@@ -681,15 +683,15 @@ data:
           "id": 14,
           "legend": {
             "alignAsTable": true,
-            "avg": true,
+            "avg": false,
             "current": true,
             "hideEmpty": false,
             "hideZero": false,
             "max": true,
-            "min": true,
+            "min": false,
             "rightSide": true,
             "show": true,
-            "sideWidth": 300,
+            "sideWidth": null,
             "sort": "current",
             "sortDesc": true,
             "total": false,
@@ -749,7 +751,7 @@ data:
               "format": "time_series",
               "hide": true,
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Receive multicast",
+              "legendFormat": "{{device}} - Receive multicast",
               "refId": "M",
               "step": 4
             },
@@ -757,21 +759,21 @@ data:
               "expr": "irate(node_network_transmit_multicast{instance=~\"$server\"}[5m])",
               "hide": true,
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Transmit multicast",
+              "legendFormat": "{{device}} - Transmit multicast",
               "refId": "A"
             },
             {
               "expr": "irate(node_network_receive_multicast_total{instance=~\"$server\"}[5m])",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Receive multicast",
+              "legendFormat": "{{device}} - Receive multicast",
               "refId": "B",
               "step": 4
             },
             {
               "expr": "irate(node_network_transmit_multicast_total{instance=~\"$server\"}[5m])",
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Transmit multicast",
+              "legendFormat": "{{device}} - Transmit multicast",
               "refId": "C"
             }
           ],
@@ -834,15 +836,15 @@ data:
           "id": 12,
           "legend": {
             "alignAsTable": true,
-            "avg": true,
+            "avg": false,
             "current": true,
             "hideEmpty": false,
             "hideZero": false,
             "max": true,
-            "min": true,
+            "min": false,
             "rightSide": true,
             "show": true,
-            "sideWidth": 300,
+            "sideWidth": null,
             "sort": "current",
             "sortDesc": true,
             "total": false,
@@ -902,7 +904,7 @@ data:
               "format": "time_series",
               "hide": true,
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Receive fifo",
+              "legendFormat": "{{device}} - Receive fifo",
               "refId": "I",
               "step": 4
             },
@@ -911,7 +913,7 @@ data:
               "format": "time_series",
               "hide": true,
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Transmit fifo",
+              "legendFormat": "{{device}} - Transmit fifo",
               "refId": "J",
               "step": 4
             },
@@ -919,7 +921,7 @@ data:
               "expr": "irate(node_network_receive_fifo_total{instance=~\"$server\"}[5m])",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Receive fifo",
+              "legendFormat": "{{device}} - Receive fifo",
               "refId": "A",
               "step": 4
             },
@@ -927,7 +929,7 @@ data:
               "expr": "irate(node_network_transmit_fifo_total{instance=~\"$server\"}[5m])",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Transmit fifo",
+              "legendFormat": "{{device}} - Transmit fifo",
               "refId": "B",
               "step": 4
             }
@@ -991,15 +993,15 @@ data:
           "id": 10,
           "legend": {
             "alignAsTable": true,
-            "avg": true,
+            "avg": false,
             "current": true,
             "hideEmpty": false,
             "hideZero": false,
             "max": true,
-            "min": true,
+            "min": false,
             "rightSide": true,
             "show": true,
-            "sideWidth": 300,
+            "sideWidth": null,
             "sort": "current",
             "sortDesc": true,
             "total": false,
@@ -1059,14 +1061,14 @@ data:
               "format": "time_series",
               "hide": true,
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Receive frame",
+              "legendFormat": "{{device}} - Receive frame",
               "refId": "K",
               "step": 4
             },
             {
               "expr": "irate(node_network_transmit_frame{instance=~\"$server\"}[5m])",
               "hide": true,
-              "legendFormat": "{{`{{device}}`}} - Transmit frame",
+              "legendFormat": "{{device}} - Transmit frame",
               "refId": "A"
             },
             {
@@ -1074,13 +1076,13 @@ data:
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "{{`{{device}}`}} - Receive frame",
+              "legendFormat": "{{device}} - Receive frame",
               "refId": "B",
               "step": 4
             },
             {
               "expr": "irate(node_network_transmit_frame_total{instance=~\"$server\"}[5m])",
-              "legendFormat": "{{`{{device}}`}} - Transmit frame",
+              "legendFormat": "{{device}} - Transmit frame",
               "refId": "C"
             }
           ],
@@ -1143,10 +1145,10 @@ data:
           "id": 4,
           "legend": {
             "alignAsTable": true,
-            "avg": true,
+            "avg": false,
             "current": true,
             "max": true,
-            "min": true,
+            "min": false,
             "rightSide": true,
             "show": true,
             "total": false,
@@ -1279,7 +1281,7 @@ data:
               "expr": "node_arp_entries{instance=~\"$server\"}",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{`{{ device }}`}} - ARP entries",
+              "legendFormat": "{{ device }} - ARP entries",
               "refId": "A",
               "step": 4
             }
@@ -1337,7 +1339,7 @@ data:
               "text": "Prometheus",
               "value": "Prometheus"
             },
-            "hide": 0,
+            "hide": 2,
             "includeAll": false,
             "label": null,
             "multi": false,
@@ -1352,7 +1354,7 @@ data:
           {
             "allValue": null,
             "current": {
-              "selected": false,
+              "selected": true,
               "text": "skb-suy-adm01",
               "value": "skb-suy-adm01"
             },
@@ -1378,18 +1380,68 @@ data:
           {
             "allValue": null,
             "current": {
+              "text": "suy-am01",
+              "value": "suy-am01"
+            },
+            "datasource": "$datasource",
+            "definition": "label_values(node_uname_info{taco_cluster=~\"$taco_cluster\", job=~\"$job\"}, nodename)",
+            "hide": 0,
+            "includeAll": false,
+            "label": "Hostname",
+            "multi": false,
+            "name": "hostname",
+            "options": [],
+            "query": "label_values(node_uname_info{taco_cluster=~\"$taco_cluster\", job=~\"$job\"}, nodename)",
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 0,
+            "tagValuesQuery": "",
+            "tags": [],
+            "tagsQuery": "",
+            "type": "query",
+            "useTags": false
+          },
+          {
+            "allValue": null,
+            "current": {
               "text": "10.12.250.23:9100",
               "value": "10.12.250.23:9100"
             },
             "datasource": "$datasource",
-            "definition": "label_values(node_uname_info{taco_cluster=~\"$taco_cluster\"},  instance)",
-            "hide": 0,
+            "definition": "label_values(node_uname_info{taco_cluster=~\"$taco_cluster\", job=~\"$job\", nodename=~\"$hostname\"},instance)",
+            "hide": 1,
             "includeAll": false,
-            "label": "Host :",
+            "label": "",
             "multi": false,
             "name": "server",
             "options": [],
-            "query": "label_values(node_uname_info{taco_cluster=~\"$taco_cluster\"},  instance)",
+            "query": "label_values(node_uname_info{taco_cluster=~\"$taco_cluster\", job=~\"$job\", nodename=~\"$hostname\"},instance)",
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 0,
+            "tagValuesQuery": "",
+            "tags": [],
+            "tagsQuery": "",
+            "type": "query",
+            "useTags": false
+          },
+          {
+            "allValue": null,
+            "current": {
+              "text": "prometheus-node-exporter",
+              "value": "prometheus-node-exporter"
+            },
+            "datasource": "$datasource",
+            "definition": "label_values(node_uname_info{taco_cluster=~\"$taco_cluster\"}, job)",
+            "hide": 2,
+            "includeAll": false,
+            "label": "job",
+            "multi": false,
+            "name": "job",
+            "options": [],
+            "query": "label_values(node_uname_info{taco_cluster=~\"$taco_cluster\"}, job)",
             "refresh": 1,
             "regex": "",
             "skipUrlSync": false,
