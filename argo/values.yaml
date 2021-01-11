@@ -38,10 +38,13 @@ workflowArchive:
 
 mysql:
   enabled: false
-  mysqlUser: argo
-  mysqlDatabase: argo
-  mysqlPassword: dkrhpw
+  user: argo
+  database: argo
+  password: dkrhpw
   persistence:
     storageClass: rbd
     accessMode: ReadWriteOnce
     size: 8Gi
+  image:
+    repository: mysql
+    tag: 8
