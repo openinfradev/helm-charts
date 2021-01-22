@@ -50,6 +50,7 @@ rules:
   verbs:
   - create
   - delete
+  - get
 - apiGroups:
   - argoproj.io
   resources:
@@ -133,6 +134,7 @@ rules:
   - secrets
   verbs:
   - get
+  - create
 - apiGroups:
   - ""
   resources:
@@ -147,9 +149,18 @@ rules:
 - apiGroups:
   - ""
   resources:
-  - secrets
+  - events
+  verbs:
+  - watch
+  - create
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - serviceaccounts
   verbs:
   - get
+  - list
 - apiGroups:
   - argoproj.io
   resources:
@@ -157,6 +168,7 @@ rules:
   - workfloweventbindings
   - workflowtemplates
   - cronworkflows
+  - cronworkflows/finalizers
   verbs:
   - create
   - get
@@ -212,6 +224,13 @@ rules:
   verbs:
   - get
   - watch
+- apiGroups:
+  - argoproj.io
+  resources:
+  - workflows
+  verbs:
+  - create
+  - get
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole

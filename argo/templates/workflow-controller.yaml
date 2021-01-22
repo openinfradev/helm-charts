@@ -22,10 +22,21 @@ spec:
         command:
         - workflow-controller
         image: {{ .Values.workflowController.image.repository }}:{{ .Values.workflowController.image.tag }}
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 30
+          periodSeconds: 30
         name: workflow-controller
+	    ports:
+        - containerPort: 9090
+          name: metrics
       nodeSelector:
         kubernetes.io/os: linux
 {{- with .Values.nodeSelector }}
 {{ toYaml . | indent 8 }}
 {{- end }}
+      securityContext:
+        runAsNonRoot: true
       serviceAccountName: argo

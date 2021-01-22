@@ -32,10 +32,15 @@ spec:
             scheme: HTTP
           initialDelaySeconds: 10
           periodSeconds: 20
+	    volumeMounts:
+        - mountPath: /tmp
+          name: tmp
       nodeSelector:
         kubernetes.io/os: linux
 {{- with .Values.nodeSelector }}
 {{ toYaml . | indent 8 }}
 {{- end }}
       serviceAccountName: argo-server
-
+      volumes:
+      - emptyDir: {}
+        name: tmp

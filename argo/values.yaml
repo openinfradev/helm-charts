@@ -1,17 +1,17 @@
 workflowController:
   image:
     repository: argoproj/workflow-controller
-    tag: v2.12.0-rc4
+    tag: v2.12.5
 
   executor:
     image:
       repository: argoproj/argoexec
-      tag: v2.12.0-rc4
+      tag: v2.12.5
 
 argoServer:
   image:
     repository: argoproj/argocli
-    tag: v2.9.4
+    tag: v2.12.5
   
   service:
     type: NodePort
