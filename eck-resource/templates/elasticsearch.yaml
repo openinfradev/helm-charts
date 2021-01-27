@@ -1,0 +1,50 @@
+{{- if .Values.elasticsearch.enabled }}
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: {{ template "elasticsearch-operator.name" . }}-elasticsearch
+spec:
+  version: {{ .Values.elasticsearch.image.tag }}
+  image: {{ .Values.elasticsearch.image.repository }}:{{ .Values.elasticsearch.image.tag }}
+{{- if not .Values.elasticsearch.podDisruptionBudget.enabled }}
+  podDisruptionBudget: {}
+{{- end }}
+  nodeSets:
+{{- range $name, $node := .Values.elasticsearch.nodeSets}}
+  {{- if $node.enabled}}
+  - name: {{ $name}}
+    count: {{ $node.count }}
+    config:
+  {{- toYaml $node.config | nindent 6 }}
+    podTemplate:
+      spec:
+        containers:
+        - name: elasticsearch
+          resources:
+            limits:
+              memory: {{ $node.limitMem | quote }}
+              cpu: {{ $node.limitCpu }}   
+          env:
+          - name: ES_JAVA_OPTS
+            value: {{ $node.javaOpts | quote }}
+  {{- if $node.nodeSelector }}
+        nodeSelector:
+    {{- toYaml $node.nodeSelector | nindent 10 }}
+  {{- end }}
+  {{- if $node.pvc }}
+    volumeClaimTemplates:
+      - metadata:
+          name: elasticsearch-data
+        spec:
+          accessModes: [{{ $node.pvc.accessModes }}]
+          resources:
+            requests:
+              storage: {{ $node.pvc.size }}
+          storageClassName: {{ $node.pvc.storageClassName }}
+  {{- end }}
+  {{- end}}  
+{{- end}}  
+{{- if .Values.elasticsearch.http }}
+{{ toYaml .Values.elasticsearch.http | indent 2 }}
+{{- end }}
+{{- end }}

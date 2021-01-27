@@ -1,0 +1,34 @@
+{{- if .Values.kibana.enabled }}
+apiVersion: kibana.k8s.elastic.co/v1beta1
+kind: Kibana
+metadata:
+  name: {{ template "elasticsearch-operator.name" . }}-kibana
+spec:
+  version: {{ default "7.4.2" .Values.kibana.image.tag }}
+  image: "{{ .Values.kibana.image.repository }}:{{ .Values.kibana.image.tag }}"
+{{- if .Values.kibana.nodeSelector }}
+  nodeSelector:
+{{ toYaml .Values.kibana.nodeSelector | indent 4 }}
+{{- end }}
+  count: 1
+  elasticsearchRef:
+    name: {{ template "elasticsearch-operator.name" . }}-elasticsearch
+{{- if .Values.kibana.http }}
+  http:
+{{ toYaml .Values.kibana.http | indent 4 }}
+{{- end }}
+  podTemplate:
+    metadata:
+      creationTimestamp: null
+    spec:
+      containers:
+      - name: kibana
+        resources:
+          limits:
+            memory: {{ .Values.kibana.limitMem | quote }}
+            cpu: {{ .Values.kibana.limitCpu }}             
+{{- if .Values.kibana.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.kibana.nodeSelector | indent 8 }}
+{{- end }}
+{{- end }}
