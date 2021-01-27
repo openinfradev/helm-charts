@@ -54,7 +54,7 @@ elasticsearch:
       javaOpts: "-Xms256m -Xmx256m"
       ## Resource Max
       limitCpu: 1
-      limitMem: 0.5Gi  
+      limitMem: 1Gi  
       ## Storage definition for Elasticsearch instance.
       ## Must be set
       ##
