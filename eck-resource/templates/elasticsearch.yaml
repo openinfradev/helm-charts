@@ -2,7 +2,7 @@
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
-  name: {{ template "elasticsearch-operator.name" . }}-elasticsearch
+  name: {{ template "eck-resource.name" . }}-elasticsearch
 spec:
   version: {{ .Values.elasticsearch.image.tag }}
   image: {{ .Values.elasticsearch.image.repository }}:{{ .Values.elasticsearch.image.tag }}

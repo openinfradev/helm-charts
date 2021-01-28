@@ -2,7 +2,7 @@
 apiVersion: kibana.k8s.elastic.co/v1beta1
 kind: Kibana
 metadata:
-  name: {{ template "elasticsearch-operator.name" . }}-kibana
+  name: {{ template "eck-resource.name" . }}-kibana
 spec:
   version: {{ default "7.4.2" .Values.kibana.image.tag }}
   image: "{{ .Values.kibana.image.repository }}:{{ .Values.kibana.image.tag }}"
@@ -12,7 +12,7 @@ spec:
 {{- end }}
   count: 1
   elasticsearchRef:
-    name: {{ template "elasticsearch-operator.name" . }}-elasticsearch
+    name: {{ template "eck-resource.name" . }}-elasticsearch
 {{- if .Values.kibana.http }}
   http:
 {{ toYaml .Values.kibana.http | indent 4 }}
