@@ -9,7 +9,6 @@ image:
 
 replicaCount: 1
 
-nameOverride: ""
 fullnameOverride: ""
 
 serviceAccount:
