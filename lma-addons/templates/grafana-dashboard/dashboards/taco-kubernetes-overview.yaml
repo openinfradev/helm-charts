@@ -28,8 +28,8 @@ data:
       "editable": true,
       "gnetId": null,
       "graphTooltip": 0,
-      "id": 17,
-      "iteration": 1598239141268,
+      "id": 50,
+      "iteration": 1608165048821,
       "links": [],
       "panels": [
         {
@@ -1120,7 +1120,7 @@ data:
           "tableColumn": "",
           "targets": [
             {
-              "expr": "count(up{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", taco_cluster=\"skb-suy-prd01\"})",
+              "expr": "count(up{job=\"kubelet\", taco_cluster=\"skb-suy-prd01\"})",
               "hide": false,
               "instant": true,
               "refId": "A"
@@ -1375,7 +1375,7 @@ data:
           "tableColumn": "",
           "targets": [
             {
-              "expr": "count(up{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", taco_cluster=\"skb-ssu-prd02\"})",
+              "expr": "count(up{job=\"kubelet\", taco_cluster=\"skb-ssu-prd02\"})",
               "hide": false,
               "instant": true,
               "refId": "A"
@@ -1628,7 +1628,7 @@ data:
           "tableColumn": "",
           "targets": [
             {
-              "expr": "count(up{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", taco_cluster=\"skb-suy-adm01\"})",
+              "expr": "count(up{job=\"kubelet\", taco_cluster=\"skb-suy-adm01\"})",
               "hide": false,
               "instant": true,
               "refId": "A"
@@ -1882,7 +1882,7 @@ data:
           "tableColumn": "",
           "targets": [
             {
-              "expr": " count(count by (pod)(kube_pod_container_info{taco_cluster=~\"skb-suy-prd01\"}))",
+              "expr": "sum(kube_pod_info{taco_cluster=~\"skb-suy-prd01\", created_by_kind != \"Workflow\"})",
               "instant": false,
               "refId": "A"
             }
@@ -1966,7 +1966,7 @@ data:
           "tableColumn": "",
           "targets": [
             {
-              "expr": " count(count by (pod)(kube_pod_container_info{taco_cluster=~\"skb-ssu-prd02\"}))",
+              "expr": "sum(kube_pod_info{taco_cluster=~\"skb-ssu-prd02\", created_by_kind != \"Workflow\"})",
               "instant": false,
               "refId": "A"
             }
@@ -2050,7 +2050,7 @@ data:
           "tableColumn": "",
           "targets": [
             {
-              "expr": " count(count by (pod)(kube_pod_container_info{taco_cluster=~\"skb-suy-adm01\"}))",
+              "expr": "sum(kube_pod_info{taco_cluster=~\"skb-suy-adm01\", created_by_kind != \"Workflow\"})",
               "instant": false,
               "refId": "A"
             }
@@ -2117,11 +2117,11 @@ data:
           "pluginVersion": "6.6.2",
           "targets": [
             {
-              "expr": "sort_desc (count by (node) (kube_pod_info{taco_cluster=\"skb-suy-prd01\"}))",
+              "expr": "sort_desc (count by (node) (kube_pod_info{taco_cluster=\"skb-suy-prd01\", created_by_kind != \"Workflow\"}))",
               "format": "time_series",
               "instant": true,
               "intervalFactor": 1,
-              "legendFormat": "{{`{{node}}`}}",
+              "legendFormat": "{{node}}",
               "refId": "A"
             }
           ],
@@ -2178,7 +2178,7 @@ data:
               "format": "time_series",
               "instant": true,
               "intervalFactor": 1,
-              "legendFormat": "{{`{{node}}`}}",
+              "legendFormat": "{{node}}",
               "refId": "A"
             }
           ],
@@ -2237,7 +2237,7 @@ data:
               "expr": "sort_desc (count by (node) (kube_pod_info{taco_cluster=\"skb-ssu-prd02\", created_by_kind != \"Workflow\"}))",
               "format": "time_series",
               "instant": true,
-              "legendFormat": "{{`{{node}}`}}",
+              "legendFormat": "{{node}}",
               "refId": "A"
             }
           ],
@@ -2294,7 +2294,7 @@ data:
               "format": "time_series",
               "instant": true,
               "intervalFactor": 1,
-              "legendFormat": "{{`{{node}}`}}",
+              "legendFormat": "{{node}}",
               "refId": "A"
             }
           ],
@@ -2353,7 +2353,7 @@ data:
               "expr": "sort_desc (count by (node) (kube_pod_info{taco_cluster=\"skb-suy-adm01\", created_by_kind != \"Workflow\"}))",
               "format": "time_series",
               "instant": true,
-              "legendFormat": "{{`{{node}}`}}",
+              "legendFormat": "{{node}}",
               "refId": "A"
             }
           ],
@@ -2410,7 +2410,7 @@ data:
               "format": "time_series",
               "instant": true,
               "intervalFactor": 1,
-              "legendFormat": "{{`{{node}}`}}",
+              "legendFormat": "{{node}}",
               "refId": "A"
             }
           ],
@@ -2512,7 +2512,7 @@ data:
             {
               "expr": "kube_deployment_spec_replicas{namespace=\"kube-system\", taco_cluster=\"$taco_cluster\"}",
               "instant": true,
-              "legendFormat": "{{`{{deployment}}`}}",
+              "legendFormat": "{{deployment}}",
               "refId": "A"
             }
           ],
@@ -2734,7 +2734,7 @@ data:
           "targets": [
             {
               "expr": "kube_deployment_spec_replicas{namespace=\"kube-system\", taco_cluster=\"$taco_cluster\"}",
-              "legendFormat": "{{`{{deployment}}`}}",
+              "legendFormat": "{{deployment}}",
               "refId": "A"
             }
           ],
@@ -2823,7 +2823,7 @@ data:
           "targets": [
             {
               "expr": "kube_deployment_status_replicas{namespace=\"kube-system\", taco_cluster=\"$taco_cluster\"}",
-              "legendFormat": "{{`{{deployment}}`}}",
+              "legendFormat": "{{deployment}}",
               "refId": "A"
             }
           ],
@@ -3081,7 +3081,7 @@ data:
           "targets": [
             {
               "expr": "kube_deployment_status_replicas_available{namespace=\"kube-system\", taco_cluster=\"$taco_cluster\"}",
-              "legendFormat": "{{`{{deployment}}`}}",
+              "legendFormat": "{{deployment}}",
               "refId": "A"
             }
           ],
@@ -3170,7 +3170,7 @@ data:
           "targets": [
             {
               "expr": "kube_deployment_status_replicas_unavailable{namespace=\"kube-system\", taco_cluster=\"$taco_cluster\"}  ",
-              "legendFormat": "{{`{{deployment}}`}}",
+              "legendFormat": "{{deployment}}",
               "refId": "A"
             }
           ],
@@ -3271,7 +3271,7 @@ data:
           "targets": [
             {
               "expr": "sum by (node) (kube_pod_container_resource_requests_cpu_cores{taco_cluster=\"$taco_cluster\"})",
-              "legendFormat": "{{`{{node}}`}}",
+              "legendFormat": "{{node}}",
               "refId": "A"
             }
           ],
@@ -3358,7 +3358,7 @@ data:
           "targets": [
             {
               "expr": "sum by (node) (kube_node_status_allocatable_cpu_cores{taco_cluster=\"$taco_cluster\"})",
-              "legendFormat": "{{`{{node}}`}}",
+              "legendFormat": "{{node}}",
               "refId": "A"
             }
           ],
@@ -3445,7 +3445,7 @@ data:
           "targets": [
             {
               "expr": "sum by (node) (kube_pod_container_resource_requests_memory_bytes{taco_cluster=\"$taco_cluster\"})",
-              "legendFormat": "{{`{{node}}`}}",
+              "legendFormat": "{{node}}",
               "refId": "A"
             }
           ],
@@ -3532,7 +3532,7 @@ data:
           "targets": [
             {
               "expr": "sum by (node) (kube_node_status_allocatable_memory_bytes{taco_cluster=\"$taco_cluster\"})",
-              "legendFormat": "{{`{{node}}`}}",
+              "legendFormat": "{{node}}",
               "refId": "A"
             }
           ],
@@ -3587,7 +3587,6 @@ data:
           {
             "allValue": null,
             "current": {
-              "selected": true,
               "text": "skb-suy-adm01",
               "value": "skb-suy-adm01"
             },
@@ -3633,6 +3632,6 @@ data:
       "timezone": "",
       "title": "Cluster Overview (Total)",
       "uid": "taco-kubernetes-overview",
-      "version": 22
+      "version": 6
     }
 {{- end}}
