@@ -3,7 +3,6 @@ replicaCount: 1
 image:
   tag: latest 
   repository: sktdev/taco-watcher
-  tag: 1.0.1
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
