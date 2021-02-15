@@ -331,7 +331,7 @@ data:
               "expr": "etcd_server_is_leader{taco_cluster=~\"$taco_cluster\"}",
               "format": "table",
               "instant": true,
-              "legendFormat": "{{instance}}",
+              "legendFormat": "{{`{{instance}}`}}",
               "refId": "A"
             }
           ],
