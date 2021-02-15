@@ -102,7 +102,7 @@ data:
               "format": "time_series",
               "instant": false,
               "intervalFactor": 2,
-              "legendFormat": "{{pod}} : {{node}}",
+              "legendFormat": "{{`{{pod}}`}} : {{`{{node}}`}}",
               "refId": "A",
               "step": 2
             }
@@ -202,7 +202,7 @@ data:
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
-              "legendFormat": "{{pod}} : {{node}}",
+              "legendFormat": "{{`{{pod}}`}} : {{`{{node}}`}}",
               "metric": "container_memory_usage_bytes",
               "refId": "A",
               "step": 10
@@ -306,7 +306,7 @@ data:
               "format": "time_series",
               "instant": false,
               "intervalFactor": 2,
-              "legendFormat": "{{pod}} : {{node}}",
+              "legendFormat": "{{`{{pod}}`}} : {{`{{node}}`}}",
               "refId": "A",
               "step": 2
             }
@@ -406,7 +406,7 @@ data:
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
-              "legendFormat": "{{pod}} : {{node}}",
+              "legendFormat": "{{`{{pod}}`}} : {{`{{node}}`}}",
               "metric": "container_memory_usage_bytes",
               "refId": "A",
               "step": 10
@@ -510,7 +510,7 @@ data:
               "format": "time_series",
               "instant": false,
               "intervalFactor": 2,
-              "legendFormat": "{{ pod}} : {{node}}",
+              "legendFormat": "{{`{{ pod}}`}} : {{`{{node}}`}}",
               "refId": "A",
               "step": 2
             }
@@ -610,7 +610,7 @@ data:
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
-              "legendFormat": "{{ pod}} : {{node}}",
+              "legendFormat": "{{`{{ pod}}`}} : {{`{{node}}`}}",
               "metric": "container_memory_usage_bytes",
               "refId": "A",
               "step": 10
@@ -727,7 +727,7 @@ data:
             {
               "expr": "sum(rate(f5_pool_member_requests{taco_cluster=~\"skb-suy-prd.*\", namespace=~\"metv|scs|stb|common.*\"}[1m]))by(namespace) ",
               "intervalFactor": 2,
-              "legendFormat": "{{namespace}}",
+              "legendFormat": "{{`{{namespace}}`}}",
               "refId": "A"
             }
           ],
@@ -875,7 +875,7 @@ data:
             {
               "expr": "sum(rate(f5_pool_member_requests{taco_cluster=~\"skb-ssu-prd.*\", namespace=~\"metv|scs|stb|common.*\"}[1m]))by(namespace) ",
               "intervalFactor": 2,
-              "legendFormat": "{{namespace}}",
+              "legendFormat": "{{`{{namespace}}`}}",
               "refId": "A"
             }
           ],
@@ -1040,7 +1040,7 @@ data:
               "expr": "sum(rate(f5_pool_member_requests{taco_cluster=~\"skb-suy-prd.*\", namespace=~\"metv|scs|stb|common.*\"}[30s]))by(taco_cluster, svc) ",
               "hide": false,
               "instant": false,
-              "legendFormat": "{{taco_cluster}}:: {{svc}}",
+              "legendFormat": "{{`{{taco_cluster}}`}}:: {{`{{svc}}`}}",
               "refId": "A"
             }
           ],
@@ -1142,7 +1142,7 @@ data:
               "expr": "sum(rate(f5_pool_member_requests{taco_cluster=~\"skb-ssu-prd.*\", namespace=~\"metv|scs|stb|common.*\"}[30s]))by(taco_cluster, svc) ",
               "hide": false,
               "instant": false,
-              "legendFormat": "{{taco_cluster}}:: {{svc}}",
+              "legendFormat": "{{`{{taco_cluster}}`}}:: {{`{{svc}}`}}",
               "refId": "A"
             }
           ],
