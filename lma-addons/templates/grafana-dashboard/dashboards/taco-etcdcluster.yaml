@@ -331,7 +331,7 @@ data:
               "expr": "etcd_server_is_leader{taco_cluster=~\"$taco_cluster\"}",
               "format": "table",
               "instant": true,
-              "legendFormat": "{{instance}}",
+              "legendFormat": "{{`{{instance}}`}}",
               "refId": "A"
             }
           ],
@@ -391,7 +391,7 @@ data:
               "hide": false,
               "interval": "",
               "intervalFactor": 2,
-              "legendFormat": "{{instance}} DB Size",
+              "legendFormat": "{{`{{instance}}`}} DB Size",
               "metric": "",
               "refId": "A",
               "step": 4
@@ -692,7 +692,7 @@ data:
             {
               "expr": "rate(etcd_network_client_grpc_received_bytes_total{taco_cluster=\"$taco_cluster\"}[5m])",
               "intervalFactor": 2,
-              "legendFormat": "{{instance}} Client Traffic In",
+              "legendFormat": "{{`{{instance}}`}} Client Traffic In",
               "metric": "etcd_network_client_grpc_received_bytes_total",
               "refId": "A",
               "step": 4
@@ -787,7 +787,7 @@ data:
             {
               "expr": "rate(etcd_network_client_grpc_sent_bytes_total{taco_cluster=\"$taco_cluster\"}[5m])",
               "intervalFactor": 2,
-              "legendFormat": "{{instance}} Client Traffic Out",
+              "legendFormat": "{{`{{instance}}`}} Client Traffic Out",
               "metric": "etcd_network_client_grpc_sent_bytes_total",
               "refId": "A",
               "step": 4
@@ -882,7 +882,7 @@ data:
             {
               "expr": "sum(rate(etcd_network_peer_received_bytes_total{taco_cluster=\"$taco_cluster\"}[5m])) by (instance)",
               "intervalFactor": 2,
-              "legendFormat": "{{instance}} Peer Traffic In",
+              "legendFormat": "{{`{{instance}}`}} Peer Traffic In",
               "metric": "etcd_network_peer_received_bytes_total",
               "refId": "A",
               "step": 4
@@ -980,7 +980,7 @@ data:
               "hide": false,
               "interval": "",
               "intervalFactor": 2,
-              "legendFormat": "{{instance}} Peer Traffic Out",
+              "legendFormat": "{{`{{instance}}`}} Peer Traffic Out",
               "metric": "etcd_network_peer_sent_bytes_total",
               "refId": "A",
               "step": 4
@@ -1073,7 +1073,7 @@ data:
             {
               "expr": "process_resident_memory_bytes{taco_cluster=\"$taco_cluster\"}",
               "intervalFactor": 2,
-              "legendFormat": "{{instance}} Resident Memory",
+              "legendFormat": "{{`{{instance}}`}} Resident Memory",
               "metric": "process_resident_memory_bytes",
               "refId": "A",
               "step": 4
@@ -1169,7 +1169,7 @@ data:
               "expr": "histogram_quantile(0.99, sum(rate(etcd_disk_wal_fsync_duration_seconds_bucket{taco_cluster=\"$taco_cluster\"}[5m])) by (instance, le))",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "{{instance}} WAL fsync",
+              "legendFormat": "{{`{{instance}}`}} WAL fsync",
               "metric": "etcd_disk_wal_fsync_duration_seconds_bucket",
               "refId": "A",
               "step": 4
@@ -1177,7 +1177,7 @@ data:
             {
               "expr": "histogram_quantile(0.99, sum(rate(etcd_disk_backend_commit_duration_seconds_bucket{taco_cluster=\"$taco_cluster\"}[5m])) by (instance, le))",
               "intervalFactor": 2,
-              "legendFormat": "{{instance}} DB fsync",
+              "legendFormat": "{{`{{instance}}`}} DB fsync",
               "metric": "etcd_disk_backend_commit_duration_seconds_bucket",
               "refId": "B",
               "step": 4
@@ -1391,7 +1391,7 @@ data:
             {
               "expr": "changes(etcd_server_leader_changes_seen_total{taco_cluster=\"$taco_cluster\"}[1d])",
               "intervalFactor": 2,
-              "legendFormat": "{{instance}} Total Leader Elections Per Day",
+              "legendFormat": "{{`{{instance}}`}} Total Leader Elections Per Day",
               "metric": "etcd_server_leader_changes_seen_total",
               "refId": "A",
               "step": 2

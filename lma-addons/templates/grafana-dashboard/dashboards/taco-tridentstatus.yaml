@@ -101,7 +101,7 @@ data:
               "format": "time_series",
               "instant": false,
               "intervalFactor": 2,
-              "legendFormat": "{{pod}}",
+              "legendFormat": "{{`{{pod}}`}}",
               "refId": "A",
               "step": 2
             }
@@ -200,7 +200,7 @@ data:
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
-              "legendFormat": "{{pod}} ",
+              "legendFormat": "{{`{{pod}}`}}",
               "metric": "container_memory_usage_bytes",
               "refId": "A",
               "step": 10
@@ -312,7 +312,7 @@ data:
               "expr": "(kubelet_volume_stats_used_bytes {taco_cluster=\"$taco_cluster\"} / kubelet_volume_stats_capacity_bytes {taco_cluster=\"$taco_cluster\"}) * 100 ",
               "instant": true,
               "intervalFactor": 1,
-              "legendFormat": "{{persistentvolumeclaim}}",
+              "legendFormat": "{{`{{persistentvolumeclaim}}`}}",
               "refId": "A"
             }
           ],
@@ -380,7 +380,7 @@ data:
               "expr": "trident_core_backend_info{backend_type=\"ontap-nas\"}",
               "instant": false,
               "interval": "",
-              "legendFormat": "{{backend_name}}:{{taco_cluster}}",
+              "legendFormat": "{{`{{backend_name}}`}}:{{`{{taco_cluster}}`}}",
               "refId": "A"
             }
           ],
@@ -471,7 +471,7 @@ data:
               "displayValueWithAlias": "Never",
               "expr": "sum by (operation) (trident_operation_duration_milliseconds_sum{success=\"true\"}) / sum by (operation) (trident_operation_duration_milliseconds_count{success=\"true\"})",
               "instant": false,
-              "legendFormat": "{{ operation }}",
+              "legendFormat": "{{`{{ operation }}`}}",
               "refId": "A",
               "units": "none",
               "valueHandler": "Number Threshold"
@@ -526,7 +526,7 @@ data:
             {
               "expr": "sort (trident_core_volume_count{taco_cluster=~\"skb.*\"} + on(backend_uuid) group_left(backend_name) trident_backend_info {taco_cluster=~\"skb.*\"})",
               "instant": true,
-              "legendFormat": "{{ taco_cluster }}::{{ backend_name }}",
+              "legendFormat": "{{`{{ taco_cluster }}`}}::{{`{{ backend_name }}`}}",
               "refId": "A"
             }
           ],
@@ -575,7 +575,7 @@ data:
             {
               "expr": "trident_core_volume_total_bytes / 1024 / 1024 / 1024",
               "instant": true,
-              "legendFormat": "{{taco_cluster}}",
+              "legendFormat": "{{`{{taco_cluster}}`}}",
               "refId": "A"
             }
           ],
@@ -629,7 +629,7 @@ data:
               "expr": "trident_core_volume_count_by_backend",
               "instant": false,
               "interval": "",
-              "legendFormat": "{{backend}}:{{taco_cluster}}",
+              "legendFormat": "{{`{{backend}}`}}:{{`{{taco_cluster}}`}}",
               "refId": "A"
             }
           ],
@@ -719,7 +719,7 @@ data:
           "targets": [
             {
               "expr": "trident_core_volume_total_bytes_by_backend / 1024 / 1024 / 1024",
-              "legendFormat": "{{backend}}:{{taco_cluster}}",
+              "legendFormat": "{{`{{backend}}`}}:{{`{{taco_cluster}}`}}",
               "refId": "A"
             }
           ],
@@ -889,7 +889,7 @@ data:
               "displayValueWithAlias": "Never",
               "expr": "(sum (trident_rest_ops_seconds_total_count{taco_cluster=\"$taco_cluster\"}) by (status_code)  / scalar (sum (trident_rest_ops_seconds_total_count{taco_cluster=\"$taco_cluster\"}))) * 100",
               "instant": false,
-              "legendFormat": "{{ status_code }}",
+              "legendFormat": "{{`{{ status_code }}`}}",
               "refId": "A",
               "units": "none",
               "valueHandler": "Number Threshold"

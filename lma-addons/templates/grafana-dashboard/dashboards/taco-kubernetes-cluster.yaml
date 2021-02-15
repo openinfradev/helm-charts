@@ -1324,7 +1324,7 @@ data:
           "targets": [
             {
               "expr": "sum(kube_node_status_condition{status=\"true\",condition=\"Ready\",taco_cluster=~\"$taco_cluster\"}) by (node)",
-              "legendFormat": "{{node}}",
+              "legendFormat": "{{`{{node}}`}}",
               "refId": "A"
             }
           ],
@@ -1573,7 +1573,7 @@ data:
           "targets": [
             {
               "expr": "sum by (node) (kube_pod_container_resource_requests_cpu_cores{taco_cluster=\"$taco_cluster\"})",
-              "legendFormat": "{{node}}",
+              "legendFormat": "{{`{{node}}`}}",
               "refId": "A"
             }
           ],
@@ -1660,7 +1660,7 @@ data:
           "targets": [
             {
               "expr": "sum by (node) (kube_pod_container_resource_requests_memory_bytes{taco_cluster=\"$taco_cluster\"})",
-              "legendFormat": "{{node}}",
+              "legendFormat": "{{`{{node}}`}}",
               "refId": "A"
             }
           ],
@@ -1792,7 +1792,7 @@ data:
               "expr": " count(count by (pod)(kube_pod_container_info{taco_cluster=~\"$taco_cluster\"}))",
               "hide": false,
               "instant": true,
-              "legendFormat": "{{pod}}",
+              "legendFormat": "{{`{{pod}}`}}",
               "refId": "A"
             },
             {
@@ -1989,7 +1989,7 @@ data:
               "expr": "count(kube_pod_container_status_waiting{taco_cluster=~\"$taco_cluster\"} !=0 ) or vector(0)",
               "hide": false,
               "instant": true,
-              "legendFormat": "{{pod}}",
+              "legendFormat": "{{`{{pod}}`}}",
               "refId": "A"
             }
           ],
@@ -2062,7 +2062,7 @@ data:
             {
               "expr": "count by(namespace,reason) (kube_pod_container_status_waiting_reason{taco_cluster=~\"$taco_cluster\"} !=0 )",
               "hide": false,
-              "legendFormat": "WAITING::{{reason}}::{{namespace}}",
+              "legendFormat": "WAITING::{{`{{reason}}`}}::{{`{{namespace}}`}}",
               "refId": "B"
             },
             {
@@ -2183,7 +2183,7 @@ data:
               "expr": "count(kube_pod_container_status_terminated_reason{reason!=\"Completed\",taco_cluster=~\"$taco_cluster\"} !=0 ) or vector(0)",
               "hide": false,
               "instant": true,
-              "legendFormat": "{{pod}}",
+              "legendFormat": "{{`{{pod}}`}}",
               "refId": "A"
             }
           ],
@@ -2257,7 +2257,7 @@ data:
               "expr": "count by(namespace,reason) (kube_pod_container_status_terminated_reason{reason!=\"Completed\",taco_cluster=~\"$taco_cluster\"} !=0 )",
               "hide": false,
               "instant": false,
-              "legendFormat": "TERMINATED::{{reason}}::{{namespace}}",
+              "legendFormat": "TERMINATED::{{`{{reason}}`}}::{{`{{namespace}}`}}",
               "refId": "A"
             }
           ],
@@ -2363,7 +2363,7 @@ data:
             {
               "expr": "(kubelet_volume_stats_used_bytes {taco_cluster=\"$taco_cluster\"} / kubelet_volume_stats_capacity_bytes {taco_cluster=\"$taco_cluster\"}) * 100 ",
               "instant": true,
-              "legendFormat": "{{persistentvolumeclaim}}",
+              "legendFormat": "{{`{{persistentvolumeclaim}}`}}",
               "refId": "A"
             }
           ],

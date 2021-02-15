@@ -681,7 +681,7 @@ data:
               "expr": "sum(avg(kube_pod_status_phase{taco_cluster=~\"$taco_cluster\"}) by(pod, phase)) by(phase)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{ phase }}",
+              "legendFormat": "{{`{{ phase }}`}}",
               "refId": "A",
               "step": 2
             }
@@ -779,7 +779,7 @@ data:
               "format": "time_series",
               "hide": false,
               "intervalFactor": 1,
-              "legendFormat": "{{ pod }}",
+              "legendFormat": "{{`{{ pod }}`}}",
               "refId": "A",
               "step": 2
             }
@@ -973,7 +973,7 @@ data:
               "expr": "sum(avg(kube_pod_status_phase{taco_cluster=~\"$taco_cluster\", namespace=~\"$namespace\",pod=~\"$pod\"}) by(namespace, pod, phase)) by(phase)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "{{ phase }}",
+              "legendFormat": "{{`{{ phase }}`}}",
               "refId": "A",
               "step": 2
             }
@@ -1071,7 +1071,7 @@ data:
               "format": "time_series",
               "hide": false,
               "intervalFactor": 1,
-              "legendFormat": "{{ pod }}",
+              "legendFormat": "{{`{{ pod }}`}}",
               "refId": "A",
               "step": 2
             }
@@ -1267,23 +1267,23 @@ data:
               "expr": "kube_deployment_status_replicas{namespace=~\"$namespace\", taco_cluster=\"$taco_cluster\"}",
               "format": "time_series",
               "intervalFactor": 1,
-              "legendFormat": "current: {{ deployment }}",
+              "legendFormat": "current: {{`{{ deployment }}`}}",
               "refId": "A",
               "step": 2
             },
             {
               "expr": "kube_deployment_status_replicas_available{namespace=~\"$namespace\", taco_cluster=\"$taco_cluster\"}",
-              "legendFormat": "available: {{ deployment }}",
+              "legendFormat": "available: {{`{{ deployment }}`}}",
               "refId": "C"
             },
             {
               "expr": "kube_deployment_status_replicas_unavailable{namespace=~\"$namespace\", taco_cluster=\"$taco_cluster\"}",
-              "legendFormat": "unavailable: {{ deployment }}",
+              "legendFormat": "unavailable: {{`{{ deployment }}`}}",
               "refId": "B"
             },
             {
               "expr": "kube_deployment_spec_replicas{namespace=~\"$namespace\", taco_cluster=\"$taco_cluster\"}",
-              "legendFormat": "deseired: {{ deployment }}",
+              "legendFormat": "deseired: {{`{{ deployment }}`}}",
               "refId": "D"
             }
           ],
@@ -1455,7 +1455,7 @@ data:
           "targets": [
             {
               "expr": "kube_deployment_spec_replicas{taco_cluster=\"$taco_cluster\", namespace=~\"$namespace\"}",
-              "legendFormat": "{{deployment}}",
+              "legendFormat": "{{`{{deployment}}`}}",
               "refId": "A"
             }
           ],
@@ -1627,7 +1627,7 @@ data:
           "targets": [
             {
               "expr": "kube_deployment_status_replicas{taco_cluster=\"$taco_cluster\", namespace=~\"$namespace\"}",
-              "legendFormat": "{{deployment}}",
+              "legendFormat": "{{`{{deployment}}`}}",
               "refId": "A"
             }
           ],
@@ -1799,7 +1799,7 @@ data:
           "targets": [
             {
               "expr": "kube_deployment_status_replicas_available{taco_cluster=\"$taco_cluster\", namespace=~\"$namespace\"}",
-              "legendFormat": "{{deployment}}",
+              "legendFormat": "{{`{{deployment}}`}}",
               "refId": "A"
             }
           ],
@@ -1971,7 +1971,7 @@ data:
           "targets": [
             {
               "expr": "kube_deployment_status_replicas_unavailable{taco_cluster=\"$taco_cluster\", namespace=~\"$namespace\"}",
-              "legendFormat": "{{deployment}}",
+              "legendFormat": "{{`{{deployment}}`}}",
               "refId": "A"
             }
           ],
@@ -2079,7 +2079,7 @@ data:
             {
               "expr": "kube_deployment_spec_replicas{namespace=\"$namespace\", taco_cluster=\"$taco_cluster\"}",
               "instant": true,
-              "legendFormat": "{{deployment}}",
+              "legendFormat": "{{`{{deployment}}`}}",
               "refId": "A"
             }
           ],
@@ -2235,20 +2235,20 @@ data:
           "targets": [
             {
               "expr": "kube_statefulset_status_replicas{namespace=~\"$namespace\", taco_cluster=\"$taco_cluster\"}",
-              "legendFormat": "desired: {{ statefulset }}",
+              "legendFormat": "desired: {{`{{ statefulset }}`}}",
               "refId": "B"
             },
             {
               "expr": "kube_statefulset_status_replicas_current{namespace=~\"$namespace\", taco_cluster=\"$taco_cluster\"}",
               "format": "time_series",
               "intervalFactor": 1,
-              "legendFormat": "current: {{ statefulset }}",
+              "legendFormat": "current: {{`{{ statefulset }}`}}",
               "refId": "A",
               "step": 2
             },
             {
               "expr": "kube_statefulset_status_replicas_ready{namespace=~\"$namespace\", taco_cluster=\"$taco_cluster\"}",
-              "legendFormat": "ready: {{ statefulset }}",
+              "legendFormat": "ready: {{`{{ statefulset }}`}}",
               "refId": "C"
             }
           ],
@@ -2530,7 +2530,7 @@ data:
               "format": "time_series",
               "instant": false,
               "intervalFactor": 2,
-              "legendFormat": "Current: {{ container }}",
+              "legendFormat": "Current: {{`{{ container }}`}}",
               "refId": "A",
               "step": 2
             },
@@ -2539,7 +2539,7 @@ data:
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "Requested: {{ container }}",
+              "legendFormat": "Requested: {{`{{ container }}`}}",
               "refId": "B",
               "step": 2
             },
@@ -2548,7 +2548,7 @@ data:
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "Limit: {{ container }}",
+              "legendFormat": "Limit: {{`{{ container }}`}}",
               "refId": "C",
               "step": 2
             }
@@ -2814,7 +2814,7 @@ data:
               "format": "time_series",
               "interval": "10s",
               "intervalFactor": 1,
-              "legendFormat": "Current: {{ container  }}",
+              "legendFormat": "Current: {{`{{ container  }}`}}",
               "metric": "container_memory_usage_bytes",
               "refId": "A",
               "step": 10
@@ -2824,7 +2824,7 @@ data:
               "format": "time_series",
               "interval": "10s",
               "intervalFactor": 2,
-              "legendFormat": "Requested: {{ container }}",
+              "legendFormat": "Requested: {{`{{ container }}`}}",
               "metric": "kube_pod_container_resource_requests_memory_bytes",
               "refId": "B",
               "step": 20
@@ -2834,7 +2834,7 @@ data:
               "format": "time_series",
               "interval": "10s",
               "intervalFactor": 2,
-              "legendFormat": "Limit: {{ container }}",
+              "legendFormat": "Limit: {{`{{ container }}`}}",
               "metric": "kube_pod_container_resource_limits_memory_bytes",
               "refId": "C",
               "step": 20
@@ -3102,7 +3102,7 @@ data:
               "expr": "rate (container_network_transmit_bytes_total{taco_cluster=~\"$taco_cluster\", namespace=\"$namespace\", pod=~\"$pod\",interface=~\"eth0|ens.*\"}[5m])",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "TX : {{ pod }}",
+              "legendFormat": "TX : {{`{{ pod }}`}}",
               "refId": "A",
               "step": 2
             },
@@ -3110,7 +3110,7 @@ data:
               "expr": "rate (container_network_receive_bytes_total{taco_cluster=~\"$taco_cluster\", namespace=\"$namespace\", pod=~\"$pod\",interface=~\"eth0|ens.*\"}[5m])",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "RX : {{ pod }}",
+              "legendFormat": "RX : {{`{{ pod }}`}}",
               "refId": "B",
               "step": 2
             }

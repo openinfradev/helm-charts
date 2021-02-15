@@ -2121,7 +2121,7 @@ data:
               "format": "time_series",
               "instant": true,
               "intervalFactor": 1,
-              "legendFormat": "{{node}}",
+              "legendFormat": "{{`{{node}}`}}",
               "refId": "A"
             }
           ],
@@ -2178,7 +2178,7 @@ data:
               "format": "time_series",
               "instant": true,
               "intervalFactor": 1,
-              "legendFormat": "{{node}}",
+              "legendFormat": "{{`{{node}}`}}",
               "refId": "A"
             }
           ],
@@ -2237,7 +2237,7 @@ data:
               "expr": "sort_desc (count by (node) (kube_pod_info{taco_cluster=\"skb-ssu-prd02\", created_by_kind != \"Workflow\"}))",
               "format": "time_series",
               "instant": true,
-              "legendFormat": "{{node}}",
+              "legendFormat": "{{`{{node}}`}}",
               "refId": "A"
             }
           ],
@@ -2294,7 +2294,7 @@ data:
               "format": "time_series",
               "instant": true,
               "intervalFactor": 1,
-              "legendFormat": "{{node}}",
+              "legendFormat": "{{`{{node}}`}}",
               "refId": "A"
             }
           ],
@@ -2353,7 +2353,7 @@ data:
               "expr": "sort_desc (count by (node) (kube_pod_info{taco_cluster=\"skb-suy-adm01\", created_by_kind != \"Workflow\"}))",
               "format": "time_series",
               "instant": true,
-              "legendFormat": "{{node}}",
+              "legendFormat": "{{`{{node}}`}}",
               "refId": "A"
             }
           ],
@@ -2410,7 +2410,7 @@ data:
               "format": "time_series",
               "instant": true,
               "intervalFactor": 1,
-              "legendFormat": "{{node}}",
+              "legendFormat": "{{`{{node}}`}}",
               "refId": "A"
             }
           ],
@@ -2512,7 +2512,7 @@ data:
             {
               "expr": "kube_deployment_spec_replicas{namespace=\"kube-system\", taco_cluster=\"$taco_cluster\"}",
               "instant": true,
-              "legendFormat": "{{deployment}}",
+              "legendFormat": "{{`{{deployment}}`}}",
               "refId": "A"
             }
           ],
@@ -2734,7 +2734,7 @@ data:
           "targets": [
             {
               "expr": "kube_deployment_spec_replicas{namespace=\"kube-system\", taco_cluster=\"$taco_cluster\"}",
-              "legendFormat": "{{deployment}}",
+              "legendFormat": "{{`{{deployment}}`}}",
               "refId": "A"
             }
           ],
@@ -2823,7 +2823,7 @@ data:
           "targets": [
             {
               "expr": "kube_deployment_status_replicas{namespace=\"kube-system\", taco_cluster=\"$taco_cluster\"}",
-              "legendFormat": "{{deployment}}",
+              "legendFormat": "{{`{{deployment}}`}}",
               "refId": "A"
             }
           ],
@@ -3081,7 +3081,7 @@ data:
           "targets": [
             {
               "expr": "kube_deployment_status_replicas_available{namespace=\"kube-system\", taco_cluster=\"$taco_cluster\"}",
-              "legendFormat": "{{deployment}}",
+              "legendFormat": "{{`{{deployment}}`}}",
               "refId": "A"
             }
           ],
@@ -3170,7 +3170,7 @@ data:
           "targets": [
             {
               "expr": "kube_deployment_status_replicas_unavailable{namespace=\"kube-system\", taco_cluster=\"$taco_cluster\"}  ",
-              "legendFormat": "{{deployment}}",
+              "legendFormat": "{{`{{deployment}}`}}",
               "refId": "A"
             }
           ],
@@ -3271,7 +3271,7 @@ data:
           "targets": [
             {
               "expr": "sum by (node) (kube_pod_container_resource_requests_cpu_cores{taco_cluster=\"$taco_cluster\"})",
-              "legendFormat": "{{node}}",
+              "legendFormat": "{{`{{node}}`}}",
               "refId": "A"
             }
           ],
@@ -3358,7 +3358,7 @@ data:
           "targets": [
             {
               "expr": "sum by (node) (kube_node_status_allocatable_cpu_cores{taco_cluster=\"$taco_cluster\"})",
-              "legendFormat": "{{node}}",
+              "legendFormat": "{{`{{node}}`}}",
               "refId": "A"
             }
           ],
@@ -3445,7 +3445,7 @@ data:
           "targets": [
             {
               "expr": "sum by (node) (kube_pod_container_resource_requests_memory_bytes{taco_cluster=\"$taco_cluster\"})",
-              "legendFormat": "{{node}}",
+              "legendFormat": "{{`{{node}}`}}",
               "refId": "A"
             }
           ],
@@ -3532,7 +3532,7 @@ data:
           "targets": [
             {
               "expr": "sum by (node) (kube_node_status_allocatable_memory_bytes{taco_cluster=\"$taco_cluster\"})",
-              "legendFormat": "{{node}}",
+              "legendFormat": "{{`{{node}}`}}",
               "refId": "A"
             }
           ],
