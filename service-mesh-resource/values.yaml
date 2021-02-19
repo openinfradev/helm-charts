@@ -1,0 +1,4 @@
+IstioOperator:
+  enabled: true
+  profile: demo # default, demo, minimal, remote, empty, preview
+  istioNamespace: istio-namespace1
