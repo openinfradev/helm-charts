@@ -4,6 +4,10 @@ kind: Elasticsearch
 metadata:
   name: {{ template "eck-resource.name" . }}-elasticsearch
 spec:
+{{- if .Values.elasticsearch.http }}
+  http:
+{{ toYaml .Values.elasticsearch.http | indent 4 }}
+{{- end }}
   version: {{ .Values.elasticsearch.image.tag }}
   image: {{ .Values.elasticsearch.image.repository }}:{{ .Values.elasticsearch.image.tag }}
 {{- if not .Values.elasticsearch.podDisruptionBudget.enabled }}
@@ -44,7 +48,4 @@ spec:
   {{- end }}
   {{- end}}  
 {{- end}}  
-{{- if .Values.elasticsearch.http }}
-{{ toYaml .Values.elasticsearch.http | indent 2 }}
-{{- end }}
 {{- end }}
