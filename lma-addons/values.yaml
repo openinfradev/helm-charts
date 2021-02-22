@@ -99,6 +99,10 @@ serviceMonitor:
     # probesMetricRelablings: []
     # probesRelabelings: []
 
+  istio:
+    enabled: true
+    interval: "30s"
+
 grafanaDashboard:
   enabled: true
   # namespace installed grafana
