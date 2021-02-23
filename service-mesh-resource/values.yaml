@@ -1,0 +1,6 @@
+IstioOperator:
+  enabled: true
+  # Configuration profile is one of "default, demo, minimal, remote, empty, preview".
+  # refer to https://istio.io/latest/docs/setup/additional-setup/config-profiles/
+  profile: demo 
+  istioNamespace: istio-namespace1

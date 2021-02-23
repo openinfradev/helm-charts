@@ -1,0 +1,12 @@
+{{- if .Values.IstioOperator.enabled }}
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  namespace: istio-system
+  name: example-istiocontrolplane
+spec:
+  profile: {{ .Values.IstioOperator.profile }}
+  values:
+    global:
+      istioNamespace: {{ .Values.IstioOperator.istioNamespace }}
+{{- end }}
