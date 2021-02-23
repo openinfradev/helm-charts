@@ -119,6 +119,10 @@ grafanaDashboard:
       enabled: true
       label: grafana_datasource
       prometheusAddress: "lma-prometheus-fed-master-prometheus:9090" 
+  istio:
+    enabled: false
+  jaeger:
+    enabled: false
 
 metricbeat:
   enabled: true
