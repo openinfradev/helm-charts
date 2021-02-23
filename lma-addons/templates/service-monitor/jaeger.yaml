@@ -1,0 +1,16 @@
+{{- if and .Values.serviceMonitor.enabled .Values.serviceMonitor.jaeger.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: jaeger-tracing
+  namespace: {{ .Release.Namespace }}
+spec:
+  podMetricsEndpoints:
+  - targetPort: 14269
+    {{- if .Values.serviceMonitor.jaeger.interval }}
+    interval: {{ .Values.serviceMonitor.jaeger.interval }}
+    {{- end }}
+  selector:
+    matchLabels:
+      app: jaeger
+{{- end }}

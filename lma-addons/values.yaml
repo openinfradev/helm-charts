@@ -100,7 +100,11 @@ serviceMonitor:
     # probesRelabelings: []
 
   istio:
-    enabled: true
+    enabled: false
+    interval: "30s"
+
+  jaeger:
+    enabled: false
     interval: "30s"
 
 grafanaDashboard:
