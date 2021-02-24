@@ -10,7 +10,7 @@ metadata:
     {{- end }}
     app: grafana
 data:
-  pilot-dashboard.json:
+  pilot-dashboard.json: |-
     {
       "annotations": {
         "list": [
