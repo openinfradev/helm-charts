@@ -7,4 +7,10 @@ IstioOperator:
   meshConfig:
     enableAccessLog: true
     enableTracing: true
+    # customTags:
+    #   my_tag_literal:
+    #     literal:
+    #       value: test
+    sampling: 100
+
   tracing_url: jaeger-operator-jaeger-collector.lma.svc:9411

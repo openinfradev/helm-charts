@@ -13,6 +13,13 @@ spec:
     {{- if .Values.IstioOperator.meshConfig.enableTracing }}
     enableTracing: true
     {{- end }}
+    defaultConfig:
+      tracing:
+        sampling: {{ .Values.IstioOperator.meshConfig.sampling | default 100 }}
+{{- if .Values.IstioOperator.meshConfig.customTags }}
+        custom_tags: 
+{{ toYaml .Values.IstioOperator.meshConfig.customTags | indent 10 }}
+{{- end }}
   values:
     global:
       istioNamespace: {{ .Values.IstioOperator.istioNamespace }}
