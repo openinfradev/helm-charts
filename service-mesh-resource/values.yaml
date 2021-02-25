@@ -4,3 +4,7 @@ IstioOperator:
   # refer to https://istio.io/latest/docs/setup/additional-setup/config-profiles/
   profile: demo 
   istioNamespace: istio-namespace1
+  meshConfig:
+    enableAccessLog: true
+    enableTracing: true
+  tracing_url: jaeger-operator-jaeger-collector.lma.svc:9411
