@@ -3,10 +3,29 @@ apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 metadata:
   namespace: istio-system
-  name: example-istiocontrolplane
+  name: istio-controlplane
 spec:
   profile: {{ .Values.IstioOperator.profile }}
+  meshConfig:
+    {{- if .Values.IstioOperator.meshConfig.enableAccessLog }}
+    accessLogFile: "/dev/stdout"
+    {{- end }}
+    {{- if .Values.IstioOperator.meshConfig.enableTracing }}
+    enableTracing: true
+    {{- end }}
+    defaultConfig:
+      tracing:
+        sampling: {{ .Values.IstioOperator.meshConfig.sampling | default 100 }}
+{{- if .Values.IstioOperator.meshConfig.customTags }}
+        custom_tags: 
+{{ toYaml .Values.IstioOperator.meshConfig.customTags | indent 10 }}
+{{- end }}
   values:
     global:
       istioNamespace: {{ .Values.IstioOperator.istioNamespace }}
+      {{- if .Values.IstioOperator.tracing_url }}
+      tracer:
+        zipkin:
+          address: {{ .Values.IstioOperator.tracing_url }}
+      {{- end }}
 {{- end }}
