@@ -13,7 +13,7 @@ spec:
     ingressGateways:
 {{ toYaml .Values.IstioOperator.ingressGateways | indent 6 }}
 {{- end }}
-{{- if .Values.IstioOperator.ingressGateways }}
+{{- if .Values.IstioOperator.egressGateways }}
     egressGateways:
 {{ toYaml .Values.IstioOperator.egressGateways | indent 6 }}
 {{- end }}
