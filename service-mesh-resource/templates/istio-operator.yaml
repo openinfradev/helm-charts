@@ -5,7 +5,18 @@ metadata:
   namespace: istio-system
   name: istio-controlplane
 spec:
+  {{- if .Values.IstioOperator.profile }}
   profile: {{ .Values.IstioOperator.profile }}
+  {{- end }}
+  components:
+{{- if .Values.IstioOperator.ingressGateways }}
+    ingressGateways:
+{{ toYaml .Values.IstioOperator.ingressGateways | indent 6 }}
+{{- end }}
+{{- if .Values.IstioOperator.egressGateways }}
+    egressGateways:
+{{ toYaml .Values.IstioOperator.egressGateways | indent 6 }}
+{{- end }}
   meshConfig:
     {{- if .Values.IstioOperator.meshConfig.enableAccessLog }}
     accessLogFile: "/dev/stdout"
