@@ -1,0 +1,28 @@
+{{- if .Values.sidecarsService.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.sidecarsService.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: {{ .Values.sidecarsService.type }}
+  ports:
+    - port: {{ .Values.sidecarsService.port }}
+      targetPort: http
+      protocol: TCP
+      name: grpc
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: {{ .Values.sidecarsService.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  subsets:
+  - addresses:
+    {{- range $idx, $ip := .Values.sidecarsService.endpoints }}
+    - ip: {{ $ip }}
+    {{- end }}
+    ports:
+      - port: {{ .Values.sidecarsService.port }}
+{{- end }}
