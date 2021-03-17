@@ -1,0 +1,67 @@
+namespace: default # This shoud be same with OpenStack cloud.yaml secret's namespace
+cluster_name: capi-k8s # This should be unique in the namespace
+
+kube:
+  version: v1.20.2
+  network:
+    pods:
+      cidrBlocks:
+      - 10.233.0.0/18
+    services:
+      cidrBlocks:
+      - 10.233.64.0/18
+    serviceDomain: cluster.local
+
+openstack:
+  cloud: # This is from the clouds.yaml
+    name: capi
+    conf:
+      Global:
+        auth-url: http://keystone.openstack.svc.cluster.local:80/v3
+        username: capi
+        password: password
+        tenant-name: capi
+        domain-name: default
+        region: RegionOne
+    cacert: "\n"
+  # Refer to the Provider OpenStack documents.
+  disable_port_security: false
+  dns_name_servers:
+  - 1.1.1.1
+  managed_apiserver_loadbalancer: true
+  managed_security_groups: true
+  node_cidr: 192.168.79.0/24
+  use_octavia: true
+  #external_network_id: e98e5ab1-1775-46bb-8a7b-ae1ced2950ff
+
+# SSH bastion Host
+bastion:
+  enabled: true
+  flavor: m1.large
+  image: ubuntu-2004-kube-v1.20.2
+  ssh_keyname: capi
+
+# Kubernets Master Nodes
+masters:
+  replicas: 3
+  flavor: m1.xlarge
+  image: ubuntu-2004-kube-v1.20.2
+  ssh_keyname: capi
+  # This is for boot from volume
+  #root_volume:
+  #  diskSize: 100
+  #  sourceType: image or snapshot
+  #  sourceUUID: 5b516e3d-9340-4fa9-a2f0-489d0bd0182c
+
+# Kubernets Worker Nodes
+workers:
+  replicas: 1
+  flavor: m1.xlarge
+  image: ubuntu-2004-kube-v1.20.2
+  ssh_keyname: capi
+  failure_domain: rack_13
+  # This is for boot from volume
+  #root_volume:
+  #  diskSize: 100
+  #  sourceType: image or snapshot
+  #  sourceUUID: 5b516e3d-9340-4fa9-a2f0-489d0bd0182c
