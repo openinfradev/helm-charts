@@ -17,12 +17,11 @@ kind: Endpoints
 metadata:
   name: {{ .Values.sidecarsService.name }}
   namespace: {{ .Release.Namespace }}
-spec:
-  subsets:
-  - addresses:
-    {{- range $idx, $ip := .Values.sidecarsService.endpoints }}
-    - ip: {{ $ip }}
-    {{- end }}
-    ports:
-      - port: {{ .Values.sidecarsService.port }}
+subsets:
+- addresses:
+  {{- range $idx, $ip := .Values.sidecarsService.endpoints }}
+  - ip: {{ $ip }}
+  {{- end }}
+  ports:
+    - port: {{ .Values.sidecarsService.port }}
 {{- end }}
