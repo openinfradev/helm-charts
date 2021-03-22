@@ -1,5 +1,6 @@
 IstioOperator:
-  enabled: true
+  enableControlplane: true
+  enableGateway: false
   # Configuration profile is one of "default, demo, minimal, remote, empty, preview".
   # refer to https://istio.io/latest/docs/setup/additional-setup/config-profiles/
   profile: default 
@@ -16,48 +17,22 @@ IstioOperator:
     tracing_sampling: 100
     tracing_url: jaeger-operator-jaeger-collector.lma.svc:9411
 
-  ingressGateways:
-    # Default ingressGateway config #
-    - name: istio-ingressgateway
-      enabled: true
-      namespace: istio-gateway
-      k8s:
-        resources:
-          requests:
-            cpu: 1000m
-            memory: 1024Mi
-          limits:
-            cpu: 2000m
-            memory: 2048Mi
-        hpaSpec:
-          maxReplicas: 10
-          minReplicas: 1
-          metrics:
-          - resource:
-              name: cpu
-              targetAverageUtilization: 80
-            type: Resource
-          scaleTargetRef:
-            apiVersion: apps/v1
-            kind: Deployment
-            name: istio-ingressgateway
+  ingressGateways: []
+  # - name: istio-ingressgateway
+  #   resources:
+  #     requests_cpu: 1000m
+  #     requests_memory: 1024Mi
+  #     limits_cpu: 2000m
+  #     limits_memory: 2048Mi
+  #   hpaMaxReplicas: 10
+  #   hpaTargetCpuUtilization: 80
+          
   egressGateways: []
-  #- name: istio-egressgateway
-  #  enabled: true
-  #  # namespace: istio-gateway
-  #  # label:
-  #  #   custom_label: custom_value
-  #  k8s:
-  #    resources:
-  #      requests:
-  #        cpu: 500m # default 500m
-  #        memory: 1024Mi # default 2048Mi
-  #      limits:
-  #        cpu: 1000m # default 500m
-  #        memory: 2048Mi # default 2048Mi
-  #    hpaSpec:
-  #      maxReplicas: 10 # default 5
-  #      minReplicas: 2 # defulat 1
-        
-
-
+  # - name: istio-egressgateway
+  #   resources:
+  #     requests_cpu: 1000m
+  #     requests_memory: 1024Mi
+  #     limits_cpu: 2000m
+  #     limits_memory: 2048Mi
+  #   hpaMaxReplicas: 10
+  #   hpaTargetCpuUtilization: 80

@@ -1,4 +1,4 @@
-{{- if .Values.IstioOperator.enabled }}
+{{- if .Values.IstioOperator.enableControlplane }}
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 metadata:
@@ -10,15 +10,6 @@ spec:
   {{- if .Values.IstioOperator.profile }}
   profile: {{ .Values.IstioOperator.profile }}
   {{- end }}
-  components:
-{{- if .Values.IstioOperator.ingressGateways }}
-    ingressGateways:
-{{ toYaml .Values.IstioOperator.ingressGateways | indent 6 }}
-{{- end }}
-{{- if .Values.IstioOperator.egressGateways }}
-    egressGateways:
-{{ toYaml .Values.IstioOperator.egressGateways | indent 6 }}
-{{- end }}
   meshConfig:
     {{- if .Values.IstioOperator.meshConfig.enableAccessLog }}
     accessLogFile: "/dev/stdout"
@@ -28,13 +19,11 @@ spec:
     defaultConfig:
       discoveryAddress: "istiod-{{ .Values.IstioOperator.revision }}.{{ .Values.IstioOperator.istioNamespace }}.svc:15012"
       tracing:
-        sampling: {{ .Values.IstioOperator.meshConfig.tracing_sampling | default 100 }}
+        sampling: {{ .Values.IstioOperator.meshConfig.tracing_sampling }}
       {{- if .Values.IstioOperator.meshConfig.tracing_url }}
         zipkin:
           address: {{ .Values.IstioOperator.meshConfig.tracing_url }}
       {{- end }}
-
-
 {{- if .Values.IstioOperator.meshConfig.customTags }}
         custom_tags: 
 {{ toYaml .Values.IstioOperator.meshConfig.customTags | indent 10 }}
