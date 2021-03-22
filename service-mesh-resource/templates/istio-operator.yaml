@@ -5,6 +5,8 @@ metadata:
   namespace: istio-system
   name: istio-controlplane
 spec:
+  revision: {{ .Values.IstioOperator.revision }}
+  namespace: {{ .Values.IstioOperator.istioNamespace }}
   {{- if .Values.IstioOperator.profile }}
   profile: {{ .Values.IstioOperator.profile }}
   {{- end }}
@@ -21,12 +23,18 @@ spec:
     {{- if .Values.IstioOperator.meshConfig.enableAccessLog }}
     accessLogFile: "/dev/stdout"
     {{- end }}
-    {{- if .Values.IstioOperator.meshConfig.enableTracing }}
-    enableTracing: true
-    {{- end }}
+    enableTracing: {{ .Values.IstioOperator.meshConfig.enableTracing }}
+    enablePrometheusMerge: {{ .Values.IstioOperator.meshConfig.enablePrometheusMerge }}
     defaultConfig:
+      discoveryAddress: "istiod-{{ .Values.IstioOperator.revision }}.{{ .Values.IstioOperator.istioNamespace }}.svc:15012"
       tracing:
-        sampling: {{ .Values.IstioOperator.meshConfig.sampling | default 100 }}
+        sampling: {{ .Values.IstioOperator.meshConfig.tracing_sampling | default 100 }}
+      {{- if .Values.IstioOperator.meshConfig.tracing_url }}
+        zipkin:
+          address: {{ .Values.IstioOperator.meshConfig.tracing_url }}
+      {{- end }}
+
+
 {{- if .Values.IstioOperator.meshConfig.customTags }}
         custom_tags: 
 {{ toYaml .Values.IstioOperator.meshConfig.customTags | indent 10 }}
@@ -34,9 +42,4 @@ spec:
   values:
     global:
       istioNamespace: {{ .Values.IstioOperator.istioNamespace }}
-      {{- if .Values.IstioOperator.tracing_url }}
-      tracer:
-        zipkin:
-          address: {{ .Values.IstioOperator.tracing_url }}
-      {{- end }}
 {{- end }}
