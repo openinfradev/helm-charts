@@ -1,0 +1,19 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: OpenStackMachineTemplate
+metadata:
+  name: {{ .Values.cluster_name }}-md-0
+  namespace: {{ .Values.namespace }}
+spec:
+  template:
+    spec:
+      cloudName: {{ .Values.openstack.cloud.name }}
+      cloudsSecret:
+        name: {{ .Values.openstack.cloud.name }}-cloud-config
+        namespace: {{ .Values.namespace }}
+      flavor: {{ .Values.workers.flavor }}
+      image: {{ .Values.workers.image }}
+      sshKeyName: {{ .Values.workers.ssh_keyname }}
+{{- if .Values.workers.root_volume }}
+      rootVolume:
+{{ toYaml .Values.workers.root_volume | indent 8 }}
+{{- end }}

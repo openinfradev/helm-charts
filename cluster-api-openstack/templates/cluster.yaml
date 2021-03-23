@@ -1,0 +1,18 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Cluster
+metadata:
+  name: {{ .Values.cluster_name }}
+  namespace: {{ .Values.namespace }}
+spec:
+{{- if .Values.kube.network }}
+  clusterNetwork:
+{{ toYaml .Values.kube.network | indent 4 }}
+{{- end }}
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: {{ .Values.cluster_name }}-control-plane
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: OpenStackCluster
+    name: {{ .Values.cluster_name }}

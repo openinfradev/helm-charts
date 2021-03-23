@@ -1,0 +1,60 @@
+apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+kind: KubeadmControlPlane
+metadata:
+  name: {{ .Values.cluster_name }}-control-plane
+  namespace: {{ .Values.namespace }}
+spec:
+  infrastructureTemplate:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: OpenStackMachineTemplate
+    name: {{ .Values.cluster_name }}-control-plane
+  kubeadmConfigSpec:
+    clusterConfiguration:
+      apiServer:
+        extraArgs:
+          cloud-config: /etc/kubernetes/cloud.conf
+          cloud-provider: openstack
+        extraVolumes:
+        - hostPath: /etc/kubernetes/cloud.conf
+          mountPath: /etc/kubernetes/cloud.conf
+          name: cloud
+          readOnly: true
+      controllerManager:
+        extraArgs:
+          cloud-config: /etc/kubernetes/cloud.conf
+          cloud-provider: openstack
+        extraVolumes:
+        - hostPath: /etc/kubernetes/cloud.conf
+          mountPath: /etc/kubernetes/cloud.conf
+          name: cloud
+          readOnly: true
+        - hostPath: /etc/certs/cacert
+          mountPath: /etc/certs/cacert
+          name: cacerts
+          readOnly: true
+      imageRepository: k8s.gcr.io
+    files:
+    - content: {{ include "helm-toolkit.utils.to_ini" .Values.openstack.cloud.conf | b64enc }}
+      encoding: base64
+      owner: root
+      path: /etc/kubernetes/cloud.conf
+      permissions: "0600"
+    - content: {{ .Values.openstack.cloud.cacert | b64enc }}
+      encoding: base64
+      owner: root
+      path: /etc/certs/cacert
+      permissions: "0600"
+    initConfiguration:
+      nodeRegistration:
+        kubeletExtraArgs:
+          cloud-config: /etc/kubernetes/cloud.conf
+          cloud-provider: openstack
+        name: {{`'{{ local_hostname }}'`}}
+    joinConfiguration:
+      nodeRegistration:
+        kubeletExtraArgs:
+          cloud-config: /etc/kubernetes/cloud.conf
+          cloud-provider: openstack
+        name: {{`'{{ local_hostname }}'`}}
+  replicas: {{ .Values.masters.replicas }} 
+  version: {{ .Values.kube.version }}
