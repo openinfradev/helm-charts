@@ -19,10 +19,10 @@ spec:
     defaultConfig:
       discoveryAddress: "istiod-{{ .Values.IstioOperator.revision }}.{{ .Values.IstioOperator.istioNamespace }}.svc:15012"
       tracing:
-        sampling: {{ .Values.IstioOperator.meshConfig.tracing_sampling }}
-      {{- if .Values.IstioOperator.meshConfig.tracing_url }}
+        sampling: {{ .Values.IstioOperator.meshConfig.tracingSampling }}
+      {{- if .Values.IstioOperator.meshConfig.tracingUrl }}
         zipkin:
-          address: {{ .Values.IstioOperator.meshConfig.tracing_url }}
+          address: {{ .Values.IstioOperator.meshConfig.tracingUrl }}
       {{- end }}
 {{- if .Values.IstioOperator.meshConfig.customTags }}
         custom_tags: 

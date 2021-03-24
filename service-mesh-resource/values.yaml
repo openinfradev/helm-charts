@@ -14,8 +14,8 @@ IstioOperator:
     #   my_tag_literal:
     #     literal:
     #       value: test
-    tracing_sampling: 100
-    tracing_url: jaeger-operator-jaeger-collector.lma.svc:9411
+    tracingSampling: 100
+    tracingUrl: jaeger-operator-jaeger-collector.lma.svc:9411
 
   ingressGateways: []
   # - name: istio-ingressgateway
