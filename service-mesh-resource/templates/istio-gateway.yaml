@@ -36,6 +36,8 @@ spec:
               apiVersion: apps/v1
               kind: Deployment
               name: istio-ingressgateway-{{- $gateway.name }}
+          service:
+            type: {{ default "LoadBalancer" $gateway.serviceType }}
 {{- end }}
 {{- end }}
 {{- if .Values.IstioOperator.egressGateways }}
