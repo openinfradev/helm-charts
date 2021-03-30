@@ -12,6 +12,10 @@ kube:
       - 10.233.64.0/18
     serviceDomain: cluster.local
 
+etcd:
+  # https://etcd.io/docs/current/tuning/
+  election_timeout: 1000
+
 openstack:
   cloud: # This is from the clouds.yaml
     name: capi
