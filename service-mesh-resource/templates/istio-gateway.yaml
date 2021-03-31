@@ -1,0 +1,73 @@
+{{- if .Values.IstioOperator.enableGateway }}
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: istio-gateway
+  namespace: istio-gateway
+spec:
+  revision: {{ .Values.IstioOperator.revision }}
+  profile: empty
+  components:
+{{- if .Values.IstioOperator.ingressGateways }}
+    ingressGateways:
+{{- range $gateway := .Values.IstioOperator.ingressGateways }}
+      - name: istio-ingressgateway-{{- $gateway.name }}
+        enabled: true
+        namespace: istio-gateway
+        label:
+          istio: ingressgateway-{{- $gateway.name }}
+        k8s:
+          resources:
+            requests:
+              cpu: {{ default "1000m" $gateway.resources.requests_cpu }}
+              memory: {{ default "1024Mi" $gateway.resources.requests_memory }}
+            limits:
+              cpu: {{ default "2000m" $gateway.resources.limits_cpu }}
+              memory: {{ default "2048Mi" $gateway.resources.limits_memory }}
+          hpaSpec:
+            maxReplicas: {{ default 10 $gateway.hpaMaxReplicas }}
+            minReplicas: {{ default 2 $gateway.hpaMinReplicas }}
+            metrics:
+            - resource:
+                name: cpu
+                targetAverageUtilization: {{ default 80 $gateway.hpaTargetCpuUilization }}
+              type: Resource
+            scaleTargetRef:
+              apiVersion: apps/v1
+              kind: Deployment
+              name: istio-ingressgateway-{{- $gateway.name }}
+          service:
+            type: {{ default "LoadBalancer" $gateway.serviceType }}
+{{- end }}
+{{- end }}
+{{- if .Values.IstioOperator.egressGateways }}
+    egressGateways:
+{{- range $gateway := .Values.IstioOperator.egressGateways }}
+      - name: istio-egressgateway-{{- $gateway.name }}
+        enabled: true
+        namespace: istio-gateway
+        label:
+          istio: egressgateway-{{- $gateway.name }}
+        k8s:
+          resources:
+            requests:
+              cpu: {{ default "1000m" $gateway.resources.requests_cpu }}
+              memory: {{ default "1024Mi" $gateway.resources.requests_memory }}
+            limits:
+              cpu: {{ default "2000m" $gateway.resources.limits_cpu }} 
+              memory: {{ default "2048Mi" $gateway.resources.limits_memory }}
+          hpaSpec:
+            maxReplicas: {{ default 10 $gateway.hpaMaxReplicas }}
+            minReplicas: {{ default 2 $gateway.hpaMinReplicas }}
+            metrics:
+            - resource:
+                name: cpu
+                targetAverageUtilization: {{ default 80 $gateway.hpaTargetCpuUilization }}
+              type: Resource
+            scaleTargetRef:
+              apiVersion: apps/v1
+              kind: Deployment
+              name: istio-egressgateway-{{- $gateway.name }}
+{{- end }}
+{{- end }}
+{{- end }}

@@ -32,6 +32,10 @@ spec:
           mountPath: /etc/certs/cacert
           name: cacerts
           readOnly: true
+      etcd:
+        local:
+          extraArgs:
+            election-timeout: {{ .Values.etcd.election_timeout | quote }}
       imageRepository: k8s.gcr.io
     files:
     - content: {{ include "helm-toolkit.utils.to_ini" .Values.openstack.cloud.conf | b64enc }}
