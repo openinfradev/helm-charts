@@ -26,7 +26,7 @@ spec:
               memory: {{ default "2048Mi" $gateway.resources.limits_memory }}
           hpaSpec:
             maxReplicas: {{ default 10 $gateway.hpaMaxReplicas }}
-            minReplicas: 2
+            minReplicas: {{ default 2 $gateway.hpaMinReplicas }}
             metrics:
             - resource:
                 name: cpu
@@ -58,7 +58,7 @@ spec:
               memory: {{ default "2048Mi" $gateway.resources.limits_memory }}
           hpaSpec:
             maxReplicas: {{ default 10 $gateway.hpaMaxReplicas }}
-            minReplicas: 2
+            minReplicas: {{ default 2 $gateway.hpaMinReplicas }}
             metrics:
             - resource:
                 name: cpu

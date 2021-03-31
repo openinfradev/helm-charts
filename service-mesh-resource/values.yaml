@@ -25,6 +25,7 @@ IstioOperator:
   #     limits_cpu: 2000m
   #     limits_memory: 2048Mi
   #   hpaMaxReplicas: 10
+  #   hpaMinReplicas: 2
   #   hpaTargetCpuUtilization: 80
   #   serviceType: NodePort
           
@@ -36,5 +37,6 @@ IstioOperator:
   #     limits_cpu: 2000m
   #     limits_memory: 2048Mi
   #   hpaMaxReplicas: 10
+  #   hpaMinReplicas: 2
   #   hpaTargetCpuUtilization: 80
   #   serviceType: NodePort
