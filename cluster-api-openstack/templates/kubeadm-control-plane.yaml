@@ -14,45 +14,33 @@ spec:
       apiServer:
         {{- if .Values.kube.config.apiServer.extraArgs }}
         extraArgs:
-        {{- range $key, $val := .Values.kube.config.apiServer.extraArgs }}
-          {{ $key }}: {{ $val }}
-        {{- end }}
+        {{- toYaml .Values.kube.config.apiServer.extraArgs | nindent 10 }}
         {{- end }}
         {{- if .Values.kube.config.apiServer.extraVolumes }}
         extraVolumes:
-        {{- range .Values.kube.config.apiServer.extraVolumes }}
-        -  {{- . | toYaml | nindent 10 -}}
-        {{- end }}
+        {{- toYaml .Values.kube.config.apiServer.extraVolumes | nindent 8 }}
         {{- end }}
 {{- end }}
 {{- if .Values.kube.config.controllerManager }}
       controllerManager:
         {{- if .Values.kube.config.controllerManager.extraArgs }}
         extraArgs:
-        {{- range $key, $val := .Values.kube.config.controllerManager.extraArgs }}
-          {{ $key }}: {{ $val }}
-        {{- end }}
+        {{- toYaml .Values.kube.config.controllerManager.extraArgs | nindent 10 }}
         {{- end }}
         {{- if .Values.kube.config.controllerManager.extraVolumes }}
         extraVolumes:
-        {{- range .Values.kube.config.controllerManager.extraVolumes }}
-        -  {{- . | toYaml | nindent 10 -}}
-        {{- end }}
+        {{- toYaml .Values.kube.config.controllerManager.extraVolumes | nindent 8 }}
         {{- end }}
 {{- end }}
 {{- if .Values.kube.config.scheduler }}
       scheduler:
         {{- if .Values.kube.config.scheduler.extraArgs }}
         extraArgs:
-        {{- range $key, $val := .Values.kube.config.scheduler.extraArgs }}
-          {{ $key }}: {{ $val }}
-        {{- end }}
+        {{- toYaml .Values.kube.config.scheduler.extraArgs | nindent 10 }}
         {{- end }}
         {{- if .Values.kube.config.scheduler.extraVolumes }}
         extraVolumes:
-        {{- range .Values.kube.config.scheduler.extraVolumes }}
-        -  {{- . | toYaml | nindent 10 -}}
-        {{- end }}
+        {{- toYaml .Values.kube.config.scheduler.extraVolumes | nindent 8 }}
         {{- end }}
 {{- end }}
       etcd:
