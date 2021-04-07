@@ -1,0 +1,34 @@
+{{- if .Values.IstioOperator.enableControlplane }}
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  namespace: istio-system
+  name: istio-controlplane
+spec:
+  revision: {{ .Values.IstioOperator.revision }}
+  namespace: {{ .Values.IstioOperator.istioNamespace }}
+  {{- if .Values.IstioOperator.profile }}
+  profile: {{ .Values.IstioOperator.profile }}
+  {{- end }}
+  meshConfig:
+    {{- if .Values.IstioOperator.meshConfig.enableAccessLog }}
+    accessLogFile: "/dev/stdout"
+    {{- end }}
+    enableTracing: {{ .Values.IstioOperator.meshConfig.enableTracing }}
+    enablePrometheusMerge: {{ .Values.IstioOperator.meshConfig.enablePrometheusMerge }}
+    defaultConfig:
+      discoveryAddress: "istiod-{{ .Values.IstioOperator.revision }}.{{ .Values.IstioOperator.istioNamespace }}.svc:15012"
+      tracing:
+        sampling: {{ .Values.IstioOperator.meshConfig.tracingSampling }}
+      {{- if .Values.IstioOperator.meshConfig.tracingUrl }}
+        zipkin:
+          address: {{ .Values.IstioOperator.meshConfig.tracingUrl }}
+      {{- end }}
+{{- if .Values.IstioOperator.meshConfig.customTags }}
+        custom_tags: 
+{{ toYaml .Values.IstioOperator.meshConfig.customTags | indent 10 }}
+{{- end }}
+  values:
+    global:
+      istioNamespace: {{ .Values.IstioOperator.istioNamespace }}
+{{- end }}

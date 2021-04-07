@@ -13,7 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# This files from dddd
+# This script is based on https://github.com/kubernetes-sigs/cluster-api-provider-openstack/blob/master/templates/env.rc.
+
+set -e
 
 CAPO_SCRIPT=create_cloud-config_secret.sh
 while test $# -gt 0; do
@@ -60,8 +62,9 @@ else
 fi
 
 CAPO_YQ_TYPE=$(file "$(which yq)")
-if [[ ${CAPO_YQ_TYPE} == *"Python script"* ]]; then
-  echo "Wrong version of 'yq' installed, please install the one from https://github.com/mikefarah/yq"
+CAPO_YQ_VERSION=$(yq -V | awk '{print $3}')
+if [[ ${CAPO_YQ_TYPE} == *"Python script"* ]] || [[ ${CAPO_YQ_VERSION} == "3."* ]]; then
+  echo "Wrong version of 'yq' installed, please install version 4 of yq from https://github.com/mikefarah/yq"
   echo ""
   exit 1
 fi
@@ -69,12 +72,12 @@ fi
 CAPO_CLOUDS_PATH=${CAPO_CLOUDS_PATH:-""}
 CAPO_OPENSTACK_CLOUD_YAML_CONTENT=$(cat "${CAPO_CLOUDS_PATH}")
 
-CAPO_CACERT_ORIGINAL=$(echo "$CAPO_OPENSTACK_CLOUD_YAML_CONTENT" | yq r - clouds.${CAPO_CLOUD}.cacert)
+CAPO_CACERT_ORIGINAL=$(echo "$CAPO_OPENSTACK_CLOUD_YAML_CONTENT" | yq eval .clouds.${CAPO_CLOUD}.cacert -)
 
 export OPENSTACK_CLOUD="${CAPO_CLOUD}"
 
 # Build OPENSTACK_CLOUD_YAML_B64
-CAPO_OPENSTACK_CLOUD_YAML_SELECTED_CLOUD_B64=$(echo "${CAPO_OPENSTACK_CLOUD_YAML_CONTENT}" | yq r - clouds.${CAPO_CLOUD} | yq p - clouds.${CAPO_CLOUD} | base64 --wrap=0)
+CAPO_OPENSTACK_CLOUD_YAML_SELECTED_CLOUD_B64=$(echo "${CAPO_OPENSTACK_CLOUD_YAML_CONTENT}" | yq eval .clouds.${CAPO_CLOUD} - | yq eval '{"clouds": {"'${CAPO_CLOUD}'": . }}' - | base64 --wrap=0)
 export OPENSTACK_CLOUD_YAML_B64="${CAPO_OPENSTACK_CLOUD_YAML_SELECTED_CLOUD_B64}"
 
 # Build OPENSTACK_CLOUD_CACERT_B64

@@ -1,54 +1,42 @@
 IstioOperator:
-  enabled: true
+  enableControlplane: true
+  enableGateway: false
   # Configuration profile is one of "default, demo, minimal, remote, empty, preview".
   # refer to https://istio.io/latest/docs/setup/additional-setup/config-profiles/
-  # profile: default 
-  istioNamespace: istio-namespace1
+  profile: default 
+  revision: "1-9-1"
+  istioNamespace: istio-system
   meshConfig:
     enableAccessLog: true
+    enablePrometheusMerge: true
     enableTracing: true
     # customTags:
     #   my_tag_literal:
     #     literal:
     #       value: test
-    sampling: 100
+    tracingSampling: 100
+    tracingUrl: jaeger-operator-jaeger-collector.lma.svc:9411
 
   ingressGateways: []
-  #- name: istio-ingressgateway
-  #  enabled: true
-  #  # namespace: istio-namespace2
-  #  # label:
-  #  #   custom_label: custom_value
-  #  k8s:
-  #    resources:
-  #      requests:
-  #        cpu: 500m # default 500m
-  #        memory: 1024Mi # default 2048Mi
-  #      limits:
-  #        cpu: 1000m # default 500m
-  #        memory: 2048Mi # default 2048Mi
-  #    hpaSpec:
-  #      maxReplicas: 10 # default 5
-  #      minReplicas: 2 # defulat 1
-
+  # - name: istio-ingressgateway
+  #   resources:
+  #     requests_cpu: 1000m
+  #     requests_memory: 1024Mi
+  #     limits_cpu: 2000m
+  #     limits_memory: 2048Mi
+  #   hpaMaxReplicas: 10
+  #   hpaMinReplicas: 2
+  #   hpaTargetCpuUtilization: 80
+  #   serviceType: NodePort
+          
   egressGateways: []
-  #- name: istio-egressgateway
-  #  enabled: true
-  #  # namespace: istio-namespace2 
-  #  # label:
-  #  #   custom_label: custom_value
-  #  k8s:
-  #    resources:
-  #      requests:
-  #        cpu: 500m # default 500m
-  #        memory: 1024Mi # default 2048Mi
-  #      limits:
-  #        cpu: 1000m # default 500m
-  #        memory: 2048Mi # default 2048Mi
-  #    hpaSpec:
-  #      maxReplicas: 10 # default 5
-  #      minReplicas: 2 # defulat 1
-        
-
-
-  tracing_url: jaeger-operator-jaeger-collector.lma.svc:9411
+  # - name: istio-egressgateway
+  #   resources:
+  #     requests_cpu: 1000m
+  #     requests_memory: 1024Mi
+  #     limits_cpu: 2000m
+  #     limits_memory: 2048Mi
+  #   hpaMaxReplicas: 10
+  #   hpaMinReplicas: 2
+  #   hpaTargetCpuUtilization: 80
+  #   serviceType: NodePort

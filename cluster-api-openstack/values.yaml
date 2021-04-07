@@ -39,6 +39,10 @@ etcd:
   # https://etcd.io/docs/current/tuning/
   election_timeout: 1000
 
+etcd:
+  # https://etcd.io/docs/current/tuning/
+  election_timeout: 1000
+
 openstack:
   cloud: # This is from the clouds.yaml
     name: capi
