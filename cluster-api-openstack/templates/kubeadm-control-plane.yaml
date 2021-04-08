@@ -10,28 +10,39 @@ spec:
     name: {{ .Values.cluster_name }}-control-plane
   kubeadmConfigSpec:
     clusterConfiguration:
+{{- if .Values.kube.config.apiServer }}
       apiServer:
+        {{- if .Values.kube.config.apiServer.extraArgs }}
         extraArgs:
-          cloud-config: /etc/kubernetes/cloud.conf
-          cloud-provider: openstack
+        {{- toYaml .Values.kube.config.apiServer.extraArgs | nindent 10 }}
+        {{- end }}
+        {{- if .Values.kube.config.apiServer.extraVolumes }}
         extraVolumes:
-        - hostPath: /etc/kubernetes/cloud.conf
-          mountPath: /etc/kubernetes/cloud.conf
-          name: cloud
-          readOnly: true
+        {{- toYaml .Values.kube.config.apiServer.extraVolumes | nindent 8 }}
+        {{- end }}
+{{- end }}
+{{- if .Values.kube.config.controllerManager }}
       controllerManager:
+        {{- if .Values.kube.config.controllerManager.extraArgs }}
         extraArgs:
-          cloud-config: /etc/kubernetes/cloud.conf
-          cloud-provider: openstack
+        {{- toYaml .Values.kube.config.controllerManager.extraArgs | nindent 10 }}
+        {{- end }}
+        {{- if .Values.kube.config.controllerManager.extraVolumes }}
         extraVolumes:
-        - hostPath: /etc/kubernetes/cloud.conf
-          mountPath: /etc/kubernetes/cloud.conf
-          name: cloud
-          readOnly: true
-        - hostPath: /etc/certs/cacert
-          mountPath: /etc/certs/cacert
-          name: cacerts
-          readOnly: true
+        {{- toYaml .Values.kube.config.controllerManager.extraVolumes | nindent 8 }}
+        {{- end }}
+{{- end }}
+{{- if .Values.kube.config.scheduler }}
+      scheduler:
+        {{- if .Values.kube.config.scheduler.extraArgs }}
+        extraArgs:
+        {{- toYaml .Values.kube.config.scheduler.extraArgs | nindent 10 }}
+        {{- end }}
+        {{- if .Values.kube.config.scheduler.extraVolumes }}
+        extraVolumes:
+        {{- toYaml .Values.kube.config.scheduler.extraVolumes | nindent 8 }}
+        {{- end }}
+{{- end }}
       etcd:
         local:
           extraArgs:

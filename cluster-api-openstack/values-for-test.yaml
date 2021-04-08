@@ -25,6 +25,8 @@ kube:
       extraArgs:
         cloud-config: /etc/kubernetes/cloud.conf
         cloud-provider: openstack
+        leader-elect-lease-duration: 120s
+        leader-elect-renew-deadline: 110s
       extraVolumes:
       - hostPath: /etc/kubernetes/cloud.conf
         mountPath: /etc/kubernetes/cloud.conf
@@ -34,14 +36,14 @@ kube:
         mountPath: /etc/certs/cacert
         name: cacerts
         readOnly: true
+    scheduler:
+      extraArgs:
+        leader-elect-lease-duration: 120s
+        leader-elect-renew-deadline: 110s
 
 etcd:
   # https://etcd.io/docs/current/tuning/
-  election_timeout: 1000
-
-etcd:
-  # https://etcd.io/docs/current/tuning/
-  election_timeout: 1000
+  election_timeout: 50000
 
 openstack:
   cloud: # This is from the clouds.yaml
