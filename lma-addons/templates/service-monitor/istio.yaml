@@ -2,15 +2,16 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: istio-controlplane
+  name: istio-component-monitor
   namespace: {{ .Release.Namespace  }}
   labels:
-    monitoring: istio-dataplane
+    monitoring: istio-components
 spec:
   jobLabel: istio
+  targetLabels: [app]
   selector:
     matchExpressions:
-      - {key: istio, operator: In, values: [mixer,pilot,galley,citadel,sidecar-injector]}
+    - {key: istio, operator: In, values: [pilot]}
   namespaceSelector:
     any: true
   endpoints:
@@ -18,36 +19,38 @@ spec:
     {{- if .Values.serviceMonitor.istio.interval }}
     interval: {{ .Values.serviceMonitor.istio.interval }}
     {{- end }}
-  - port: http-policy-monitoring
-    {{- if .Values.serviceMonitor.istio.interval }}
-    interval: {{ .Values.serviceMonitor.istio.interval }}
-    {{- end }}
 ---
 apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
+kind: PodMonitor
 metadata:
-  name: istio-dataplane
+  name: envoy-stats-monitor
   namespace: {{ .Release.Namespace  }}
   labels:
-    monitoring: istio-dataplane
+    monitoring: istio-proxies
 spec:
   selector:
     matchExpressions:
-      - {key: istio-prometheus-ignore, operator: DoesNotExist}
+    - {key: istio-prometheus-ignore, operator: DoesNotExist}
   namespaceSelector:
     any: true
   jobLabel: envoy-stats
-  endpoints:
+  podMetricsEndpoints:
   - path: /stats/prometheus
-    targetPort: http-envoy-prom
     {{- if .Values.serviceMonitor.istio.interval }}
     interval: {{ .Values.serviceMonitor.istio.interval }}
     {{- end }}
     relabelings:
-    - sourceLabels: [__meta_kubernetes_pod_container_port_name]
-      action: keep
-      regex: '.*-envoy-prom'
-    - action: labelmap
+    - action: keep
+      sourceLabels: [__meta_kubernetes_pod_container_name]
+      regex: "istio-proxy"
+    - action: keep
+      sourceLabels: [__meta_kubernetes_pod_annotationpresent_prometheus_io_scrape]
+    - sourceLabels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+      action: replace
+      regex: ([^:]+)(?::\d+)?;(\d+)
+      replacement: $1:$2
+      targetLabel: __address__
+    - action: labeldrop
       regex: "__meta_kubernetes_pod_label_(.+)"
     - sourceLabels: [__meta_kubernetes_namespace]
       action: replace
