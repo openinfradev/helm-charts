@@ -18,24 +18,14 @@ elasticsearch:
 
   ## http setting for Elasticsearch
   http:
-    ports:
-    - name: elasticsearch
-      targetPort: 9200
-      port: 9200
-  #   service:
-  #     spec:
-  #       # expose this cluster Service with a LoadBalancer
-  #       type: LoadBalancer
-  #   tls:
-  #     selfSignedCertificate:
-  #       # add a list of SANs into the self-signed HTTP certificate
-  #       subjectAltNames:
-  #       - ip: 192.168.1.2
-  #       - ip: 192.168.1.3
-  #       - dns: elasticsearch-sample.example.com
-  #     certificate:
-  #       # provide your own certificate
-  #       secretName: my-cert
+    service:
+      spec:
+        type: NodePort
+        ports:
+        - name: http
+          nodePort: 30002
+          targetPort: 9200
+          port: 9200
 
   nodeSets:
     master:
