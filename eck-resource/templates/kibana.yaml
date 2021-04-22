@@ -6,10 +6,6 @@ metadata:
 spec:
   version: {{ default "7.4.2" .Values.kibana.image.tag }}
   image: "{{ .Values.kibana.image.repository }}:{{ .Values.kibana.image.tag }}"
-{{- if .Values.kibana.nodeSelector }}
-  nodeSelector:
-{{ toYaml .Values.kibana.nodeSelector | indent 4 }}
-{{- end }}
   count: 1
   elasticsearchRef:
     name: {{ template "eck-resource.name" . }}-elasticsearch
