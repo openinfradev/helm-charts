@@ -1,4 +1,4 @@
-{{- if .Values.IstioOperator.enableGateway }}
+{{- if .Values.IstioOperator.enableGateways }}
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 metadata:
