@@ -1,3 +1,5 @@
+createNamespace: false
+
 prometheus:
   crdApiGroup: "monitoring.coreos.com"
 
