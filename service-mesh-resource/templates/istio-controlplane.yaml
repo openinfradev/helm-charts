@@ -2,7 +2,7 @@
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 metadata:
-  namespace: istio-system
+  namespace: {{ .Release.Namespace }}
   name: istio-controlplane
 spec:
   revision: {{ .Values.IstioOperator.revision }}
