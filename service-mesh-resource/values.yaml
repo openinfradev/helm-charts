@@ -1,3 +1,4 @@
+createNamespace: false
 IstioOperator:
   enableControlplane: true
   enableGateway: false
