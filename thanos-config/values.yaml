@@ -5,6 +5,7 @@ objectStorage:
   endpoint: thanos-minio.fed.svc.cluster.local:9000
   access_key: taco
   secret_key: password
+  insecure: true
 
 sidecarsService:
   enabled: true
