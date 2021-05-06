@@ -125,6 +125,19 @@ grafanaDashboard:
     enabled: false
   jaeger:
     enabled: false
+  tacoCustomDashboard:
+    enabled: false
+    f5: false
+  ceph:
+    enabled: false
+  felixDataplane:
+    enabled: false
+  kubernetes:
+    enabled: false
+  openstack:
+    enabled: false
+  node: 
+    enabled: false
 
 metricbeat:
   enabled: true
