@@ -1,0 +1,25 @@
+cluster:
+  image:
+    repository: ceph/ceph
+    tag: v15.2.11
+  mon:
+    # should be odd number
+    count: 3
+  mgr:
+    # should be 1 or 2
+    count: 1
+  dashboard:
+    enabled: true
+  monitoring:
+    enabled: false
+  network:
+    hostNetworkingEnabled: false
+  crashCollector:
+    enabled: true
+block_pools:
+  - name: taco
+    size: 3
+    requireSafeReplicaSize: true
+storageclass:
+  name: rbd
+  pool: taco
