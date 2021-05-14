@@ -24,8 +24,8 @@ jobs:
         with:
           token: ${{ secrets.HANU }}
           charts_dir: .
-          charts_url:  https://openinfradev.github.io/hanu-helm-repo
+          charts_url:  https://openinfradev.github.io/helm-repo
           owner: openinfradev
-          repository: hanu-helm-repo
+          repository: helm-repo
           branch: main
           linting: off

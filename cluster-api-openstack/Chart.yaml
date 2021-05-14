@@ -16,5 +16,5 @@ maintainers:
 dependencies:
 - name: helm-toolkit
   version: ">= 0.1.0"
-  repository: https://openinfradev.github.io/hanu-helm-repo
+  repository: https://openinfradev.github.io/helm-repo
   # from https://opendev.org/openstack/openstack-helm-infra/src/branch/master/helm-toolkit

@@ -1,6 +1,6 @@
 dependencies:
 - name: helm-toolkit
-  repository: https://openinfradev.github.io/hanu-helm-repo
+  repository: https://openinfradev.github.io/helm-repo
   version: 0.2.5
 digest: sha256:b0bfd1169b053c135e5ee67551c16307208359f193ef0c539a0ca9373e64f326
 generated: "2021-03-22T04:33:10.744264867Z"
