@@ -7,6 +7,7 @@ IstioOperator:
   profile: default 
   revision: "1-9-1"
   istioNamespace: istio-system
+  gatewayNamespace: istio-system
   meshConfig:
     enableAccessLog: true
     enablePrometheusMerge: true
@@ -19,7 +20,7 @@ IstioOperator:
     tracingUrl: jaeger-operator-jaeger-collector.lma.svc:9411
 
   ingressGateways: []
-  # - name: istio-ingressgateway
+  # - name: default
   #   resources:
   #     requests_cpu: 1000m
   #     requests_memory: 1024Mi

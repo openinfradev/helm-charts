@@ -1,4 +1,6 @@
 {{- if .Values.IstioOperator.enableGateway }}
+{{- $gatewayNamespace := .Values.IstioOperator.gatewayNamespace }}
+---
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 metadata:
@@ -13,7 +15,7 @@ spec:
 {{- range $gateway := .Values.IstioOperator.ingressGateways }}
       - name: istio-ingressgateway-{{- $gateway.name }}
         enabled: true
-        namespace: istio-gateway
+        namespace: {{ $gatewayNamespace }}
         label:
           istio: ingressgateway-{{- $gateway.name }}
         k8s:
