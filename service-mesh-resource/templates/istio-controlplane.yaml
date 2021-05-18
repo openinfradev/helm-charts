@@ -31,4 +31,8 @@ spec:
   values:
     global:
       istioNamespace: {{ .Values.IstioOperator.istioNamespace }}
+  components:
+    ingressGateways:
+      - name: istio-ingressgateway
+        enabled: false
 {{- end }}
