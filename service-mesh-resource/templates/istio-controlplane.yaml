@@ -5,6 +5,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
   name: istio-controlplane
 spec:
+  hub: {{ .Values.IstioOperator.image.hub }}
+  tag: {{ .Values.IstioOperator.image.tag }}
   revision: {{ .Values.IstioOperator.revision }}
   namespace: {{ .Values.IstioOperator.istioNamespace }}
   {{- if .Values.IstioOperator.profile }}

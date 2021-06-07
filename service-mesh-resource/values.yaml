@@ -19,6 +19,9 @@ IstioOperator:
     tracingSampling: 100
     tracingUrl: jaeger-operator-jaeger-collector.lma.svc:9411
 
+  image:
+    hub: gcr.io/istio-testing
+    tag: 1.11-alpha.aa439f6e4772aa52acafa11ac7a5fbdfbb160357
   ingressGateways: []
   # - name: default
   #   resources:
