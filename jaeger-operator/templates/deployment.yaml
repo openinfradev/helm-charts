@@ -38,15 +38,15 @@ spec:
             name: metrics
           args:
           - "start"
-          - "-jaeger-agent-image"
+          - "--jaeger-agent-image"
           - "{{ .Values.agentImage.repository }}:{{ .Values.agentImage.tag }}"
-          - "-jaeger-collector-image"
+          - "--jaeger-collector-image"
           - "{{ .Values.collectorImage.repository }}:{{ .Values.collectorImage.tag }}"
-          - "-jaeger-ingester-image"
+          - "--jaeger-ingester-image"
           - "{{ .Values.ingesterImage.repository }}:{{ .Values.ingesterImage.tag }}"
-          - "-jaeger-query-image"
+          - "--jaeger-query-image"
           - "{{ .Values.queryImage.repository }}:{{ .Values.queryImage.tag }}"
-          - "-jaeger-all-in-one-image"
+          - "--jaeger-all-in-one-image"
           - "{{ .Values.allInOneImage.repository }}:{{ .Values.allInOneImage.tag }}"
           env:
             - name: WATCH_NAMESPACE
