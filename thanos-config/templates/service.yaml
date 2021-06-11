@@ -9,6 +9,9 @@ spec:
   ports:
     - port: {{ .Values.sidecarsService.port }}
       targetPort: http
+{{- if and (eq .Values.sidecarsService.type "NodePort") .Values.sidecarsService.nodePort }}
+      nodePort: {{ .Values.sidecarsService.nodePort }}
+{{- end }}
       protocol: TCP
       name: grpc
 ---
