@@ -237,4 +237,11 @@ prometheusRules:
       kubelet: true
       mariadb: true
       rabbitmq: true
+  istio:
+    aggregation:
+      enabled: true
+      interval: "5s"
+    optimization:
+      enabled: true
+      interval: "5s"
 
