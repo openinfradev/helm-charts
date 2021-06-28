@@ -1,0 +1,11 @@
+apiVersion: {{ .Values.apiVersion.infrastructure }}
+kind: AWSCluster
+metadata:
+  name: {{ .Values.cluster.name }}
+spec:
+  region: {{ .Values.cluster.region }}
+  sshKeyName: {{ .Values.cluster.sshKeyName }}
+  {{- with .Values.cluster.networkSpec }}
+  networkSpec:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}

@@ -1,0 +1,37 @@
+{{- if .Values.machinePool.enabled }}
+apiVersion: exp.cluster.x-k8s.io/v1alpha3
+kind: MachinePool
+metadata:
+  name: {{ .Values.cluster.name }}-mp-0
+  namespace: {{ .Release.Namespace }}
+spec:
+  clusterName: {{ .Values.cluster.name }}
+  replicas: {{ .Values.machinePool.replicas }}
+  template:
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: {{ .Values.apiVersion.bootstrap }}
+          kind: KubeadmConfig
+          name: {{ .Values.cluster.name }}-mp-0
+      clusterName: {{ .Values.cluster.name }}
+      infrastructureRef:
+        apiVersion: {{ .Values.apiVersion.infrastructure }}
+        kind: AWSMachinePool
+        name: {{ .Values.cluster.name }}-mp-0
+      version: {{ .Values.cluster.kubernetesVersion }}
+---
+apiVersion: {{ .Values.apiVersion.infrastructure }}
+kind: AWSMachinePool
+metadata:
+  name: {{ .Values.cluster.name }}-mp-0
+  namespace: {{ .Release.Namespace }}
+spec:
+  availabilityZones: {{ .Values.aws.availabilityZones }}
+  awsLaunchTemplate:
+    instanceType: {{ .Values.aws.workloadMachineType }}
+    sshKeyName: {{ .Values.aws.sshKeyName }}
+  maxSize: {{ .Values.machinePool.maxSize }}
+  minSize: {{ .Values.machinePool.minSize }}
+  subnets: {{ .Values.machinePool.subnets }}
+{{- end }}
