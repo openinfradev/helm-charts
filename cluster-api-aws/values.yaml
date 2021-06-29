@@ -1,7 +1,10 @@
+
+# aws ssh key name
+sshKeyName: default
+
 cluster:
   name: capi-quickstart
   region: ap-northeast-2
-  sshKeyName: default
   networkSpec:
     vpc:
       # id: vpc-id
@@ -9,6 +12,11 @@ cluster:
       #  string: string
       # cidrBlock: 10.0.0.0/16 
       availabilityZoneUsageLimit: 3 # default 3
+    # list of subnets in vpc including both private and public
+    # subnets: 
+    # - id: subnet-0c41662a89d7878a2
+    # - id: subnet-03d16e2084d9f392b
+    # - id: subnet-03ad0968f68bfa639
   kubernetesVersion: v1.18.16
   podCidrBlocks:
   - 192.168.0.0/16
@@ -20,16 +28,14 @@ apiVersion:
 
 kubeadmControlPlane:
   replicas: 3
-
-aws:
   controlPlaneMachineType: t3.large
-  workloadMachineType: t3.large
-  sshKeyName: default
-  availabilityZones:
-  - ap-northeast-2
+  rootVolume:
+    size: 8
+    type: gp2
 
 machinePool:
   enabled: true
+  machineType: t3.large
   replicas: 3
   minSize: 1
   maxSize: 10
@@ -40,3 +46,9 @@ machinePool:
 
 machineDeployment:
   replicas: 3
+  selector:
+    matchLabels: null
+  machineType: t3.large
+  rootVolume:
+    size: 8
+    type: gp2

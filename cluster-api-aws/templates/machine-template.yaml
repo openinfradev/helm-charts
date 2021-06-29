@@ -7,5 +7,25 @@ spec:
   template:
     spec:
       iamInstanceProfile: control-plane.cluster-api-provider-aws.sigs.k8s.io
-      instanceType: {{ .Values.aws.controlPlaneMachineType }}
-      sshKeyName: {{ .Values.aws.sshKeyName }}
+      instanceType: {{ .Values.kubeadmControlPlane.controlPlaneMachineType }}
+      sshKeyName: {{ .Values.sshKeyName }}
+      rootVolume:
+        size: {{ .Values.kubeadmControlPlane.rootVolume.size }}
+        type: {{ .Values.kubeadmControlPlane.rootVolume.type }}
+---
+{{- if not .Values.machinePool.enabled }}
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: AWSMachineTemplate
+metadata:
+  name: {{ .Values.cluster.name }}-md-0
+  namespace: {{ .Release.Namespace }}
+spec:
+  template:
+    spec:
+      iamInstanceProfile: nodes.cluster-api-provider-aws.sigs.k8s.io
+      instanceType: {{ .Values.machineDeployment.machineType }}
+      sshKeyName: {{ .Values.sshKeyName }}
+      rootVolume:
+        size: {{ .Values.machineDeployment.rootVolume.size }}
+        type: {{ .Values.machineDeployment.rootVolume.type }}
+{{- end }}

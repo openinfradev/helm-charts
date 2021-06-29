@@ -27,11 +27,15 @@ metadata:
   name: {{ .Values.cluster.name }}-mp-0
   namespace: {{ .Release.Namespace }}
 spec:
-  availabilityZones: {{ .Values.aws.availabilityZones }}
+  availabilityZones:
+  - {{ .Values.cluster.region }}
   awsLaunchTemplate:
-    instanceType: {{ .Values.aws.workloadMachineType }}
-    sshKeyName: {{ .Values.aws.sshKeyName }}
+    instanceType: {{ .Values.machinePool.machineType }}
+    sshKeyName: {{ .Values.sshKeyName }}
   maxSize: {{ .Values.machinePool.maxSize }}
   minSize: {{ .Values.machinePool.minSize }}
-  subnets: {{ .Values.machinePool.subnets }}
+  {{- with .Values.cluster.networkSpec.subnets }}
+  subnets:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 {{- end }}

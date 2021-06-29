@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.cluster.name }}
 spec:
   region: {{ .Values.cluster.region }}
-  sshKeyName: {{ .Values.cluster.sshKeyName }}
+  sshKeyName: {{ .Values.sshKeyName }}
   {{- with .Values.cluster.networkSpec }}
   networkSpec:
     {{- toYaml . | nindent 4 }}

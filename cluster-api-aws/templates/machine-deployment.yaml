@@ -20,4 +20,8 @@ spec:
         kind: AWSMachineTemplate
         name: {{ .Values.cluster.name }}-md-0
       version: {{ .Values.cluster.kubernetesVersion }}
+  {{- with .Values.machineDeployment.selector }}
+  selector:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 {{- end }}
