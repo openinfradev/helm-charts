@@ -32,6 +32,9 @@ spec:
   awsLaunchTemplate:
     instanceType: {{ .Values.machinePool.machineType }}
     sshKeyName: {{ .Values.sshKeyName }}
+    rootVolume:
+      size: {{ .Values.machinePool.rootVolume.size }}
+      type: {{ .Values.machinePool.rootVolume.type }}
   maxSize: {{ .Values.machinePool.maxSize }}
   minSize: {{ .Values.machinePool.minSize }}
   {{- with .Values.cluster.networkSpec.subnets }}

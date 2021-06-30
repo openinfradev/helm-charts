@@ -39,6 +39,9 @@ machinePool:
   replicas: 3
   minSize: 1
   maxSize: 10
+  rootVolume:
+    size: 8
+    type: gp2
   subnets: []
   # - id: subnet-0c41662a89d7878a2
   # - id: subnet-03d16e2084d9f392b
