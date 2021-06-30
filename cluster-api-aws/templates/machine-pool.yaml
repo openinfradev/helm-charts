@@ -37,7 +37,7 @@ spec:
       type: {{ .Values.machinePool.rootVolume.type }}
   maxSize: {{ .Values.machinePool.maxSize }}
   minSize: {{ .Values.machinePool.minSize }}
-  {{- with .Values.cluster.networkSpec.subnets }}
+  {{- with .Values.machinePool.subnets }}
   subnets:
     {{- toYaml . | nindent 4 }}
   {{- end }}
