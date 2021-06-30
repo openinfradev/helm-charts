@@ -1,0 +1,54 @@
+{{- if .Values.IstioOperator.enableControlplane -}}
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: {{ .Values.IstioOperator.controlplaneName }}-{{ .Values.IstioOperator.revision }}
+  namespace: {{ .Values.IstioOperator.istioNamespace }}
+spec:
+  hub: {{ .Values.IstioOperator.image.hub }}
+  tag: {{ .Values.IstioOperator.image.tag }}
+  revision: {{ .Values.IstioOperator.revision }}
+  profile: {{ .Values.IstioOperator.profile }}
+  meshConfig:
+    accessLogFile: {{ .Values.IstioOperator.meshConfig.accessLogFile }}
+    enableTracing: {{ .Values.IstioOperator.meshConfig.enableTracing }}
+    enablePrometheusMerge: {{ .Values.IstioOperator.meshConfig.enablePrometheusMerge }}
+    enableAutoMtls: {{ .Values.IstioOperator.meshConfig.enableAutoMtls }}
+    extensionProviders:
+    - name: jaeger-collector
+      envoyExtAuthzGrpc:
+        service: {{ .Values.IstioOperator.meshConfig.extensionProviders.envoyExtAuthzGrpc.service }}
+        port: {{ .Values.IstioOperator.meshConfig.extensionProviders.envoyExtAuthzGrpc.port }}
+    defaultConfig:
+      discoveryAddress: {{ .Values.IstioOperator.meshConfig.defaultConfig.discoveryAddress }}
+      tracing:
+        zipkin:
+          address: {{ .Values.IstioOperator.meshConfig.defaultConfig.tracing.zipkin.address }}
+        sampling: {{ .Values.IstioOperator.meshConfig.defaultConfig.tracing.sampling }}
+  values:
+    global:
+      logging:
+        level: "{{ .Values.IstioOperator.values.global.logging.level }}"
+      istioNamespace: {{ .Values.IstioOperator.values.global.istioNamespace }}
+  components:
+    pilot:
+      k8s:
+        env:
+        - name: PILOT_TRACE_SAMPLING
+          value: "{{ .Values.IstioOperator.meshConfig.defaultConfig.tracing.sampling }}"
+        resources:
+          requests:
+            cpu: {{ .Values.IstioOperator.components.pilot.k8s.resources.requests.cpu }}
+            memory: {{ .Values.IstioOperator.components.pilot.k8s.resources.requests.memory }}
+        hpaSpec:
+          maxReplicas: {{ .Values.IstioOperator.components.pilot.k8s.hpaSpec.maxReplicas }}
+          minReplicas: {{ .Values.IstioOperator.components.pilot.k8s.hpaSpec.minReplicas }}
+        nodeSelector:
+        {{ toYaml .Values.IstioOperator.components.pilot.k8s.nodeSelector | indent 2 }}
+    ingressGateways:
+    - name: istio-ingressgateway
+      enabled: {{ .Values.IstioOperator.components.ingressGateways.enabled }}
+    egressGateways:
+    - name: istio-egressgateway
+      enabled: {{ .Values.IstioOperator.components.egressGateways.enabled }}
+{{- end -}}

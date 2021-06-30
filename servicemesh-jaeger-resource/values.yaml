@@ -1,0 +1,42 @@
+namespace: istio-system
+strategy: production
+logLevel: debug
+ingress:
+  enabled: true
+collector:
+  maxReplicas: 5
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 1
+      memory: 2Gi
+storage:
+  esIndexCleaner:
+    enabled: true
+    numberOfDays: 7
+    schedule: "55 04 * * *"
+  options:
+    es:
+      indexPrefix: jaeger
+      username: elastic
+      password: tacoword
+      tlsCa: /etc/ssl/certs/tls.crt
+      serverUrls: https://eck-elasticsearch-es-http.elastic-system.svc:9200
+      secretName: 
+
+JaegerIngress:
+  enabled: true
+  namespace: istio-system
+  rules:
+  - host: jaeger.k1-node01
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: jaeger-operator-jaeger-query
+            port:
+              number: 16686

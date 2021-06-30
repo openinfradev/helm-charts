@@ -1,0 +1,6 @@
+apiVersion: v2
+name: servicemesh-kiali-resource
+description: A chart for kiali resource related to service mesh
+type: application
+appVersion: "v1.34.0"
+version: 1.34.0

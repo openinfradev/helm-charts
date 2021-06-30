@@ -1,0 +1,107 @@
+{{- if .Values.IstioOperator.enableGateway }}
+---
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: {{ .Values.IstioOperator.components.ingressGateways.name }}-{{ .Values.IstioOperator.revision }}
+  namespace: {{ .Values.IstioOperator.components.ingressGateways.namespace }}
+spec:
+  hub: {{ .Values.IstioOperator.image.hub }}
+  tag: {{ .Values.IstioOperator.image.tag }}
+  revision: {{ .Values.IstioOperator.revision }}
+  profile: empty
+  values:
+    global:
+      istioNamespace: {{ .Values.IstioOperator.values.global.istioNamespace }}
+      logging:
+        level: "{{ .Values.IstioOperator.values.global.logging.level }}"
+  components:
+{{- if .Values.IstioOperator.components.ingressGateways.enabled }}
+    ingressGateways:
+    - name: {{ .Values.IstioOperator.components.ingressGateways.name }}-{{ .Values.IstioOperator.revision }}
+      namespace: {{ .Values.IstioOperator.components.ingressGateways.namespace }}
+      enabled: true
+      label:
+        istio: {{ .Values.IstioOperator.components.ingressGateways.name }}
+        revision: {{ .Values.IstioOperator.revision }}
+      {{ toYaml .Values.IstioOperator.components.ingressGateways.label | indent 2 }}
+      k8s:
+        resources:
+          requests:
+            cpu: {{ .Values.IstioOperator.components.ingressGateways.k8s.resources.requests.cpu }}
+            memory: {{ .Values.IstioOperator.components.ingressGateways.k8s.resources.requests.memory }}
+          limits:
+            cpu: {{ .Values.IstioOperator.components.ingressGateways.k8s.resources.limits.cpu }}
+            memory: {{ .Values.IstioOperator.components.ingressGateways.k8s.resources.limits.memory }}
+        hpaSpec:
+          maxReplicas: {{ .Values.IstioOperator.components.ingressGateways.k8s.hpaSpec.maxReplicas }}
+          minReplicas: {{ .Values.IstioOperator.components.ingressGateways.k8s.hpaSpec.minReplicas }}
+          metrics:
+          - resource:
+              name: cpu
+              targetAverageUtilization: {{ .Values.IstioOperator.components.ingressGateways.k8s.hpaSpec.targetAverageUtilization }}
+            type: Resource
+          scaleTargetRef:
+            apiVersion: apps/v1
+            kind: Deployment
+            name: {{ .Values.IstioOperator.components.ingressGateways.name }}-{{ .Values.IstioOperator.revision }}
+        nodeSelector:
+        {{ toYaml .Values.IstioOperator.components.ingressGateways.k8s.nodeSelector | indent 2 }}
+        service:
+          type: {{ .Values.IstioOperator.components.ingressGateways.k8s.service.type }}
+          ports:
+          - name: status-port
+            port: 15021
+            targetPort: 15021
+          - name: http2
+            port: 80
+            targetPort: 8080
+            {{- if eq .Values.IstioOperator.components.ingressGateways.k8s.service.type "NodePort" }}
+            nodePort: {{ .Values.IstioOperator.components.ingressGateways.k8s.service.ports.httpNodePort }}
+            {{- end }}
+          - name: https
+            port: 443
+            targetPort: 8443
+            {{- if eq .Values.IstioOperator.components.ingressGateways.k8s.service.type "NodePort" }}
+            nodePort: {{ .Values.IstioOperator.components.ingressGateways.k8s.service.ports.httpsNodePort }}
+            {{- end }}
+          - name: tcp
+            port: 31400
+            targetPort: 31400
+          - name: tls
+            port: 15443
+            targetPort: 15443
+{{- end -}}
+{{- if .Values.IstioOperator.components.egressGateways.enabled }}
+    egressGateways:
+      - name: {{ .Values.IstioOperator.components.egressGateways.name }}-{{ .Values.IstioOperator.revision }}
+      namespace: {{ .Values.IstioOperator.components.egressGateways.namespace }}
+      enabled: true
+      label:
+        istio: {{ .Values.IstioOperator.components.egressGateways.name }}
+        revision: {{ .Values.IstioOperator.revision }}
+      {{ toYaml .Values.IstioOperator.components.egressGateways.label | indent 2 }}
+        k8s:
+          resources:
+          requests:
+            cpu: {{ .Values.IstioOperator.components.egressGateways.k8s.resources.requests.cpu }}
+            memory: {{ .Values.IstioOperator.components.egressGateways.k8s.resources.requests.memory }}
+          limits:
+            cpu: {{ .Values.IstioOperator.components.egressGateways.k8s.resources.limits.cpu }}
+            memory: {{ .Values.IstioOperator.components.egressGateways.k8s.resources.limits.memory }}
+        hpaSpec:
+          maxReplicas: {{ .Values.IstioOperator.components.egressGateways.k8s.hpaSpec.maxReplicas }}
+          minReplicas: {{ .Values.IstioOperator.components.egressGateways.k8s.hpaSpec.minReplicas }}
+          metrics:
+          - resource:
+              name: cpu
+              targetAverageUtilization: {{ .Values.IstioOperator.components.egressGateways.k8s.hpaSpec.targetAverageUtilization }}
+            type: Resource
+          scaleTargetRef:
+            apiVersion: apps/v1
+            kind: Deployment
+            name: {{ .Values.IstioOperator.components.egressGateways.name }}-{{ .Values.IstioOperator.revision }}
+        nodeSelector:
+        {{ toYaml .Values.IstioOperator.components.egressGateways.k8s.nodeSelector | indent 2 }}
+{{- end -}}
+{{- end -}}

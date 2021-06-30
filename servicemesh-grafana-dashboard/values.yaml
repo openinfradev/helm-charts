@@ -1,0 +1,4 @@
+
+namespace: istio-system
+dashboards:
+  label: grafana_serivce_mesh_dashbaord
