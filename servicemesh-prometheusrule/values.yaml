@@ -1,0 +1,7 @@
+namespace: istio-system
+
+aggregation:
+  interval: "5s"
+
+optimization:
+  interval: "5s"

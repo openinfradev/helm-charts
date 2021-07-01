@@ -1,0 +1,43 @@
+---
+apiVersion: jaegertracing.io/v1
+kind: Jaeger
+metadata:
+  name: jaeger-operator-jaeger
+  namespace: {{ .Values.namespace }}
+spec:
+  strategy: {{ .Values.strategy }}
+  agent:
+    strategy: Sidecar
+  ingress:
+    enabled: {{ .Values.ingress.enabled }}
+  collector:
+    maxReplicas: {{ .Values.collector.maxReplicas }}
+    resources:
+      requests:
+        cpu: {{ .Values.collector.resources.requests.cpu }}
+        memory: {{ .Values.collector.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.collector.resources.limits.cpu }}
+        memory: {{ .Values.collector.resources.limits.memory }}
+  storage:
+    type: elasticsearch
+    {{- if .Values.storage.esIndexCleaner.enabled }}
+    esIndexCleaner:
+      enabled: true
+      numberOfDays: {{ .Values.storage.esIndexCleaner.numberOfDays }}
+      schedule: "{{ .Values.storage.esIndexCleaner.schedule }}"
+    {{- end }}
+    options:
+      es:
+        index-prefix: {{ .Values.storage.options.es.indexPrefix }}
+        username: {{ .Values.storage.options.es.username }}
+        password: {{ .Values.storage.options.es.password }}
+        tls.ca: {{ .Values.storage.options.es.tlsCa }}
+        server-urls: {{ .Values.storage.options.es.serverUrls }}
+  volumeMounts:
+  - mountPath: /etc/ssl/certs
+    name: es-tls
+  volumes:
+  - name: es-tls
+    secret:
+      secretName: {{ .Values.storage.options.es.secretName }}

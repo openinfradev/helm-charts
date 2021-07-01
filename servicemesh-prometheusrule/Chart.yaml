@@ -1,0 +1,6 @@
+apiVersion: v2
+name: servicemesh-prometheusrule
+description: A chart for the additional prometheusrule related to service mesh
+type: application
+appVersion: "1.9.1"
+version: 1.7.0

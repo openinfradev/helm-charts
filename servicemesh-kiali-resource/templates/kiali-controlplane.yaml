@@ -1,0 +1,62 @@
+---
+apiVersion: kiali.io/v1alpha1
+kind: Kiali
+metadata:
+  name: kiali
+  namespace: {{ .Values.namespace }}
+  annotations:
+    ansible.operator-sdk/verbosity: "1"
+spec:
+  nameOverride: {{ .Values.nameOverride }}
+  fullnameOverride: {{ .Values.fullnameOverride }}
+  istio_component_namespaces:
+    prometheus: {{ .Values.istioComponentNamespaces.prometheus }}
+  istio_namespace: {{ .Values.istioNamespace }}
+  deployment:
+    accessible_namespaces:
+    - '**'
+    ingress_enabled: {{ .Values.deployment.ingress.enabled }}
+    namespace: {{ .Values.deployment.namespace }}
+    replicas: {{ .Values.deployment.replicas }}
+    resources:
+      requests:
+        cpu: {{ .Values.deployment.resources.requests.cpu }}
+        memory: {{ .Values.deployment.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.deployment.resources.limits.cpu }}
+        memory: {{ .Values.deployment.resources.limits.memory }}
+    node_selector:
+{{ toYaml .Values.deployment.nodeSelector | indent 6 }}
+    service_type: {{ .Values.deployment.serviceType }}
+    {{- if eq .Values.deployment.serviceType "NodePort" }}
+    additional_service_yaml:
+{{ toYaml .Values.deployment.additionalServiceYaml | indent 6 }}
+    {{- end }}
+  auth:
+    strategy: {{ .Values.auth.strategy }}
+  external_services:
+    custom_dashboards:
+      enabled: {{ .Values.externalServices.customDashboards.enabled }}
+    istio:
+      config_map_name: {{ .Values.externalServices.istio.configMapName }}
+      istio_identity_domain: {{ .Values.externalServices.istio.istioIdentityDomain }}
+    prometheus:
+      url: {{ .Values.externalServices.prometheus.url }}
+    tracing:
+      enabled: {{ .Values.externalServices.tracing.enabled }}
+      namespace_selector: {{ .Values.externalServices.tracing.namespaceSelector }}
+      in_cluster_url: {{ .Values.externalServices.tracing.inClusterUrl }}
+    grafana:
+      auth:
+        password: {{ .Values.externalServices.grafana.auth.password }}
+        type: {{ .Values.externalServices.grafana.auth.type }}
+        use_kiali_token: {{ .Values.externalServices.grafana.auth.useKialiToken }}
+        username: {{ .Values.externalServices.grafana.auth.username }}
+      enabled: {{ .Values.externalServices.grafana.enabled }}
+      in_cluster_url: {{ .Values.externalServices.grafana.inClusterUrl }}
+      url: {{ .Values.externalServices.grafana.url }}
+  server:
+    metrics_enabled: {{ .Values.server.metricsEnabled }}
+    metrics_port: {{ .Values.server.metricsPort }}
+    port: {{ .Values.server.port }}
+    web_root: {{ .Values.server.webRoot }}

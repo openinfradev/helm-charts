@@ -1,0 +1,7 @@
+{{- if .Values.createNamespace -}}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.IstioOperator.values.global.istioNamespace }}
+{{- end -}}
