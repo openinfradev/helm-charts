@@ -5,13 +5,13 @@ sshKeyName: default
 cluster:
   name: capi-quickstart
   region: ap-northeast-2
-  networkSpec:
-    vpc:
+  # networkSpec:
+    # vpc:
       # id: vpc-id
       # tags:
       #  string: string
       # cidrBlock: 10.0.0.0/16 
-      availabilityZoneUsageLimit: 3 # default 3
+      # availabilityZoneUsageLimit: 3 # default 3
     # list of subnets in vpc including both private and public
     # subnets: 
     # - id: subnet-0c41662a89d7878a2
@@ -20,6 +20,12 @@ cluster:
   kubernetesVersion: v1.18.16
   podCidrBlocks:
   - 192.168.0.0/16
+  # bastion:
+  #   enabled: false
+  #   instanceType: t3.micro
+  #   disableIngressRules: false
+  #   allowedCIDRBlocks:
+  #   - 0.0.0.0/0
 
 apiVersion:
   infrastructure: infrastructure.cluster.x-k8s.io/v1alpha3

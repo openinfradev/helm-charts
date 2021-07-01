@@ -9,3 +9,7 @@ spec:
   networkSpec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  {{- with .Values.cluster.bastion }}
+  bastion:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
