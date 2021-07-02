@@ -51,7 +51,7 @@ The following table lists the configurable parameters of the jaeger-operator cha
 | Parameter               | Description                                                                                                 | Default                         |
 | :---------------------- | :---------------------------------------------------------------------------------------------------------- | :------------------------------ |
 | `image.repository`      | Controller container image repository                                                                       | `jaegertracing/jaeger-operator` |
-| `image.tag`             | Controller container image tag                                                                              | `1.22.1`                        |
+| `image.tag`             | Controller container image tag                                                                              | `1.21.2`                        |
 | `image.pullPolicy`      | Controller container image pull policy                                                                      | `IfNotPresent`                  |
 | `jaeger.create`         | Jaeger instance will be created                                                                             | `false`                         |
 | `jaeger.spec`           | Jaeger instance specification                                                                               | `{}`                            |
@@ -61,7 +61,6 @@ The following table lists the configurable parameters of the jaeger-operator cha
 | `rbac.pspEnabled`       | Pod security policy for pod will be created and included in rbac role                                       | `false`                         |
 | `rbac.clusterRole`      | ClusterRole will be used by operator ServiceAccount                                                         | `false`                         |
 | `serviceAccount.name`   | Service account name to use. If not set and create is true, a name is generated using the fullname template | `nil`                           |
-| `extraEnv`              | Additional environment variables passed to the operator. For example:   name: LOG-LEVEL   value: debug      | `[]`                            |
 | `resources`             | K8s pod resources                                                                                           | `None`                          |
 | `nodeSelector`          | Node labels for pod assignment                                                                              | `{}`                            |
 | `tolerations`           | Toleration labels for pod assignment                                                                        | `[]`                            |

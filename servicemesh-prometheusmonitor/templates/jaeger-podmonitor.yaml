@@ -1,0 +1,12 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: jaeger-monitor
+  namespace: {{ .Values.namespace  }}
+spec:
+  podMetricsEndpoints:
+  - targetPort: 14269
+    interval: {{ .Values.jaeger.interval }}
+  selector:
+    matchLabels:
+      app: jaeger

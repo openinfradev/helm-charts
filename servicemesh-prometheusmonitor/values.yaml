@@ -1,0 +1,7 @@
+namespace: istio-system
+
+istio:
+  interval: "15s"
+
+jaeger:
+  interval: "15s"

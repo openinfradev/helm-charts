@@ -1,0 +1,88 @@
+createNamespace: false
+IstioOperator:
+  enableControlplane: true
+  controlplaneName: istio-controlplane
+  image:
+    hub: gcr.io/istio-testing
+    tag: 1.11-alpha.aa439f6e4772aa52acafa11ac7a5fbdfbb160357
+  # Configuration profile is one of "default, demo, minimal, remote, empty, preview".
+  # refer to https://istio.io/latest/docs/setup/additional-setup/config-profiles/
+  profile: default 
+  revision: "1-9-1"
+  meshConfig:
+    accessLogFile: /dev/stdout
+    enableTracing: true
+    enablePrometheusMerge: true
+    enableAutoMtls: false
+    extensionProviders:
+      envoyExtAuthzGrpc:
+        service: jaeger-operator-jaeger-collector.istio-system
+        port: 14250
+    defaultConfig:
+      discoveryAddress: istiod-1-9-1.istio-system.svc:15012
+      tracing:
+        zipkin:
+          address: jaeger-operator-jaeger-collector.istio-system:9411
+        sampling: 100.0
+  values:
+    global:
+      logging:
+        level: "default:info"
+      istioNamespace: istio-system
+  components:
+    pilot:
+      k8s:
+        resources:
+          requests:
+            cpu: 1000m
+            memory: 1024Mi
+        hpaSpec:
+          maxReplicas: 10
+          minReplicas: 2
+        nodeSelector:
+          servicemesh: enabled
+    ingressGateways:
+      enabled: false
+      name: istio-ingress-gateway
+      namespace: istio-system
+      label:
+        gateway: taco-ingress
+      k8s:
+        resources:
+          requests:
+            cpu: 1000m
+            memory: 1024Mi
+          limits:
+            cpu: 4000m
+            memory: 4096Mi
+        hpaSpec:
+          maxReplicas: 10
+          minReplicas: 2
+          targetAverageUtilization: 80
+        nodeSelector:
+          taco-ingress-gateway: enabled
+        service:
+          type: NodePort
+          ports:
+            httpNodePort: 31081
+            httpsNodePort: 31443
+    egressGateways:
+      enabled: false
+      name: istio-egress-gateway
+      namespace: istio-system
+      label:
+        gateway: taco-ingress
+      k8s:
+        resources:
+          requests:
+            cpu: 1000m
+            memory: 1024Mi
+          limits:
+            cpu: 4000m
+            memory: 4096Mi
+        hpaSpec:
+          maxReplicas: 10
+          minReplicas: 2
+          targetAverageUtilization: 80
+        nodeSelector:
+          taco-egress-gateway: enabled
