@@ -1,0 +1,7 @@
+cni:
+  calico:
+    enabled: true
+
+csi:
+  aws-ebs:
+    enabled: false
