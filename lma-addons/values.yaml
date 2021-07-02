@@ -58,6 +58,20 @@ serviceMonitor:
     metricRelabelings: []
     relabelings: []
 
+  argocd:
+    enabled: true
+    ### interval for scrape
+    #interval: "10s"
+    metricRelabelings: []
+    relabelings: []
+
+  workflow:
+    enabled: true
+    ### interval for scrape
+    #interval: "10s"
+    metricRelabelings: []
+    relabelings: []
+
   openstack:
     enabled: false
     interval: "30s"
