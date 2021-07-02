@@ -32,6 +32,7 @@ spec:
   awsLaunchTemplate:
     instanceType: {{ .Values.machinePool.machineType }}
     sshKeyName: {{ .Values.sshKeyName }}
+    iamInstanceProfile: "nodes.cluster-api-provider-aws.sigs.k8s.io"
     rootVolume:
       size: {{ .Values.machinePool.rootVolume.size }}
       type: {{ .Values.machinePool.rootVolume.type }}
