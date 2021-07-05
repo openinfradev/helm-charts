@@ -1,3 +1,4 @@
+{{- if .Values.machinePool.enabled }}
 apiVersion: {{ .Values.apiVersion.bootstrap }}
 kind: KubeadmConfig
 metadata:
@@ -9,6 +10,7 @@ spec:
       kubeletExtraArgs:
         cloud-provider: aws
       name: '{{`{{ ds.meta_data.local_hostname }}`}}'
+{{- end }}
 ---
 {{- if not .Values.machinePool.enabled }}
 apiVersion: {{ .Values.apiVersion.bootstrap }}
