@@ -1,0 +1,63 @@
+
+# aws ssh key name
+sshKeyName: default
+
+cluster:
+  name: capi-quickstart
+  region: ap-northeast-2
+  # networkSpec:
+    # vpc:
+      # id: vpc-id
+      # tags:
+      #  string: string
+      # cidrBlock: 10.0.0.0/16 
+      # availabilityZoneUsageLimit: 3 # default 3
+    # list of subnets in vpc including both private and public
+    # subnets: 
+    # - id: subnet-0c41662a89d7878a2
+    # - id: subnet-03d16e2084d9f392b
+    # - id: subnet-03ad0968f68bfa639
+  kubernetesVersion: v1.18.16
+  podCidrBlocks:
+  - 192.168.0.0/16
+  # bastion:
+  #   enabled: false
+  #   instanceType: t3.micro
+  #   disableIngressRules: false
+  #   allowedCIDRBlocks:
+  #   - 0.0.0.0/0
+
+apiVersion:
+  infrastructure: infrastructure.cluster.x-k8s.io/v1alpha3
+  controlplane: controlplane.cluster.x-k8s.io/v1alpha3
+  bootstrap: bootstrap.cluster.x-k8s.io/v1alpha3
+
+kubeadmControlPlane:
+  replicas: 3
+  controlPlaneMachineType: t3.large
+  rootVolume:
+    size: 8
+    type: gp2
+
+machinePool:
+  enabled: true
+  machineType: t3.large
+  replicas: 3
+  minSize: 1
+  maxSize: 10
+  rootVolume:
+    size: 8
+    type: gp2
+  subnets: []
+  # - id: subnet-0c41662a89d7878a2
+  # - id: subnet-03d16e2084d9f392b
+  # - id: subnet-03ad0968f68bfa639
+
+machineDeployment:
+  replicas: 3
+  selector:
+    matchLabels: null
+  machineType: t3.large
+  rootVolume:
+    size: 8
+    type: gp2
