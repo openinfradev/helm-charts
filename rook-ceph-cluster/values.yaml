@@ -1,3 +1,8 @@
+rook:
+  image:
+    repository: rook/ceph
+    tag: v1.6.7
+
 cluster:
   image:
     repository: ceph/ceph
