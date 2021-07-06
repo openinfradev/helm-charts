@@ -1,7 +1,7 @@
 cluster:
   image:
     repository: ceph/ceph
-    tag: v15.2.11
+    tag: v15.2.13
   mon:
     # should be odd number
     count: 3
