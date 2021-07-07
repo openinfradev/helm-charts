@@ -79,7 +79,7 @@ spec:
     # deployed) to set rulesNamespace for all the clusters. Otherwise, you will get duplicate alerts with multiple alert definitions.
     rulesNamespace: rook-ceph
   network:
-    {{- if .Values.cluster.hostNetworkingEnabled }}
+    {{- if .Values.cluster.network.hostNetworkingEnabled }}
     # enable host networking
     provider: host
     {{ end }}
