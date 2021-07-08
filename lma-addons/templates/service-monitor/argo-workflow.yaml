@@ -1,0 +1,61 @@
+{{- if and .Values.serviceMonitor.enabled .Values.serviceMonitor.argowf.enabled }}
+---
+apiVersion: {{ printf "%s/v1" (.Values.prometheus.crdApiGroup | default "monitoring.coreos.com") }}
+kind: ServiceMonitor
+metadata:
+  name: argo-workflows-server
+  namespace: lma
+  labels:
+    release: prometheus-operator
+spec:
+  jobLabel: argo-workflows-server
+  namespaceSelector:
+    any: true
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argo-workflows-server
+  endpoints:
+  - port: http
+    {{- if .Values.serviceMonitor.argowf.interval }}
+    interval: {{ .Values.serviceMonitor.argowf.interval }}
+    {{- end }}
+    path: "/metrics"
+{{- if .Values.serviceMonitor.argowf.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.serviceMonitor.argowf.metricRelabelings | indent 6) . }}
+{{- end }}
+{{- if .Values.serviceMonitor.argowf.relabelings }}
+    relabelings:
+{{ toYaml .Values.serviceMonitor.argowf.relabelings | indent 6 }}
+{{- end }}
+---
+apiVersion: {{ printf "%s/v1" (.Values.prometheus.crdApiGroup | default "monitoring.coreos.com") }}
+kind: ServiceMonitor
+metadata:
+  name: argo-workflows-controller
+  namespace: lma
+  labels:
+    release: prometheus-operator
+spec:
+  jobLabel: argo-workflows-controller
+  namespaceSelector:
+    any: true
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argo-workflows-workflow-controller
+  endpoints:
+  - port: metrics
+    {{- if .Values.serviceMonitor.argowf.interval }}
+    interval: {{ .Values.serviceMonitor.argowf.interval }}
+    {{- end }}
+    path: "/metrics"
+{{- if .Values.serviceMonitor.argowf.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.serviceMonitor.argowf.metricRelabelings | indent 6) . }}
+{{- end }}
+{{- if .Values.serviceMonitor.argowf.relabelings }}
+    relabelings:
+{{ toYaml .Values.serviceMonitor.argowf.relabelings | indent 6 }}
+{{- end }}
+
+{{- end }}
