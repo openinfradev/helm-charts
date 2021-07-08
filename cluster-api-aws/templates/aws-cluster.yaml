@@ -2,6 +2,7 @@ apiVersion: {{ .Values.apiVersion.infrastructure }}
 kind: AWSCluster
 metadata:
   name: {{ .Values.cluster.name }}
+  namespace: {{ .Release.Namespace }}
 spec:
   region: {{ .Values.cluster.region }}
   sshKeyName: {{ .Values.sshKeyName }}
