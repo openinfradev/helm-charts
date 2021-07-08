@@ -1,0 +1,10 @@
+{{- if index .Values.csi "aws-ebs" "enabled" }}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: taco-storage
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2
+  fsType: ext4
+{{- end }}

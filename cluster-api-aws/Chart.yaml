@@ -1,0 +1,9 @@
+apiVersion: v2
+name: cluster-api-aws
+description: A chart to install Kubernetes cluster using Cluster API Provider AWS
+
+type: application
+
+version: 0.1.1
+
+appVersion: "0.0.1"

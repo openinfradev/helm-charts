@@ -1,0 +1,30 @@
+kind: KubeadmControlPlane
+apiVersion: {{ .Values.apiVersion.controlplane }}
+metadata:
+  name: "{{ .Values.cluster.name }}-control-plane"
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.kubeadmControlPlane.replicas }}
+  infrastructureTemplate:
+    kind: AWSMachineTemplate
+    apiVersion: {{ .Values.apiVersion.infrastructure }}
+    name: "{{ .Values.cluster.name }}-control-plane"
+  kubeadmConfigSpec:
+    initConfiguration:
+      nodeRegistration:
+        name: '{{`{{ ds.meta_data.local_hostname }}`}}'
+        kubeletExtraArgs:
+          cloud-provider: aws
+    clusterConfiguration:
+      apiServer:
+        extraArgs:
+          cloud-provider: aws
+      controllerManager:
+        extraArgs:
+          cloud-provider: aws
+    joinConfiguration:
+      nodeRegistration:
+        name: '{{`{{ ds.meta_data.local_hostname }}`}}'
+        kubeletExtraArgs:
+          cloud-provider: aws
+  version: {{ .Values.cluster.kubernetesVersion }}
