@@ -58,6 +58,20 @@ serviceMonitor:
     metricRelabelings: []
     relabelings: []
 
+  argocd:
+    enabled: false
+    ### interval for scrape
+    #interval: "10s"
+    metricRelabelings: []
+    relabelings: []
+
+  argowf:
+    enabled: false
+    ### interval for scrape
+    #interval: "10s"
+    metricRelabelings: []
+    relabelings: []
+
   openstack:
     enabled: false
     interval: "30s"
@@ -136,7 +150,11 @@ grafanaDashboard:
     enabled: false
   openstack:
     enabled: false
-  node: 
+  node:
+    enabled: false
+  argocd:
+    enabled: false
+  argowf:
     enabled: false
 
 metricbeat:

@@ -1,0 +1,61 @@
+{{- if and .Values.serviceMonitor.enabled .Values.serviceMonitor.argocd.enabled }}
+---
+apiVersion: {{ printf "%s/v1" (.Values.prometheus.crdApiGroup | default "monitoring.coreos.com") }}
+kind: ServiceMonitor
+metadata:
+  name: argocd-application
+  namespace: lma
+  labels:
+    release: prometheus-operator
+spec:
+  jobLabel: argocd-application
+  namespaceSelector:
+    any: true
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-metrics
+  endpoints:
+  - port: metrics
+    {{- if .Values.serviceMonitor.argocd.interval }}
+    interval: {{ .Values.serviceMonitor.argocd.interval }}
+    {{- end }}
+    path: "/metrics"
+{{- if .Values.serviceMonitor.argocd.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.serviceMonitor.argocd.metricRelabelings | indent 6) . }}
+{{- end }}
+{{- if .Values.serviceMonitor.argocd.relabelings }}
+    relabelings:
+{{ toYaml .Values.serviceMonitor.argocd.relabelings | indent 6 }}
+{{- end }}
+---
+apiVersion: {{ printf "%s/v1" (.Values.prometheus.crdApiGroup | default "monitoring.coreos.com") }}
+kind: ServiceMonitor
+metadata:
+  name: argocd-server
+  namespace: lma
+  labels:
+    release: prometheus-operator
+spec:
+  jobLabel: argocd-server
+  namespaceSelector:
+    any: true
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-metrics
+  endpoints:
+  - port: metrics
+    {{- if .Values.serviceMonitor.argocd.interval }}
+    interval: {{ .Values.serviceMonitor.argocd.interval }}
+    {{- end }}
+    path: "/metrics"
+{{- if .Values.serviceMonitor.argocd.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.serviceMonitor.argocd.metricRelabelings | indent 6) . }}
+{{- end }}
+{{- if .Values.serviceMonitor.argocd.relabelings }}
+    relabelings:
+{{ toYaml .Values.serviceMonitor.argocd.relabelings | indent 6 }}
+{{- end }}
+
+{{- end }}
