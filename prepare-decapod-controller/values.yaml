@@ -1,0 +1,4 @@
+postgres:
+  secretName: argo-postgres-config
+  username: postgres
+  password: tacopassword
