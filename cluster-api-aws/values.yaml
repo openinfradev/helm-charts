@@ -26,6 +26,10 @@ cluster:
   #   disableIngressRules: false
   #   allowedCIDRBlocks:
   #   - 0.0.0.0/0
+  # baseOS is the name of the base operating system to use for image lookup the
+  # AMI is not set. (default: "ubuntu-18.04")
+  # Available os options: "centos-7", "ubuntu-18.04", "ubuntu-20.04", "amazon-2"
+  # baseOS: ubuntu-18.04
 
 apiVersion:
   infrastructure: infrastructure.cluster.x-k8s.io/v1alpha3
