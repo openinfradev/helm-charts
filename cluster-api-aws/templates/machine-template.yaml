@@ -12,6 +12,10 @@ spec:
       rootVolume:
         size: {{ .Values.kubeadmControlPlane.rootVolume.size }}
         type: {{ .Values.kubeadmControlPlane.rootVolume.type }}
+      {{- if .Values.kubeadmControlPlane.ami }}
+      ami:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 ---
 {{- if not .Values.machinePool.enabled }}
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3

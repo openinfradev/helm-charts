@@ -42,6 +42,8 @@ kubeadmControlPlane:
   rootVolume:
     size: 8
     type: gp2
+  # ami:
+  #   id: ami-xxxxxxxxxxxxxxxxx
 
 machinePool:
   enabled: true
@@ -52,6 +54,8 @@ machinePool:
   rootVolume:
     size: 8
     type: gp2
+  # ami:
+  #   id: ami-xxxxxxxxxxxxxxxxx
   subnets: []
   # - id: subnet-0c41662a89d7878a2
   # - id: subnet-03d16e2084d9f392b

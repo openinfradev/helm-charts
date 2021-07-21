@@ -36,6 +36,10 @@ spec:
     rootVolume:
       size: {{ .Values.machinePool.rootVolume.size }}
       type: {{ .Values.machinePool.rootVolume.type }}
+    {{- if .Values.machinePool.ami }}
+    ami:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
   maxSize: {{ .Values.machinePool.maxSize }}
   minSize: {{ .Values.machinePool.minSize }}
   {{- with .Values.machinePool.subnets }}
