@@ -12,12 +12,12 @@ spec:
   - name: kube-controller-manager.rules
     rules:
     - alert: K8SControllerManagerDown
-      expr: count(kube_pod_container_status_ready{container="kube-controller-manager"}) by (taco_cluster) - count(kube_pod_container_status_ready{container="kube-controller-manager"}==0) by (taco_cluster) == 0
+      expr: count(kube_pod_container_status_ready{container="kube-controller-manager"})  - count(kube_pod_container_status_ready{container="kube-controller-manager"}==0) == 0
       for: 5m
       labels:
         severity: page
       annotations:
-        message: There is no running K8S controller manager. Deployments and replication controllers are not making progress. ({{`{{ $labels.taco_cluster }}`}})
+        message: There is no running K8S controller manager. Deployments and replication controllers are not making progress.
         runbook: https://coreos.com/tectonic/docs/latest/troubleshooting/controller-recovery.html#recovering-a-controller-manager
-        summary: Controller manager is down ({{`{{ $labels.taco_cluster }}`}})
+        summary: Controller manager is down
 {{- end }}

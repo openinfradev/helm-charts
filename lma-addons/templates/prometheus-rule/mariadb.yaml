@@ -17,30 +17,30 @@ spec:
       labels:
         severity: warning
       annotations:
-        message: Mariadb has high table lock waits of {{`{{ $value }}`}} percentage ({{`{{ $labels.taco_cluster }}`}})
-        summary: Mariadb table lock waits are high ({{`{{ $labels.taco_cluster }}`}})
+        message: Mariadb has high table lock waits of {{`{{ $value }}`}} percentage
+        summary: Mariadb table lock waits are high
     - alert: mariadb_node_not_ready
       expr: mysql_global_status_wsrep_ready != 1
       for: 10m
       labels:
         severity: warning
       annotations:
-        message: '{{`{{ $labels.job}}`}} on {{`{{ $labels.instance}}`}} is not ready. ({{`{{ $labels.taco_cluster }}`}})'
-        summary: Galera cluster node not ready ({{`{{ $labels.taco_cluster }}`}})
+        message: '{{`{{ $labels.job}}`}} on {{`{{ $labels.instance}}`}} is not ready.'
+        summary: Galera cluster node not ready
     - alert: mariadb_galera_node_out_of_sync
       expr: mysql_global_status_wsrep_local_state != 4 AND mysql_global_variables_wsrep_desync == 0
       for: 10m
       labels:
         severity: warning
       annotations:
-        message: '{{`{{ $labels.job}}`}} on {{`{{ $labels.instance}}`}} is not in sync ({{`{{ $value}}`}} != 4) ({{`{{ $labels.taco_cluster }}`}})'
-        summary: Galera cluster node out of sync ({{`{{ $labels.taco_cluster }}`}})
+        message: '{{`{{ $labels.job}}`}} on {{`{{ $labels.instance}}`}} is not in sync ({{`{{ $value}}`}} != 4)'
+        summary: Galera cluster node out of sync
     - alert: mariadb_innodb_replication_fallen_behind
       expr: (mysql_global_variables_innodb_replication_delay > 30) AND on (instance) (predict_linear(mysql_global_variables_innodb_replication_delay[5m], 60*2) > 0)
       for: 10m
       labels:
         severity: warning
       annotations:
-        message: The mysql innodb replication has fallen behind and is not recovering ({{`{{ $labels.taco_cluster }}`}})
-        summary: MySQL innod ({{`{{ $labels.taco_cluster }}`}})
+        message: The mysql innodb replication has fallen behind and is not recovering
+        summary: MySQL innod
 {{- end }}
