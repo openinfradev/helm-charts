@@ -157,44 +157,6 @@ grafanaDashboard:
   argowf:
     enabled: false
 
-metricbeat:
-  enabled: true
-  image:
-    repository: sktdev/metricbeat
-    tag: taco-1.0.0
-
-  ### metricbeat loglevel
-  loglevel: info
-
-  elasticsearch:
-    host: "https://elasticsearch-monitoring-es-http:9200"
-    username: taco
-    password: password
-    verification_mode: none
-
-  kibana:
-    host: "kibana-dashboard-kb-http:5601"
-
-  ### resources for metricbeat deployment 
-  # resources:
-  #   requests:
-  #     memory: "500Mi"
-  #     cpu: "250m"
-  #   limits:
-  #     memory: "500Mi"
-  #     cpu: "500m"  
-  
-  ### collect metrics from prometheus and save into elasticsearch
-  prometheus:
-    enabled: true
-    hosts: ["192.168.48.202:30018"]
-
-  additionalModules:
-    - module: kubernetes
-      enabled: true
-      metricsets: ["event"]
-      period: 10s
-
 kibanaInit:
   enabled: false
   image:
