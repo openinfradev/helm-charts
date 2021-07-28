@@ -3,7 +3,6 @@
 sshKeyName: default
 
 cluster:
-  name: capi-quickstart
   region: ap-northeast-2
   # networkSpec:
     # vpc:
@@ -46,7 +45,7 @@ kubeadmControlPlane:
   #   id: ami-xxxxxxxxxxxxxxxxx
 
 machinePool:
-  enabled: true
+  enabled: false
   machineType: t3.large
   replicas: 3
   minSize: 1
@@ -57,11 +56,9 @@ machinePool:
   # ami:
   #   id: ami-xxxxxxxxxxxxxxxxx
   subnets: []
-  # - id: subnet-0c41662a89d7878a2
-  # - id: subnet-03d16e2084d9f392b
-  # - id: subnet-03ad0968f68bfa639
 
 machineDeployment:
+  enablec: false
   replicas: 3
   selector:
     matchLabels: null
