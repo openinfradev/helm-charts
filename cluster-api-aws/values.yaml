@@ -3,6 +3,7 @@
 sshKeyName: default
 
 cluster:
+  name: capi-quickstart
   region: ap-northeast-2
   # networkSpec:
     # vpc:
