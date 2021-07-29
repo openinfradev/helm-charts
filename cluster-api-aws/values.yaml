@@ -58,7 +58,7 @@ machinePool:
   subnets: []
 
 machineDeployment:
-  enablec: false
+  enabled: false
   replicas: 3
   selector:
     matchLabels: null
