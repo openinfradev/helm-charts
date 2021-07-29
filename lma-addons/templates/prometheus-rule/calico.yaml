@@ -16,51 +16,51 @@ spec:
       labels:
         severity: page
       annotations:
-        message: The calico pod {{`{{ $labels.pod }}`}} in {{`{{ $labels.instance }}`}} is not a running status. ({{`{{ $labels.taco_cluster }}`}})
-        summary: The calico pod is not a running status ({{`{{ $labels.taco_cluster }}`}})
+        message: The calico pod {{`{{ $labels.pod }}`}} in {{`{{ $labels.instance }}`}} is not a running status.
+        summary: The calico pod is not a running status
     - alert: calico_datapane_failures_high_1h
       expr: absent(felix_int_dataplane_failures) OR increase(felix_int_dataplane_failures[1h]) > 5
       labels:
         severity: page
       annotations:
-        message: Felix instance {{`{{ $labels.instance }}`}} has seen {{`{{ $value }}`}} dataplane failures within the last hour ({{`{{ $labels.taco_cluster }}`}})
-        summary: A high number of dataplane failures within Felix are happening ({{`{{ $labels.taco_cluster }}`}})
+        message: Felix instance {{`{{ $labels.instance }}`}} has seen {{`{{ $value }}`}} dataplane failures within the last hour
+        summary: A high number of dataplane failures within Felix are happening
     - alert: calico_datapane_address_msg_batch_size_high_5m
       expr: absent(felix_int_dataplane_addr_msg_batch_size_sum) OR absent(felix_int_dataplane_addr_msg_batch_size_count) OR (felix_int_dataplane_addr_msg_batch_size_sum/felix_int_dataplane_addr_msg_batch_size_count) > 5
       for: 5m
       labels:
         severity: page
       annotations:
-        message: Felix instance {{`{{ $labels.instance }}`}} has seen a high value of {{`{{ $value }}`}} dataplane address message batch size ({{`{{ $labels.taco_cluster }}`}})
-        summary: Felix address message batch size is higher ({{`{{ $labels.taco_cluster }}`}})
+        message: Felix instance {{`{{ $labels.instance }}`}} has seen a high value of {{`{{ $value }}`}} dataplane address message batch size
+        summary: Felix address message batch size is higher
     - alert: calico_datapane_iface_msg_batch_size_high_5m
       expr: absent(felix_int_dataplane_iface_msg_batch_size_sum) OR absent(felix_int_dataplane_iface_msg_batch_size_count) OR (felix_int_dataplane_iface_msg_batch_size_sum/felix_int_dataplane_iface_msg_batch_size_count) > 5
       for: 5m
       labels:
         severity: page
       annotations:
-        message: Felix instance {{`{{ $labels.instance }}`}} has seen a high value of {{`{{ $value }}`}} dataplane interface message batch size ({{`{{ $labels.taco_cluster }}`}})
-        summary: Felix interface message batch size is higher ({{`{{ $labels.taco_cluster }}`}})
+        message: Felix instance {{`{{ $labels.instance }}`}} has seen a high value of {{`{{ $value }}`}} dataplane interface message batch size
+        summary: Felix interface message batch size is higher
     - alert: calico_ipset_errors_high_1h
       expr: absent(felix_ipset_errors) OR increase(felix_ipset_errors[1h]) > 5
       labels:
         severity: page
       annotations:
-        message: Felix instance {{`{{ $labels.instance }}`}} has seen {{`{{ $value }}`}} ipset errors within the last hour ({{`{{ $labels.taco_cluster }}`}})
-        summary: A high number of ipset errors within Felix are happening ({{`{{ $labels.taco_cluster }}`}})
+        message: Felix instance {{`{{ $labels.instance }}`}} has seen {{`{{ $value }}`}} ipset errors within the last hour
+        summary: A high number of ipset errors within Felix are happening
     - alert: calico_iptable_save_errors_high_1h
       expr: absent(felix_iptables_save_errors) OR increase(felix_iptables_save_errors[1h]) > 5
       labels:
         severity: page
       annotations:
-        message: Felix instance {{`{{ $labels.instance }}`}} has seen {{`{{ $value }}`}} iptable save errors within the last hour ({{`{{ $labels.taco_cluster }}`}})
-        summary: A high number of iptable save errors within Felix are happening ({{`{{ $labels.taco_cluster }}`}})
+        message: Felix instance {{`{{ $labels.instance }}`}} has seen {{`{{ $value }}`}} iptable save errors within the last hour
+        summary: A high number of iptable save errors within Felix are happening
     - alert: calico_iptable_restore_errors_high_1h
       expr: absent(felix_iptables_restore_errors) OR increase(felix_iptables_restore_errors[1h]) > 5
       labels:
         severity: page
       annotations:
-        message: Felix instance {{`{{ $labels.instance }}`}} has seen {{`{{ $value }}`}} iptable restore errors within the last hour ({{`{{ $labels.taco_cluster }}`}})
-        summary: A high number of iptable restore errors within Felix are happening ({{`{{ $labels.taco_cluster }}`}})
+        message: Felix instance {{`{{ $labels.instance }}`}} has seen {{`{{ $value }}`}} iptable restore errors within the last hour
+        summary: A high number of iptable restore errors within Felix are happening
 
 {{- end }}
