@@ -37,6 +37,7 @@ apiVersion:
   bootstrap: bootstrap.cluster.x-k8s.io/v1alpha3
 
 kubeadmControlPlane:
+  enabled: true
   replicas: 3
   controlPlaneMachineType: t3.large
   rootVolume:
