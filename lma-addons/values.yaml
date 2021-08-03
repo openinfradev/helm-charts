@@ -157,44 +157,6 @@ grafanaDashboard:
   argowf:
     enabled: false
 
-metricbeat:
-  enabled: true
-  image:
-    repository: sktdev/metricbeat
-    tag: taco-1.0.0
-
-  ### metricbeat loglevel
-  loglevel: info
-
-  elasticsearch:
-    host: "https://elasticsearch-monitoring-es-http:9200"
-    username: taco
-    password: password
-    verification_mode: none
-
-  kibana:
-    host: "kibana-dashboard-kb-http:5601"
-
-  ### resources for metricbeat deployment 
-  # resources:
-  #   requests:
-  #     memory: "500Mi"
-  #     cpu: "250m"
-  #   limits:
-  #     memory: "500Mi"
-  #     cpu: "500m"  
-  
-  ### collect metrics from prometheus and save into elasticsearch
-  prometheus:
-    enabled: true
-    hosts: ["192.168.48.202:30018"]
-
-  additionalModules:
-    - module: kubernetes
-      enabled: true
-      metricsets: ["event"]
-      period: 10s
-
 kibanaInit:
   enabled: false
   image:
@@ -203,38 +165,6 @@ kibanaInit:
   url: "http://192.168.97.54:30001"
   username: elastic
   password: tacoword
-
-tacoWatcher:
-  host: "192.168.97.54"
-  port: 32000
-  rbac:
-    create: true
-    name: taco-watcher
-
-  joinCluster:
-    image:
-      repository: curlimages/curl
-      tag: latest
-    enabled: false
-    # request body for cluster join API
-    body:
-      id: main  # cluster name
-      isMain: true
-      kibanaUrl: "http://192.168.97.54:30001"
-      grafanaUrl: "http://192.168.97.54:30009"
-      k8sUrl: "http://192.168.97.54:6443"
-      menu:
-        enabled: true
-
-      # main parameters
-      mainPageType: "kibana"
-      mainPageLink: "/app/canvas#/workpad/workpad-e5ec5f17-d3c1-4e4d-9aad-d21db6973ec2/page/1?__fullscreen=true" 
-      k8sPageType: "kibana" # kibana or grafana
-      k8sPageLink: "/app/canvas#/workpad/workpad-f976090d-df4d-450a-bb66-8dac7b25ae4f/page/1?__fullscreen=true"
-      openstackPageType: "kibana"
-      openstackPageLink: "/app/canvas#/workpad/workpad-57011c4b-16e5-4167-967a-8b3046547f8d/page/1?__fullscreen=true"
-      cephPageType: "kibana"
-      cephPageLink: "/app/canvas#/workpad/workpad-b556b524-ddb5-47f1-a0c4-ec18bf4b48e5/page/1?__fullscreen=true"
 
 prometheusRules:
   aggregation:
