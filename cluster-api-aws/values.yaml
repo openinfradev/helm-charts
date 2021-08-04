@@ -58,6 +58,9 @@ machinePool:
   # ami:
   #   id: ami-xxxxxxxxxxxxxxxxx
   subnets: []
+  # - id: subnet-0c41662a89d7878a2
+  # - id: subnet-0c41662a89d7878a2
+  # - id: subnet-0c41662a89d7878a2
 
 machineDeployment:
   enabled: false
