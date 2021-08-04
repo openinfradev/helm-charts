@@ -1,4 +1,4 @@
-{{- if .Values.KubeadmControlPlane.enabled }}
+{{- if .Values.kubeadmControlPlane.enabled }}
 kind: KubeadmControlPlane
 apiVersion: {{ .Values.apiVersion.controlplane }}
 metadata:
