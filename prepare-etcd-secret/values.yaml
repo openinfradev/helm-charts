@@ -25,9 +25,9 @@ rbac:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
-nodeSelector: 
-  "node-role.kubernetes.io/master": ""
-tolerations:
-- key: "node-role.kubernetes.io/master"
-  effect: "NoSchedule"
-  operator: "Exists"
+nodeSelector: {} 
+  #"node-role.kubernetes.io/master": ""
+tolerations: []
+  #- key: "node-role.kubernetes.io/master"
+  #  effect: "NoSchedule"
+  #  operator: "Exists"
