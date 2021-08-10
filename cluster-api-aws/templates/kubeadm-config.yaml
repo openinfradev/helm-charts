@@ -12,7 +12,7 @@ spec:
       name: '{{`{{ ds.meta_data.local_hostname }}`}}'
 {{- end }}
 ---
-{{- if not .Values.machinePool.enabled }}
+{{- if .Values.machineDeployment.enabled }}
 apiVersion: {{ .Values.apiVersion.bootstrap }}
 kind: KubeadmConfigTemplate
 metadata:
