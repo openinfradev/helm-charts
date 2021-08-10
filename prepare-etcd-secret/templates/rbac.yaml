@@ -1,0 +1,38 @@
+{{- if .Values.rbac.create -}}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "prepare-etcd-secret.serviceAccountName" . }}
+  labels:
+    {{- include "prepare-etcd-secret.labels" . | nindent 4 }}
+  {{- with .Values.rbac.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "prepare-etcd-secret.fullname" . }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - list
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "prepare-etcd-secret.fullname" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "prepare-etcd-secret.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "prepare-etcd-secret.serviceAccountName" . }}
+{{- end }}

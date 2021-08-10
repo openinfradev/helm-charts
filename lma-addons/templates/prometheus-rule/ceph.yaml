@@ -17,47 +17,47 @@ spec:
       labels:
         severity: page
       annotations:
-        message: ceph health status is the error ({{`{{ $labels.taco_cluster }}`}})
-        summary: ceph cluster {{`{{ $labels.instance }}`}} health status is the error ({{`{{ $labels.taco_cluster }}`}})
+        message: ceph health status is the error
+        summary: ceph cluster {{`{{ $labels.instance }}`}} health status is the error
     - alert: ceph_warning_status
       expr: ceph_health_status == 1
       for: 5m
       labels:
         severity: warning
       annotations:
-        message: ceph health status is the warning ({{`{{ $labels.taco_cluster }}`}})
-        summary: ceph cluster {{`{{ $labels.instance }}`}} health status is the warning ({{`{{ $labels.taco_cluster }}`}})
+        message: ceph health status is the warning
+        summary: ceph cluster {{`{{ $labels.instance }}`}} health status is the warning
     - alert: ceph_mon_quorum_low
-      expr: count(ceph_mon_quorum_status==1) by(taco_cluster) < 3
+      expr: count(ceph_mon_quorum_status==1) < 3
       for: 5m
       labels:
         severity: critical
       annotations:
-        message: ceph monitor quorum has been less than 3 for more than 5 minutes ({{`{{ $labels.taco_cluster }}`}})
-        summary: ceph high availability is at risk ({{`{{ $labels.taco_cluster }}`}})
+        message: ceph monitor quorum has been less than 3 for more than 5 minutes
+        summary: ceph high availability is at risk
     - alert: ceph_cluster_usage_high
       expr: 100* ceph_cluster_total_used_bytes/ceph_cluster_total_bytes > 85
       for: 5m
       labels:
         severity: critical
       annotations:
-        message: ceph cluster capacity usage more than 85 percent ({{`{{ $labels.taco_cluster }}`}})
-        summary: ceph cluster usage is more than 80 percent ({{`{{ $labels.taco_cluster }}`}})
+        message: ceph cluster capacity usage more than 85 percent
+        summary: ceph cluster usage is more than 80 percent
     - alert: ceph_osd_down
       expr: ceph_osd_up == 0
       for: 1m
       labels:
         severity: critical
       annotations:
-        message: ceph OSD {{`{{ $labels.ceph_daemon }}`}} is down in instance {{`{{ $labels.instance }}`}} ({{`{{ $labels.taco_cluster }}`}})
-        summary: ceph OSD {{`{{ $labels.ceph_daemon }}`}} is down in instance {{`{{ $labels.instance }}`}} ({{`{{ $labels.taco_cluster }}`}})
+        message: ceph OSD {{`{{ $labels.ceph_daemon }}`}} is down in instance {{`{{ $labels.instance }}`}}
+        summary: ceph OSD {{`{{ $labels.ceph_daemon }}`}} is down in instance {{`{{ $labels.instance }}`}}
     - alert: ceph_osd_out
       expr: ceph_osd_in == 0
       for: 5m
       labels:
         severity: page
       annotations:
-        message: ceph OSD {{`{{ $labels.ceph_daemon }}`}} is out in instance {{`{{ $labels.instance }}`}} ({{`{{ $labels.taco_cluster }}`}})
-        summary: ceph OSD {{`{{ $labels.ceph_daemon }}`}} is out in instance {{`{{ $labels.instance }}`}} ({{`{{ $labels.taco_cluster }}`}})
+        message: ceph OSD {{`{{ $labels.ceph_daemon }}`}} is out in instance {{`{{ $labels.instance }}`}}
+        summary: ceph OSD {{`{{ $labels.ceph_daemon }}`}} is out in instance {{`{{ $labels.instance }}`}}
 {{- end }}
 
