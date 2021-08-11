@@ -1,0 +1,36 @@
+{{- if .Values.machinePool.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "cluster-api-aws.fullname" . }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "5"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      name: {{ include "cluster-api-aws.fullname" . }}
+    spec:
+      serviceAccountName: {{ include "cluster-api-aws.serviceAccountName" . }}
+      containers:
+      - name: generate-mp
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+        - /generate_machine_pool.py  
+        - {{ .Values.cluster.name }}
+        volumeMounts:
+        - name: vol
+          subPath: mp.raw.yaml
+          mountPath: /mp.raw.yaml
+        - name: vol
+          subPath: generate_machine_pool.py
+          mountPath: /generate_machine_pool.py
+      volumes:
+      - name: vol
+        configMap:
+          name: {{ include "cluster-api-aws.fullname" . }}-configmap
+          defaultMode: 0555
+      restartPolicy: OnFailure
+{{- end}}
