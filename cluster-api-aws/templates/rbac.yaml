@@ -40,6 +40,14 @@ rules:
   - get
   - list
   - create
+- apiGroups:
+  - 'bootstrap.cluster.x-k8s.io'
+  resources:
+  - kubeadmconfigs
+  verbs:
+  - get
+  - list
+  - create
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding

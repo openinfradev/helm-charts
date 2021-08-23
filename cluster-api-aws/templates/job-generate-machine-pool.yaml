@@ -1,4 +1,4 @@
-{{- if .Values.machinePool.enabled }}
+{{- if .Values.machinePool }}
 apiVersion: batch/v1
 kind: Job
 metadata:

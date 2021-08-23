@@ -24,10 +24,11 @@ def gen_machinpool_resource_yaml(aws_machine_pool, subnets):
   subnetd=[]
   for subnet in subnets:
     subnetd.append({'id': subnet})
-
   try:
     parsed = yaml.safe_load(aws_machine_pool)
-    parsed['AWSMachinePool']['spec']['subnets']=subnetd
+
+    for resource in parsed:
+      parsed[resource]['AMP']['spec']['subnets']=subnetd
   except yaml.YAMLError as exc:
     print(exc)
   except TypeError as exc:
@@ -40,31 +41,22 @@ def print_help():
   '''.format(sys.argv[0]))
 
 def main(argv):
-  # if (len(sys.argv)==1):
   stream = os.popen('kubectl get awscluster {} -o yaml'.format(sys.argv[1]))
   subnets = get_subnets(stream)
-  #   # subnets = get_subnets(sys.stdin)
-  # elif (len(sys.argv)==0):
-  #   subnets = get_subnets(open(sys.argv[1], 'r') )
-  # else:
-  #   print_help()
 
-  mp = gen_machinpool_resource_yaml(open('mp.raw.yaml', 'r'),subnets)
-  print('')
-  
-  # print(yaml.dump(mp['AWSMachinePool']))
-  # print(yaml.dump(mp['MachinePool']))
+  mps = gen_machinpool_resource_yaml(open('mp.raw.yaml', 'r'),subnets)
 
-  
-  mpf = open("mp.yaml", "a")
-  ampf = open("amp.yaml", "a")
-  mpf.write(yaml.dump(mp['MachinePool']))
-  ampf.write(yaml.dump(mp['AWSMachinePool']))
+  mpf = open('mps.yaml', 'a')
+  for mp in mps:
+    for resource in mps[mp]:
+      mpf.write('---\n')
+      mpf.write(yaml.dump(mps[mp][resource]))
+
   mpf.close()
-  ampf.close()
-
-  os.system('kubectl apply -f mp.yaml')
-  os.system('kubectl apply -f amp.yaml')
-
+  os.system('kubectl apply -f mps.yaml; rm mps.yaml')
+  os.system('kubectl get machinepool')
+  os.system('kubectl get awsmachinepool')
+  os.system('kubectl get kubeadmconfig')
+  os.system('sleep 100')
 if __name__ == "__main__":
   main(sys.argv[1:])

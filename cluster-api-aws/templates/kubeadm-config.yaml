@@ -1,16 +1,28 @@
-{{- if .Values.machinePool.enabled }}
-apiVersion: {{ .Values.apiVersion.bootstrap }}
-kind: KubeadmConfig
-metadata:
-  name: {{ .Values.cluster.name }}-mp-0
-  namespace: {{ .Release.Namespace }}
-spec:
-  joinConfiguration:
-    nodeRegistration:
-      kubeletExtraArgs:
-        cloud-provider: aws
-      name: '{{`{{ ds.meta_data.local_hostname }}`}}'
-{{- end }}
+# {{- if .Values.machinePool }}
+# apiVersion: {{ .Values.apiVersion.bootstrap }}
+# kind: KubeadmConfig
+# metadata:
+#   name: {{ .Values.cluster.name }}-mp-0
+#   namespace: {{ .Release.Namespace }}
+# spec:
+#   joinConfiguration:
+#     nodeRegistration:
+#       kubeletExtraArgs:
+#         cloud-provider: aws
+#       name: '{{`{{ ds.meta_data.local_hostname }}`}}'
+# ---
+# apiVersion: {{ .Values.apiVersion.bootstrap }}
+# kind: KubeadmConfig
+# metadata:
+#   name: {{ .Values.cluster.name }}-taco-mp-0
+#   namespace: {{ .Release.Namespace }}
+# spec:
+#   joinConfiguration:
+#     nodeRegistration:
+#       kubeletExtraArgs:
+#         cloud-provider: aws
+#       name: '{{`{{ ds.meta_data.local_hostname }}`}}'
+# {{- end }}
 ---
 {{- if .Values.machineDeployment.enabled }}
 apiVersion: {{ .Values.apiVersion.bootstrap }}

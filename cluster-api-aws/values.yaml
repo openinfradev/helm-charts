@@ -46,21 +46,28 @@ kubeadmControlPlane:
   # ami:
   #   id: ami-xxxxxxxxxxxxxxxxx
 
-machinePool:
-  enabled: false
-  machineType: t3.large
-  replicas: 3
-  minSize: 1
-  maxSize: 10
-  rootVolume:
-    size: 8
-    type: gp2
-  # ami:
-  #   id: ami-xxxxxxxxxxxxxxxxx
-  subnets: []
-  # - id: subnet-0c41662a89d7878a2
-  # - id: subnet-0c41662a89d7878a2
-  # - id: subnet-0c41662a89d7878a2
+machinePool: []
+# you can define machinePool to use autoscaling on aws. referce the belows.
+# - name: taco
+#   machineType: t3.2xlarge
+#   replicas: 3
+#   minSize: 1
+#   maxSize: 10
+#   rootVolume:
+#     size: 200
+#     type: gp2
+#   subnets: []
+#   labels: []
+# - name: normal  
+#   machineType: t3.large
+#   replicas: 1
+#   minSize: 1
+#   maxSize: 10
+#   rootVolume:
+#     size: 8
+#     type: gp2
+#   subnets: []
+#   labels: []
 
 machineDeployment:
   enabled: false
