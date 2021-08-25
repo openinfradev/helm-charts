@@ -10,10 +10,16 @@ spec:
   networkSpec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .Values.cluster.bastion }}
   bastion:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    enabled: {{ .Values.cluster.bastion.enabled }}
+    {{- if .Values.cluster.bastion.enabled  }}
+    instanceType: {{ .Values.cluster.bastion.instanceType }}
+    disableIngressRules: {{ .Values.cluster.bastion.disableIngressRules }}
+    {{- with .Values.cluster.bastion.allowedCIDRBlocks }}
+    allowedCIDRBlocks:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- end }}
   {{- if .Values.cluster.baseOS }}
   imageLookupBaseOS: {{ .Values.cluster.baseOS }}
   {{- end }}

@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "cluster-api-aws.fullname" . }}
+  name: {{ include "cluster-api-aws.fullname" . }}-{{ .Values.cluster.name }}
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-weight": "5"
@@ -30,7 +30,7 @@ spec:
       volumes:
       - name: vol
         configMap:
-          name: {{ include "cluster-api-aws.fullname" . }}-configmap
+          name: {{ include "cluster-api-aws.fullname" . }}-{{ .Values.cluster.name }}
           defaultMode: 0555
       restartPolicy: OnFailure
 {{- end}}

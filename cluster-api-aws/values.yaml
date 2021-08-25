@@ -20,12 +20,12 @@ cluster:
   kubernetesVersion: v1.18.16
   podCidrBlocks:
   - 192.168.0.0/16
-  # bastion:
-  #   enabled: false
-  #   instanceType: t3.micro
-  #   disableIngressRules: false
-  #   allowedCIDRBlocks:
-  #   - 0.0.0.0/0
+  bastion:
+    enabled: false
+    instanceType: t3.micro
+    disableIngressRules: false
+    allowedCIDRBlocks:
+    - 0.0.0.0/0
   # baseOS is the name of the base operating system to use for image lookup the
   # AMI is not set. (default: "ubuntu-18.04")
   # Available os options: "centos-7", "ubuntu-18.04", "ubuntu-20.04", "amazon-2"

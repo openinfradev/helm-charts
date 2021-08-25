@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "cluster-api-aws.fullname" . }}-configmap
+  name: {{ include "cluster-api-aws.fullname" . }}-{{ .Values.cluster.name }}
 data:
   generate_machine_pool.py: |
 {{ .Files.Get "artifacts/generate_machine_pool.py" | indent 4 }}
