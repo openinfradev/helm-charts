@@ -1,3 +1,4 @@
+test:
 workflowController:
   image:
     repository: argoproj/workflow-controller
