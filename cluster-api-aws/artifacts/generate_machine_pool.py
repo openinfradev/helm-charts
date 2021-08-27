@@ -35,11 +35,6 @@ def gen_machinpool_resource_yaml(aws_machine_pool, subnets):
     print(exc)
   return parsed
 
-def print_help():
-  print(''' 
-    {0} generate machine pool using the info on creation time
-  '''.format(sys.argv[0]))
-
 def main(argv):
   stream = os.popen('kubectl get awscluster {} -o yaml'.format(sys.argv[1]))
   subnets = get_subnets(stream)
@@ -57,6 +52,6 @@ def main(argv):
   os.system('kubectl get machinepool')
   os.system('kubectl get awsmachinepool')
   os.system('kubectl get kubeadmconfig')
-  os.system('sleep 100')
+
 if __name__ == "__main__":
   main(sys.argv[1:])
