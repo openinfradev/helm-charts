@@ -117,7 +117,7 @@ spec:
     # allowUninstallWithVolumes defines how the uninstall should be performed
     # If set to true, cephCluster deletion does not wait for the PVs to be deleted.
     allowUninstallWithVolumes: false
-  {{- if .Values.cluster.placement }}
+  {{- with .Values.cluster.placement }}
   placement:
     {{- toYaml . | nindent 4 }}
   {{- end }}
