@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "cluster-api-aws.fullname" . }}
+  name: {{ include "cluster-api-aws.fullname" . }}-post
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-weight": "5"
@@ -20,6 +20,7 @@ spec:
         command:
         - /generate_machine_pool.py  
         - {{ .Values.cluster.name }}
+        - {{ .Release.Namespace }}
         volumeMounts:
         - name: vol
           subPath: mp.raw.yaml
@@ -33,16 +34,22 @@ spec:
         image: "{{ .Values.job.image.repository }}:{{ .Values.job.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.job.image.pullPolicy }}
         command:
-        - /wait_and_initialize.py
+        - timeout
+        - 20m
+        - /wait_and_k8s_init.sh
         - {{ .Values.cluster.name }}
         - taco
+        - {{ .Release.Namespace }}
         volumeMounts:
         - name: kubeconfig
           subPath: value
           mountPath: /kube.config
         - name: vol
-          subPath: wait_and_initialize.py
-          mountPath: /wait_and_initialize.py
+          subPath: node_label.py
+          mountPath: /node_label.py
+        - name: vol
+          subPath: wait_and_k8s_init.sh
+          mountPath: /wait_and_k8s_init.sh
       {{- end }}
 
       {{- if .Values.job.argo.enabled }}
@@ -51,11 +58,11 @@ spec:
         imagePullPolicy: {{ .Values.job.image.pullPolicy }}
         command:
         - /argo-register.sh
-        - {{.Values.job.argo.url }}
-        - {{.Values.job.argo.user }}
-        - {{.Values.job.argo.password }}
         - {{.Values.cluster.name }}
 
+        envFrom:
+        - secretRef:
+            name: decapod-argocd-config
         volumeMounts:
         - name: kubeconfig
           subPath: value

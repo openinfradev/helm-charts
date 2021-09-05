@@ -36,7 +36,7 @@ def gen_machinpool_resource_yaml(aws_machine_pool, subnets):
   return parsed
 
 def main(argv):
-  stream = os.popen('kubectl get awscluster {} -o yaml'.format(sys.argv[1]))
+  stream = os.popen('kubectl get awscluster -n {1} {0} -o yaml'.format(sys.argv[1],sys.argv[2]))
   subnets = get_subnets(stream)
 
   mps = gen_machinpool_resource_yaml(open('mp.raw.yaml', 'r'),subnets)
@@ -48,10 +48,7 @@ def main(argv):
       mpf.write(yaml.dump(mps[mp][resource]))
 
   mpf.close()
-  os.system('kubectl apply -f mps.yaml; rm mps.yaml')
-  os.system('kubectl get machinepool')
-  os.system('kubectl get awsmachinepool')
-  os.system('kubectl get kubeadmconfig')
+  os.system('kubectl apply -n {0} -f mps.yaml; rm mps.yaml'.format(sys.argv[2]))
 
 if __name__ == "__main__":
   main(sys.argv[1:])

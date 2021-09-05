@@ -1,8 +1,20 @@
 #!/bin/bash
 set -ex
 
-argocd login --insecure $1 --username $2 --password $3
+yes | argocd login --insecure $ARGO_SERVER --username $ARGO_USERNAME --password $ARGO_PASSWORD
 mkdir ~/.kube
 KUBECONFIG="/kube.config" kubectl config view --merge --flatten > ~/.kube/config
 CONTEXT_NAME=$(kubectl --kubeconfig=/kube.config config view -o jsonpath='{.current-context}')
-argocd cluster add $CONTEXT_NAME --name $4 --upsert
+
+while [ $(kubectl get no | wc -l) == 0 ]
+do
+    echo "> Wait for cluster is ready"
+    sleep 30
+done
+
+if [ $(argocd cluster list | grep \ $1\ | wc -l ) == 0 ]; then
+    argocd cluster add $CONTEXT_NAME --name $1 --upsert
+else
+    echo "FATAL error: $1 is already registered on argo-cd server"
+    exit 1
+fi
