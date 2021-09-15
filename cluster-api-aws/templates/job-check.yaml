@@ -1,0 +1,32 @@
+{{- if .Values.machinePool }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "cluster-api-aws.fullname" . }}-check
+spec:
+  template:
+    metadata:
+      name: {{ include "cluster-api-aws.fullname" . }}
+    spec:
+      serviceAccountName: {{ include "cluster-api-aws.serviceAccountName" . }}
+      containers:
+      - name: wait-for-ready
+        image: "{{ .Values.job.image.repository }}:{{ .Values.job.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.job.image.pullPolicy }}
+        command:
+        - timeout 
+        - 5m
+        - /wait_for_kubeconfig.sh  
+        - {{ .Values.cluster.name }}
+        - {{ .Release.Namespace }}
+        volumeMounts:
+        - name: vol
+          subPath: wait_for_kubeconfig.sh
+          mountPath: /wait_for_kubeconfig.sh
+      volumes:
+      - name: vol
+        configMap:
+          name: {{ include "cluster-api-aws.fullname" . }}
+          defaultMode: 0555
+      restartPolicy: OnFailure
+{{- end}}

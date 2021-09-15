@@ -21,3 +21,6 @@
 .idea/
 *.tmproj
 .vscode/
+artifacts/Dockerfile
+artifacts/helm
+artifacts/gh

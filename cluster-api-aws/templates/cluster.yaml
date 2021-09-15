@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.cluster.name }}
   namespace: {{ .Release.Namespace }}
 spec:
-  {{- if not .Values.machinePool.enabled }}
+  {{- if not .Values.machinePool }}
   clusterNetwork:
     pods:
       cidrBlocks: {{ .Values.cluster.podCidrBlocks }}

@@ -1,0 +1,69 @@
+{{- $envAll := . }}
+{{- range .Values.machinePool }}
+{{ .name }}:
+  MP:
+    apiVersion: exp.cluster.x-k8s.io/v1alpha3
+    kind: MachinePool
+    metadata:
+      name: {{ $envAll.Values.cluster.name }}-{{.name}}-mp-0
+      namespace: {{ $envAll.Release.Namespace }}
+    spec:
+      clusterName: {{ $envAll.Values.cluster.name }}
+      replicas: {{ .replicas }}
+      template:
+        metadata:
+          {{- with .labels }}
+          labels: 
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        spec:
+          bootstrap:
+            configRef:
+              apiVersion: {{ $envAll.Values.apiVersion.bootstrap }}
+              kind: KubeadmConfig
+              name: {{ $envAll.Values.cluster.name }}-{{.name}}-mp-0
+          clusterName: {{ $envAll.Values.cluster.name }}
+          infrastructureRef:
+            apiVersion: {{ $envAll.Values.apiVersion.infrastructure }}
+            kind: AWSMachinePool
+            name: {{ $envAll.Values.cluster.name }}-{{.name}}-mp-0
+          version: {{ $envAll.Values.cluster.kubernetesVersion }}
+  AMP:
+    apiVersion: {{ $envAll.Values.apiVersion.infrastructure }}
+    kind: AWSMachinePool
+    metadata:
+      name: {{ $envAll.Values.cluster.name }}-{{.name}}-mp-0
+      namespace: {{ $envAll.Release.Namespace }}
+    spec:
+      availabilityZones:
+      - {{ $envAll.Values.cluster.region }}
+      awsLaunchTemplate:
+        instanceType: {{ .machineType }}
+        sshKeyName: {{ $envAll.Values.sshKeyName }}
+        iamInstanceProfile: "nodes.cluster-api-provider-aws.sigs.k8s.io"
+        rootVolume:
+          size: {{ .rootVolume.size }}
+          type: {{ .rootVolume.type }}
+        {{- if .ami }}
+        ami:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      maxSize: {{ .maxSize }}
+      minSize: {{ .minSize }}
+      {{- with .subnets }}
+      subnets:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
+  KAC:
+    apiVersion: {{ $envAll.Values.apiVersion.bootstrap }}
+    kind: KubeadmConfig
+    metadata:
+      name: {{ $envAll.Values.cluster.name }}-{{.name}}-mp-0
+      namespace: {{ $envAll.Release.Namespace }}
+    spec:
+      joinConfiguration:
+        nodeRegistration:
+          kubeletExtraArgs:
+            cloud-provider: aws
+          name: '{{`{{ ds.meta_data.local_hostname }}`}}'
+{{- end }}

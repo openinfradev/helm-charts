@@ -1,17 +1,3 @@
-{{- if .Values.machinePool.enabled }}
-apiVersion: {{ .Values.apiVersion.bootstrap }}
-kind: KubeadmConfig
-metadata:
-  name: {{ .Values.cluster.name }}-mp-0
-  namespace: {{ .Release.Namespace }}
-spec:
-  joinConfiguration:
-    nodeRegistration:
-      kubeletExtraArgs:
-        cloud-provider: aws
-      name: '{{`{{ ds.meta_data.local_hostname }}`}}'
-{{- end }}
----
 {{- if .Values.machineDeployment.enabled }}
 apiVersion: {{ .Values.apiVersion.bootstrap }}
 kind: KubeadmConfigTemplate
