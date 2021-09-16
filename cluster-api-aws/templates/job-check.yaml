@@ -3,6 +3,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ include "cluster-api-aws.fullname" . }}-check
+  namespace: {{ .Release.Namespace }}
 spec:
   template:
     metadata:
