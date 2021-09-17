@@ -55,13 +55,17 @@ KialiIngress:
   enabled: true
   namespace: istio-system
   rules:
-  - host: kiali.k1-node01
+  - host: dashboard-ahnsk.taco-cat.xyz
     http:
       paths:
-      - path: /
-        pathType: Prefix
+      - path: /kiali
+        pathType: ImplementationSpecific
         backend:
           service:
-            name: kaili
+            name: kiali
             port:
               number: 20001
+  tls:
+  - hosts:
+    - dashboard-ahnsk.taco-cat.xyz
+    secretName: taco-cat-tls

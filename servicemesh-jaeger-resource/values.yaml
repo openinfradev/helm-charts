@@ -25,18 +25,23 @@ storage:
       tlsCa: /etc/ssl/certs/tls.crt
       serverUrls: https://eck-elasticsearch-es-http.elastic-system.svc:9200
       secretName: 
-
+query:
+  basePath: /jaeger
 JaegerIngress:
   enabled: true
   namespace: istio-system
   rules:
-  - host: jaeger.k1-node01
+  - host: dashboard-ahnsk.taco-cat.xyz
     http:
       paths:
-      - path: /
-        pathType: Prefix
+      - path: /jaeger
+        pathType: ImplementationSpecific
         backend:
           service:
             name: jaeger-operator-jaeger-query
             port:
               number: 16686
+  tls:
+  - hosts:
+    - dashboard-ahnsk.taco-cat.xyz
+    secretName: taco-cat-tls

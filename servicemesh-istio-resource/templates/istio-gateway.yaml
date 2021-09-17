@@ -53,6 +53,9 @@ spec:
           - name: status-port
             port: 15021
             targetPort: 15021
+            {{- if eq .Values.IstioOperator.components.ingressGateways.k8s.service.type "NodePort" }}
+            nodePort: {{ .Values.IstioOperator.components.ingressGateways.k8s.service.ports.statusNodePort }}
+            {{- end }}
           - name: http2
             port: 80
             targetPort: 8080

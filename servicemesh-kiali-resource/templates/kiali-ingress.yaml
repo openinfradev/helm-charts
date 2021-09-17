@@ -7,8 +7,9 @@ metadata:
   namespace: {{ .Values.KialiIngress.namespace }}
   annotations:
     kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
 {{ toYaml .Values.KialiIngress.rules | indent 4 }}
+  tls:
+{{ toYaml .Values.KialiIngress.tls | indent 4 }}
 {{- end }}
