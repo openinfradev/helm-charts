@@ -1,4 +1,0 @@
-apiVersion: v2
-name: cronjob-backup-cloudconsole
-description: A cronjob helm chart for backup cloud-console
-version: 1.0.0

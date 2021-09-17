@@ -1,3 +1,0 @@
-This helm chart create a kubernetes cluster on AWS using cluster api.
-
-Cluster Name: {{ .Values.cluster.name }} 

@@ -1,5 +1,0 @@
-This helm chart create a etcd secret at master node.
-
-Secret Name: {{ include "prepare-etcd-secret.fullname" . }}
-Namespace: {{ .Release.Namespace }}
-

@@ -1,5 +1,0 @@
-apiVersion: v1
-appVersion: "v2.12.5"
-description: Argo Helm Chart
-name: argo
-version: 1.1.0

@@ -1,5 +1,0 @@
-apiVersion: v1
-appVersion: "1.0.0"
-description: Chart for decapod-controller preparation such as DB secret creation
-name: prepare-decapod-controller
-version: 0.1.0
