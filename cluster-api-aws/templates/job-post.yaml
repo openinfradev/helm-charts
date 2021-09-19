@@ -19,6 +19,8 @@ spec:
         image: "{{ .Values.job.image.repository }}:{{ .Values.job.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.job.image.pullPolicy }}
         command:
+        - timeout
+        - 20m
         - /generate_machine_pool.py  
         - {{ .Values.cluster.name }}
         - {{ .Release.Namespace }}

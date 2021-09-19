@@ -22,11 +22,13 @@
               apiVersion: {{ $envAll.Values.apiVersion.bootstrap }}
               kind: KubeadmConfig
               name: {{ $envAll.Values.cluster.name }}-{{.name}}-mp-0
+              namespace: {{ $envAll.Release.Namespace }}
           clusterName: {{ $envAll.Values.cluster.name }}
           infrastructureRef:
             apiVersion: {{ $envAll.Values.apiVersion.infrastructure }}
             kind: AWSMachinePool
             name: {{ $envAll.Values.cluster.name }}-{{.name}}-mp-0
+            namespace: {{ $envAll.Release.Namespace }}
           version: {{ $envAll.Values.cluster.kubernetesVersion }}
   AMP:
     apiVersion: {{ $envAll.Values.apiVersion.infrastructure }}

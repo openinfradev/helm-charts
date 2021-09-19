@@ -48,7 +48,7 @@ def main(argv):
       mpf.write(yaml.dump(mps[mp][resource]))
 
   mpf.close()
-  os.system('kubectl apply -n {0} -f mps.yaml; rm mps.yaml'.format(sys.argv[2]))
+  os.system('kubectl apply -n {0} -f mps.yaml;rm mps.yaml'.format(sys.argv[2]))
 
 if __name__ == "__main__":
   main(sys.argv[1:])
