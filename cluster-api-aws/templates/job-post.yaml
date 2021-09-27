@@ -32,7 +32,7 @@ spec:
           subPath: generate_machine_pool.py
           mountPath: /generate_machine_pool.py
 
-      {{- if .Values.job.taconode.enabled }}
+      {{- if or .Values.job.taconode.enabled .Values.job.argo.enabled  }}
       - name: wait-and-initialize
         image: "{{ .Values.job.image.repository }}:{{ .Values.job.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.job.image.pullPolicy }}
@@ -43,6 +43,14 @@ spec:
         - {{ .Values.cluster.name }}
         - taco
         - {{ .Release.Namespace }}
+        - "{{ .Values.job.taconode.enabled }}"
+        - "{{ .Values.job.argo.enabled }}"
+
+        {{- if .Values.job.argo.enabled  }}
+        envFrom:
+        - secretRef:
+            name: decapod-argocd-config
+        {{- end }}
         volumeMounts:
         - name: kubeconfig
           subPath: value
@@ -53,23 +61,6 @@ spec:
         - name: vol
           subPath: wait_and_k8s_init.sh
           mountPath: /wait_and_k8s_init.sh
-      {{- end }}
-
-      {{- if .Values.job.argo.enabled }}
-      - name: register-argo
-        image: "{{ .Values.job.image.repository }}:{{ .Values.job.image.tag | default .Chart.AppVersion }}"
-        imagePullPolicy: {{ .Values.job.image.pullPolicy }}
-        command:
-        - /argo-register.sh
-        - {{.Values.cluster.name }}
-
-        envFrom:
-        - secretRef:
-            name: decapod-argocd-config
-        volumeMounts:
-        - name: kubeconfig
-          subPath: value
-          mountPath: /kube.config
         - name: vol
           subPath: argo-register.sh
           mountPath: /argo-register.sh

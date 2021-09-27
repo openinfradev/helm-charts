@@ -2,7 +2,7 @@
 set -ex
 
 yes | argocd login --insecure $ARGO_SERVER --username $ARGO_USERNAME --password $ARGO_PASSWORD
-mkdir ~/.kube
+mkdir -p ~/.kube
 KUBECONFIG="/kube.config" kubectl config view --merge --flatten > ~/.kube/config
 CONTEXT_NAME=$(kubectl --kubeconfig=/kube.config config view -o jsonpath='{.current-context}')
 
@@ -15,6 +15,5 @@ done
 if [ $(argocd cluster list | grep \ $1\ | wc -l ) == 0 ]; then
     argocd cluster add $CONTEXT_NAME --name $1 --upsert
 else
-    echo "FATAL error: $1 is already registered on argo-cd server"
-    exit 1
+    echo "Warning: $1 is already registered on argo-cd server. If unintended, it may occure woring operations."
 fi

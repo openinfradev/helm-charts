@@ -1,28 +1,36 @@
 #!/bin/bash
 set -ex
 
-# echo "> Wait for awsmachinepoool $1-$2-mp-0 generated"
-# while [ $(kubectl get awsmachinepool -n $3  $1-$2-mp-0 --ignore-not-found | wc -l) == 0 ]
-# do
-#   echo "> Wait for awsmachinepools deployed (20s)"
-#   sleep 20
-# done
-# kubectl wait awsmachinepool -n $3  $1-$2-mp-0 --for condition=Ready=true --timeout=600s
+# if taconode is set
+if [ $4 = 'true' ]; then
+  echo "> Wait for machinepoool $1-$2-mp-0 generated"
+  while [ $(kubectl get machinepool -n $3 $1-$2-mp-0 --ignore-not-found | wc -l) == 0 ]
+  do
+    echo "> Wait for machinepools deployed (30s)"
+    sleep 30
+  done
 
-echo "> Wait for machinepoool $1-$2-mp-0 generated"
-while [ $(kubectl get machinepool -n $3 $1-$2-mp-0 --ignore-not-found | wc -l) == 0 ]
-do
-  echo "> Wait for machinepools deployed (30s)"
-  sleep 30
-done
+  while [ $(kubectl get machinepool -n $3 $1-$2-mp-0 -o=jsonpath='{.status.nodeRefs}' | wc -c) == 0 ]
+  do
+    echo "> Wait for instance is ready (20s)"
+    sleep 20
+  done
 
-while [ $(kubectl get machinepool -n $3 $1-$2-mp-0 -o=jsonpath='{.status.nodeRefs}' | wc -c) == 0 ]
-do
-  echo "> Wait for instance is ready (20s)"
-  sleep 20
-done
+  ./node_label.py $1 $2 $3
 
-./node_label.py $1 $2 $3
+  cat <<EOF >/taco-system.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    name: taco-system
+  name: taco-system
+EOF
 
-kubectl --kubeconfig=/kube.config create ns taco-system
-kubectl --kubeconfig=/kube.config label ns taco-system name=taco-system
+  kubectl --kubeconfig=/kube.config apply -f /taco-system.yaml
+fi
+
+# if argo-register.sh is set
+if [ $5 = 'true' ]; then 
+  /argo-register.sh $1
+fi
