@@ -25,7 +25,8 @@ storage:
       tlsCa: /etc/ssl/certs/tls.crt
       serverUrls: https://eck-elasticsearch-es-http.elastic-system.svc:9200
       secretName: 
-
+query:
+  basePath: /
 JaegerIngress:
   enabled: true
   namespace: istio-system

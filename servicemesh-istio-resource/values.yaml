@@ -64,7 +64,8 @@ IstioOperator:
         service:
           type: NodePort
           ports:
-            httpNodePort: 31081
+            statusNodePort: 31021
+            httpNodePort: 31080
             httpsNodePort: 31443
     egressGateways:
       enabled: false
