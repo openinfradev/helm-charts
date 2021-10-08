@@ -16,7 +16,9 @@ do
   sleep 30
 done
 
-while [ $(kubectl get machinepool -n $3 $1-$2-mp-0 -o=jsonpath='{.status.nodeRefs}' | wc -c) == 0 ]
+TACO_MP_REPLICAS=$(kubectl get mp -n $3 $1-$2-mp-0 -o=jsonpath='{.spec.replicas}')
+
+while [ $(kubectl get machinepool -n $3 $1-$2-mp-0 -o=jsonpath='{.status.nodeRefs}' | wc -c) != $TACO_MP_REPLICAS ]
 do
   echo "> Wait for instance is ready (20s)"
   sleep 20
