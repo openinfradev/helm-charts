@@ -10,7 +10,8 @@ if [ $4 = 'true' ]; then
     sleep 30
   done
 
-  while [ $(kubectl get machinepool -n $3 $1-$2-mp-0 -o=jsonpath='{.status.nodeRefs}' | wc -c) == 0 ]
+  replicas=$( kubectl get machinepool -n $3 $1-$2-mp-0  -o jsonpath='{.spec.replicas}' )
+  while [ $(kubectl get machinepool -n $3 $1-$2-mp-0 -o=jsonpath='{.status.readyReplicas}') != $replicas ]
   do
     echo "> Wait for instance is ready (20s)"
     sleep 20
