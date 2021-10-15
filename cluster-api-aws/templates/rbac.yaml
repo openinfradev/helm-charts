@@ -34,6 +34,7 @@ rules:
   - get
   - list
   - create
+  - patch
 - apiGroups:
   - 'infrastructure.cluster.x-k8s.io'
   resources:
@@ -42,6 +43,7 @@ rules:
   - get
   - list
   - create
+  - patch
 - apiGroups:
   - 'bootstrap.cluster.x-k8s.io'
   resources:
@@ -50,6 +52,7 @@ rules:
   - get
   - list
   - create
+  - patch
 - apiGroups:
   - ''
   resources:

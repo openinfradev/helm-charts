@@ -83,7 +83,7 @@ job:
   image:
     repository: ghcr.io/openinfradev/python_kubectl_argo
     pullPolicy: IfNotPresent
-    tag: v1.0.0
+    tag: v1.1.0
   taconode:
     enabled: false
     labels:
