@@ -1,57 +1,53 @@
-{{- if .Values.fluentbit.esTemplate.enabled }}
+{{- if or .Values.fluentbit.outputs.es.template.enabled .Values.fluentbit.outputs.es.enabled }}
 {{- $envAll := . }}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "fluentbit-operator.name" . }}-cr-cm
+  name: {{ $.Release.Name }}-cr-cm
   namespace: {{ $.Release.Namespace }}
   annotations:
     "helm.sh/hook": pre-install
-    "helm.sh/hook-weight": "3"
+    "helm.sh/hook-weight": "2"
   labels:
     app: {{ template "fluentbit-operator.name" . }}-operator
 {{ include "fluentbit-operator.labels" . | indent 4 }}
 data:
   create_template.sh: |-
     #!/bin/sh
-    set -ev
+    set -ex
 
-{{ range .Values.fluentbit.esTemplate.ilms }}
+{{ range .Values.fluentbit.outputs.es.template.ilms }}
     echo "trying to setting policy {{.name}}..."
-    curl -k -u ${ES_USER}:${ES_PW} \
-      -X PUT "${ES_URL}/_ilm/policy/{{.name}}" \
+    curl -k -u elastic:${ELASTIC_PW} -X PUT "${ES_URL}/_ilm/policy/{{.name}}" \
       -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/ilm-{{.name}}.json
 {{- end}}
 
-{{ range .Values.fluentbit.esTemplate.templates }}
+{{ range .Values.fluentbit.outputs.es.template.templates }}
     echo "trying to setting Template {{.name}}..."
-    curl -k -u ${ES_USER}:${ES_PW} \
-      -X PUT "${ES_URL}/_template/{{.name}}" \
+    curl -k -u elastic:${ELASTIC_PW} -X PUT "${ES_URL}/_template/{{.name}}" \
       -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/template-{{.name}}.json
 {{- end}}
 
 {{ range .Values.fluentbit.targetLogs }}
   {{ if .index}}
     echo "trying to create initial index {{.index}}-000001..."
-    curl -k -u ${ES_USER}:${ES_PW} \
-      -X PUT "${ES_URL}/{{.index}}-000001" \
+    curl -k -u elastic:${ELASTIC_PW} -X PUT "${ES_URL}/{{.index}}-000001" \
       -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/index-{{.index}}.json
   {{- end }}
   {{ range .multi_index}}
     echo "trying to create initial index {{.index}}-000001..."
-    curl -k -u ${ES_USER}:${ES_PW} \
-      -X PUT "${ES_URL}/{{.index}}-000001" \
+    curl -k -u elastic:${ELASTIC_PW} -X PUT "${ES_URL}/{{.index}}-000001" \
       -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/index-{{.index}}.json
   {{- end }}
 {{- end }}
 
-{{ range .Values.fluentbit.esTemplate.ilms }}
+{{ range .Values.fluentbit.outputs.es.template.ilms }}
   ilm-{{ .name }}.json: |- 
     {{ toJson .json }}
 {{- end }}
 
-{{ range .Values.fluentbit.esTemplate.templates }}
+{{ range .Values.fluentbit.outputs.es.template.templates }}
   template-{{ .name }}.json: |-
     {{ toJson .json }}
 {{- end }}
@@ -79,4 +75,22 @@ data:
     }
   {{- end }}
 {{- end }}
+
+{{- if .Values.fluentbit.outputs.es.enabled }}
+  create_user.sh: |-
+    #!/bin/sh
+    set -ex
+    curl -k -u elastic:${ELASTIC_PW} -X POST ${ES_URL}/_security/user/$1 -H 'Content-Type: application/json' -d'
+    {
+      "password" : {{ .Values.fluentbit.outputs.es.password | quote }},
+      "roles" : [ "superuser" ],
+      "full_name" : "LMA user by TACO",
+      "email" : "taco@taco.com",
+      "metadata" : {
+        "intelligence" : 7
+      }
+    }
+    '
+{{- end}}
+
 {{- end}}

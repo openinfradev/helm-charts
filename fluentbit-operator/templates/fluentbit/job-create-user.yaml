@@ -1,0 +1,55 @@
+{{- if and .Values.fluentbit.enabled .Values.fluentbit.outputs.es.enabled .Values.fluentbit.outputs.es.createuser }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $.Release.Name }}-es-user
+  namespace: {{ $.Release.Namespace }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "2"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+  labels:
+    app: {{ template "fluentbit-operator.name" . }}
+spec:
+  template:
+    metadata:
+      name: {{ $.Release.Name }}-es-template
+      labels:
+        app: {{ template "fluentbit-operator.name" . }}
+{{ include "fluentbit-operator.labels" . | indent 8 }}
+    spec:
+{{- if .Values.fluentbit.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.fluentbit.nodeSelector | indent 8 }}
+{{- end}}
+      containers:
+      - name: esuser
+        image: "{{ .Values.image.elasticsearchTemplates.repository }}:{{ .Values.image.elasticsearchTemplates.tag }}"
+        imagePullPolicy: "{{ .Values.image.elasticsearchTemplates.pullPolicy }}"
+        env:
+        - name: ES_URL
+          value: https://{{.Values.fluentbit.outputs.es.host}}:{{.Values.fluentbit.outputs.es.port}}
+        - name: ELASTIC_PW
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.fluentbit.outputs.es.elasticPasswordSecret  }}
+              key: elastic
+        command:
+        - timeout
+        - 5m
+        - /tmp/create_user.sh
+        - {{ .Values.fluentbit.outputs.es.username }}
+        - {{ .Values.fluentbit.outputs.es.password }}
+        volumeMounts:
+        - name: {{ $.Release.Name }}-cr-cm
+          mountPath: /tmp/create_user.sh
+          subPath: create_user.sh
+          readOnly: true
+      volumes:
+      - name: {{ $.Release.Name }}-cr-cm
+        configMap:
+          name: {{ $.Release.Name }}-cr-cm
+          defaultMode: 0777
+      restartPolicy: OnFailure
+{{- end}}
