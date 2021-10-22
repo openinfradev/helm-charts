@@ -1,24 +1,24 @@
-{{- if and .Values.fluentbit.enabled .Values.fluentbit.esTemplate.enabled }}
+{{- if and .Values.fluentbit.enabled .Values.fluentbit.outputs.es.enabled .Values.fluentbit.outputs.es.template.enabled }}
 {{- $envAll := . }}
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "fluentbit-operator.name" . }}-es-template
+  name: {{ $.Release.Name }}-es-template
   namespace: {{ $.Release.Namespace }}
   annotations:
     "helm.sh/hook": pre-install
     "helm.sh/hook-weight": "3"
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
   labels:
-    app: {{ template "fluentbit-operator.name" . }}-operator
+    app: {{ template "fluentbit-operator.name" . }}
 {{ include "fluentbit-operator.labels" . | indent 4 }}
 spec:
   template:
     metadata:
-      name: {{ template "fluentbit-operator.name" . }}-es-template
+      name: {{ $.Release.Name }}-es-template
       labels:
-        app: {{ template "fluentbit-operator.name" . }}-operator
+        app: {{ template "fluentbit-operator.name" . }}
 {{ include "fluentbit-operator.labels" . | indent 8 }}
     spec:
 {{- if .Values.fluentbit.nodeSelector }}
@@ -31,40 +31,45 @@ spec:
         imagePullPolicy: "{{ .Values.image.elasticsearchTemplates.pullPolicy }}"
         env:
           - name: ES_URL
-            value: {{ .Values.fluentbit.esTemplate.url }}
+            value: https://{{.Values.fluentbit.outputs.es.host}}:{{.Values.fluentbit.outputs.es.port}}
           - name: ES_USER
-            value: {{ .Values.fluentbit.esTemplate.username }}
+            value: {{ .Values.fluentbit.outputs.es.username }}
           - name: ES_PW
-            value: {{ .Values.fluentbit.esTemplate.password }}
+            value: {{ .Values.fluentbit.outputs.es.password  }}
+          - name: ELASTIC_PW
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.fluentbit.outputs.es.elasticPasswordSecret  }}
+                key: elastic
         command:
         - /bin/sh
         - -c
         - /tmp/create_template.sh
         volumeMounts:
-        - name: {{ template "fluentbit-operator.name" . }}-cr-cm
+        - name: {{ $.Release.Name }}-cr-cm
           mountPath: /tmp/create_template.sh
           subPath: create_template.sh
           readOnly: true
-        {{ range .Values.fluentbit.esTemplate.templates }}
-        - name: {{ template "fluentbit-operator.name" $envAll }}-cr-cm
+        {{ range .Values.fluentbit.outputs.es.template.templates }}
+        - name: {{ $.Release.Name }}-cr-cm
           mountPath: /tmp/template-{{.name}}.json
           subPath: template-{{.name}}.json
           readOnly: true
         {{ end }}
-        {{ range .Values.fluentbit.esTemplate.ilms }}
-        - name: {{ template "fluentbit-operator.name" $envAll }}-cr-cm
+        {{ range .Values.fluentbit.outputs.es.template.ilms }}
+        - name: {{ $.Release.Name }}-cr-cm
           mountPath: /tmp/ilm-{{.name}}.json
           subPath: ilm-{{.name}}.json
           readOnly: true
         {{ end }}
         {{ range .Values.fluentbit.targetLogs }}
         {{if .index}}
-        - name: {{ template "fluentbit-operator.name" $envAll }}-cr-cm
+        - name: {{ $.Release.Name }}-cr-cm
           mountPath: /tmp/index-{{.index }}.json
           subPath: index-{{.index }}.json
           readOnly: true
           {{- range .multi_index}}
-        - name: {{ template "fluentbit-operator.name" $envAll }}-cr-cm
+        - name: {{ $.Release.Name }}-cr-cm
           mountPath: /tmp/index-{{.index }}.json
           subPath: index-{{.index }}.json
           readOnly: true
@@ -72,9 +77,9 @@ spec:
         {{ end }}
         {{ end }}
       volumes:
-      - name: {{ template "fluentbit-operator.name" . }}-cr-cm
+      - name: {{ $.Release.Name }}-cr-cm
         configMap:
-          name: {{ template "fluentbit-operator.name" . }}-cr-cm
+          name: {{ $.Release.Name }}-cr-cm
           defaultMode: 365
       restartPolicy: OnFailure
 {{- end }}

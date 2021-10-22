@@ -117,14 +117,13 @@ spec:
     httpUser:
       valueFrom:
         secretKeyRef:
-          name: {{ template "fluentbit-operator.fullname" $envAll }}-es-secret
+          name: {{ $envAll.Values.fluentbit.outputs.es.username }}-es-secret
           key: username
     httpPassword:
       valueFrom:
         secretKeyRef:
-          name: {{ template "fluentbit-operator.fullname" $envAll  }}-es-secret
+          name: {{ $envAll.Values.fluentbit.outputs.es.username }}-es-secret
           key: password
     tls:
       verify: false
-
 {{- end -}}

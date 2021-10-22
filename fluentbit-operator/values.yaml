@@ -31,7 +31,7 @@ image:
     pullPolicy: IfNotPresent
   hyperkube:
     repository: k8s.gcr.io/hyperkube
-    tag: v1.12.1
+    tag: v1.17.6
     pullPolicy: IfNotPresent
   fluentbit:
     repository: siim/fluent-bit-for-operator
@@ -187,7 +187,7 @@ fluentbit:
   #ORI    name: ""
     name: "fluentbit-operator"
 
-  daemomset:
+  daemonset:
     spec:
       ## Tolerations for use with node taints
       ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -337,16 +337,96 @@ fluentbit:
     type: etcd
     index: etcd
     parser: docker
-  # - name: journal
-  #   tag: journal.*
-  #   path: /var/log/journal
   outputs:
     es: 
       enabled: false
-      username: ZWxhc3RpYw==
-      password: dGFjb3dvcmQ=
+      createuser: false
+      username: fluentbit
+      password: password
+      elasticPasswordSecret: elasticsearch-es-elastic-user
       host: taco-elasticsearch-es-http.lma.svc.cluster.local
       port: 9200
+      template:
+        enabled: false
+        url: https://taco-elasticsearch-es-http.lma.svc.cluster.local:9200
+        ilms:
+        - name: hot-delete-14days
+          json:
+            policy:
+              phases:
+                hot:
+                  actions:
+                    rollover:
+                      max_size: 30gb
+                      max_age: 1d
+                      max_docs: 5000000000
+                    set_priority:
+                      priority: 100
+                delete:
+                  min_age: 14d
+                  actions:
+                    delete: {}
+        - name: hot-delete-7days
+          json:
+            policy:
+              phases:
+                hot:
+                  actions:
+                    rollover:
+                      max_size: 30gb
+                      max_age: 1d
+                      max_docs: 5000000000
+                    set_priority:
+                      priority: 100
+                delete:
+                  min_age: 7d
+                  actions:
+                    delete: {}
+        - name: hot-delete-3hour
+          json:
+            policy:
+              phases:
+                hot:
+                  actions:
+                    rollover:
+                      max_size: 30gb
+                      max_age: 1h
+                      max_docs: 5000000000
+                    set_priority:
+                      priority: 100
+                delete:
+                  min_age: 3h
+                  actions:
+                    delete: {}
+        templates:
+        - name: platform
+          json:
+            index_patterns: "platform*"
+            settings:
+              refresh_interval: 30s
+              number_of_shards: 3
+              number_of_replicas: 1
+              index.lifecycle.name: hot-delete-14days
+              index.lifecycle.rollover_alias: platform
+        - name: application
+          json:
+            index_patterns: "container*"
+            settings:
+              refresh_interval: 30s
+              number_of_shards: 3
+              number_of_replicas: 1
+              index.lifecycle.name: hot-delete-3hour
+              index.lifecycle.rollover_alias: container
+        - name: syslog
+          json:
+            index_patterns: "syslog*"
+            settings:
+              refresh_interval: 30s
+              number_of_shards: 2
+              number_of_replicas: 1
+              index.lifecycle.name: hot-delete-14days
+              index.lifecycle.rollover_alias: syslog
+
     kafka:
       enabled: false
       broker: my-kafka-0.my-kafka-headless.lma.svc.cluster.local:9092,
@@ -370,157 +450,6 @@ fluentbit:
       severity: critical
       regex: "update.?error"
 
-  esTemplate:
-    enabled: false
-    url: https://taco-elasticsearch-es-http.lma.svc.cluster.local:9200
-    username: elastic
-    password: tacoword
-    ilms:
-    - name: hot-delete-14days
-      json:
-        policy:
-          phases:
-            hot:
-              actions:
-                rollover:
-                  max_size: 30gb
-                  max_age: 1d
-                  max_docs: 5000000000
-                set_priority:
-                  priority: 100
-            delete:
-              min_age: 14d
-              actions:
-                delete: {}
-    - name: hot-delete-7days
-      json:
-        policy:
-          phases:
-            hot:
-              actions:
-                rollover:
-                  max_size: 30gb
-                  max_age: 1d
-                  max_docs: 5000000000
-                set_priority:
-                  priority: 100
-            delete:
-              min_age: 7d
-              actions:
-                delete: {}
-    - name: hot-delete-3hour
-      json:
-        policy:
-          phases:
-            hot:
-              actions:
-                rollover:
-                  max_size: 30gb
-                  max_age: 1h
-                  max_docs: 5000000000
-                set_priority:
-                  priority: 100
-            delete:
-              min_age: 3h
-              actions:
-                delete: {}
-    templates:
-    - name: platform
-      json:
-        index_patterns: "platform*"
-        settings:
-          refresh_interval: 30s
-          number_of_shards: 3
-          number_of_replicas: 1
-          index.lifecycle.name: hot-delete-14days
-          index.lifecycle.rollover_alias: platform
-        # mappings:
-        #   properties:
-        #     "@timestamp": 
-        #       type: date
-        #     cluster: 
-        #       type: text
-        #     kubernetes:
-        #       properties:
-        #         container_name:
-        #           type: keyword
-        #           index: true
-        #         container_name:
-        #           type: keyword
-        #           index: true
-        #         host: 
-        #           type: keyword
-        #           index: false
-        #         namespace:
-        #           type: keyword
-        #           index: false
-        #         pod_name:
-        #           type: keyword
-        #           index: true
-        #     log: 
-        #       type: text
-        #     status: 
-        #       type: long
-        #     time:
-        #       type: date
-    - name: application
-      json:
-        index_patterns: "container*"
-        settings:
-          refresh_interval: 30s
-          number_of_shards: 3
-          number_of_replicas: 1
-          index.lifecycle.name: hot-delete-3hour
-          index.lifecycle.rollover_alias: container
-        # mappings:
-        #   properties:
-        #     "@timestamp": 
-        #       type: date
-        #     cluster: 
-        #       type: text
-        #     kubernetes:
-        #       properties:
-        #         container_name:
-        #           type: keyword
-        #           index: true
-        #         container_name:
-        #           type: keyword
-        #           index: true
-        #         host: 
-        #           type: keyword
-        #           index: false
-        #         namespace:
-        #           type: keyword
-        #           index: false
-        #         pod_name:
-        #           type: keyword
-        #           index: true
-        #     log: 
-        #       type: text
-        #     status: 
-        #       type: long
-        #     time:
-        #       type: date
-    - name: syslog
-      json:
-        index_patterns: "syslog*"
-        settings:
-          refresh_interval: 30s
-          number_of_shards: 2
-          number_of_replicas: 1
-          index.lifecycle.name: hot-delete-14days
-          index.lifecycle.rollover_alias: syslog
-        # mappings:
-        #   properties:
-        #     "@timestamp": 
-        #       type: date
-        #     cluster: 
-        #       type: text
-        #     hostname: 
-        #       type: keyword
-        #       index: true
-        #     log: 
-        #       type: text
   # Define cluster name which is shown in collected logs
   clusterName: unknown
   exclude:
