@@ -8,8 +8,8 @@ CONTEXT_NAME=$(kubectl --kubeconfig=/kube.config config view -o jsonpath='{.curr
 
 while [ $(kubectl get no | wc -l) == 0 ]
 do
-    echo "> Wait for cluster is ready"
-    sleep 30
+    echo "> Wait for cluster is ready (1s)"
+    sleep 1
 done
 
 if [ $(argocd cluster list | grep \ $1\ | wc -l ) == 0 ]; then
