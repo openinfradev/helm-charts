@@ -6,15 +6,15 @@ if [ $4 = 'true' ]; then
   echo "> Wait for machinepoool $1-$2-mp-0 generated"
   while [ $(kubectl get machinepool -n $3 $1-$2-mp-0 --ignore-not-found | wc -l) == 0 ]
   do
-    echo "> Wait for machinepools deployed (60s)"
-    sleep 60
+    echo "> Wait for machinepools deployed (1s)"
+    sleep 1
   done
 
   replicas=$( kubectl get machinepool -n $3 $1-$2-mp-0  -o jsonpath='{.spec.replicas}' )
   while [ $(kubectl get machinepool -n $3 $1-$2-mp-0 -o=jsonpath='{.status.nodeRefs}'|jq|grep uid|wc -l) != $replicas ]
   do
-    echo "> Wait for instance is ready (20s)"
-    sleep 20
+    echo "> Wait for instance is ready (1s)"
+    sleep 1
   done
 
   for node in $(kubectl get machinepool -n $3 $1-$2-mp-0 -o=jsonpath='{.status.nodeRefs}'|jq | grep '"name":'| awk -F \" '{print $4}')
