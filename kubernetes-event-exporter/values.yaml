@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 nameOverride: event-exporter
 image:
-  repository: siim/kubernetes-event-exporter
+  repository: docker.io/siim/kubernetes-event-exporter
   tag: 0.1.0
   PullPolicy: IfNotPresent
 
