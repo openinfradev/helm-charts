@@ -20,6 +20,10 @@ args:
   port: 9110
   tksInfoAddress: tks-info.tks.svc
   tksInfoPort: 9110
+  tksContractAddress: tks-contract.tks.svc
+  tksContractPort: 9110
+  argoAddress: argo-workflows-operator-server.argo.svc
+  argoPort: 2746 
 
 podAnnotations: {}
 
