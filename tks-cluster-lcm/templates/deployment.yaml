@@ -40,10 +40,17 @@ spec:
               protocol: TCP
           command:
             - /app/server
+          env:
+          - name: LOG_LEVEL
+            value: DEBUG
           args: [
             "-port", "{{ .Values.args.port }}",
             "-info-address", "{{ .Values.args.tksInfoAddress }}",
-            "-info-port", "{{ .Values.args.tksInfoPort }}"
+            "-info-port", "{{ .Values.args.tksInfoPort }}",
+            "-contract-address", "{{ .Values.args.tksContractAddress }}",
+            "-contract-port", "{{ .Values.args.tksContractPort }}",
+            "-argo-address", "{{ .Values.args.argoAddress }}",
+            "-argo-port", "{{ .Values.args.argoPort }}"
           ]
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

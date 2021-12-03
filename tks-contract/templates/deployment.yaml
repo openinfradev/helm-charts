@@ -40,6 +40,9 @@ spec:
               protocol: TCP
           command:
             - /app/server
+          env:
+          - name: LOG_LEVEL
+            value: DEBUG
           args: [
             "-port", "{{ .Values.args.port }}",
             "-dbhost", "{{ .Values.args.dbUrl }}",
@@ -47,7 +50,9 @@ spec:
             "-dbuser", "{{ .Values.args.dbUser }}",
             "-dbpassword", "{{ .Values.args.dbPassword }}",
             "-info-address", "{{ .Values.args.tksInfoAddress }}",
-            "-info-port", "{{ .Values.args.tksInfoPort }}"
+            "-info-port", "{{ .Values.args.tksInfoPort }}",
+            "-argo-address", "{{ .Values.args.argoAddress }}",
+            "-argo-port", "{{ .Values.args.argoPort }}"
           ]
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

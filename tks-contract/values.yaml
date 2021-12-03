@@ -24,6 +24,8 @@ args:
   dbPassword: tkspassword
   tksInfoAddress: tks-info.tks.svc
   tksInfoPort: 9110
+  argoAddress: argo-workflows-operator-server.argo.svc
+  argoPort: 2746
 
 db:
   adminUser: postgres
