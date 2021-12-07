@@ -12,8 +12,8 @@ items:
     name: {{ printf "%s-%s" "grafana" $dashboardName | trunc 63 | trimSuffix "-" }}
     namespace: {{ printf "%s" (.Values.grafanaDashboard.namespace | default .Release.Namespace) }}
     labels:
-      {{- if $.Values.grafanaDashboard.sidecar.dashboards.label }}
-      {{ $.Values.grafanaDashboard.sidecar.dashboards.label }}: "1"
+      {{- if $.Values.grafanaDashboard.sidecar.label }}
+      {{ $.Values.grafanaDashboard.sidecar.label }}: "1"
       {{- end }}
       app: grafana
   data:
