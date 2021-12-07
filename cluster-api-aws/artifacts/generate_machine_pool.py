@@ -11,7 +11,7 @@ def get_subnets(stream):
   subnets=[]
   try:
     parsed = yaml.safe_load(stream)
-    for entry in parsed['spec']['networkSpec']['subnets']:
+    for entry in parsed['spec']['network']['subnets']:
       if not entry['isPublic']:
         subnets.append(entry['id'])
   except yaml.YAMLError as exc:
