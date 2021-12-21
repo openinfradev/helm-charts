@@ -3,7 +3,7 @@ replicaCount: 1
 namespace: tks
 
 image:
-  repository: docker.io/seungkyua/tks-contract
+  repository: docker.io/sktcloud/tks-contract
   pullPolicy: Always
   tag: "latest"
 
