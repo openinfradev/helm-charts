@@ -25,6 +25,8 @@ args:
   argoAddress: argo-workflows-operator-server.argo.svc
   argoPort: 2746 
 
+podAnnotations: {}
+
 podSecurityContext: {}
 
 securityContext: {}

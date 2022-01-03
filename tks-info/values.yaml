@@ -28,6 +28,8 @@ db:
   adminPassword: tacopassword
   dbName: tks
 
+podAnnotations: {}
+
 podSecurityContext: {}
 
 securityContext: {}
