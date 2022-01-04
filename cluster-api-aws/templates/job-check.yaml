@@ -1,4 +1,4 @@
-{{- if .Values.machinePool }}
+{{- if or .Values.machinePool .Values.machineDeployment }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -30,4 +30,4 @@ spec:
           name: {{ include "cluster-api-aws.fullname" . }}
           defaultMode: 0555
       restartPolicy: OnFailure
-{{- end}}
+{{- end }}

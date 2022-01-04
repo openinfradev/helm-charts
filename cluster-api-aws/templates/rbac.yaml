@@ -54,6 +54,34 @@ rules:
   - create
   - patch
 - apiGroups:
+  - 'cluster.x-k8s.io'
+  resources:
+  - machinedeployments
+  verbs:
+  - get
+  - list
+  - create
+  - patch
+- apiGroups:
+  - 'infrastructure.cluster.x-k8s.io'
+  resources:
+  - awsmachinetemplates
+  verbs:
+  - get
+  - list
+  - create
+  - patch
+- apiGroups:
+  - 'bootstrap.cluster.x-k8s.io'
+  resources:
+  - kubeadmconfigtemplates
+  verbs:
+  - get
+  - list
+  - create
+  - patch
+
+- apiGroups:
   - ''
   resources:
   - secrets

@@ -8,11 +8,17 @@ data:
   generate_machine_pool.py: |
 {{ .Files.Get "artifacts/generate_machine_pool.py" | indent 4 }}
 
+  generate_machine_deployment.py: |
+{{ .Files.Get "artifacts/generate_machine_deployment.py" | indent 4 }}
+
   node_label.py: |
 {{ .Files.Get "artifacts/node_label.py" | indent 4 }}
 
   mp.raw.yaml: |
 {{ tuple "worker_machines/_mp.yaml" . | include "helper_template" | indent 4 }}
+
+  md.raw.yaml: |
+{{ tuple "worker_machines/_md.yaml" . | include "helper_template" | indent 4 }}
 
   argo-register.sh: |
 {{ .Files.Get "artifacts/argo-register.sh" | indent 4 }}

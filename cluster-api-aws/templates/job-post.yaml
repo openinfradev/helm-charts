@@ -1,4 +1,4 @@
-{{- if .Values.machinePool }}
+{{- if or .Values.machinePool .Values.machineDeployment }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -15,6 +15,7 @@ spec:
     spec:
       serviceAccountName: {{ include "cluster-api-aws.serviceAccountName" . }}
       containers:
+      {{- if or .Values.machinePool }}
       - name: generate-mp
         image: "{{ .Values.job.image.repository }}:{{ .Values.job.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.job.image.pullPolicy }}
@@ -31,8 +32,28 @@ spec:
         - name: vol
           subPath: generate_machine_pool.py
           mountPath: /generate_machine_pool.py
+      {{- end}}
 
-      {{- if or .Values.job.taconode.enabled .Values.job.argo.enabled  }}
+      {{- if or .Values.machineDeployment }}
+      - name: generate-md
+        image: "{{ .Values.job.image.repository }}:{{ .Values.job.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.job.image.pullPolicy }}
+        command:
+        - timeout
+        - 20m
+        - /generate_machine_deployment.py
+        - {{ .Values.cluster.name }}
+        - {{ .Release.Namespace }}
+        volumeMounts:
+        - name: vol
+          subPath: md.raw.yaml
+          mountPath: /md.raw.yaml
+        - name: vol
+          subPath: generate_machine_deployment.py
+          mountPath: /generate_machine_deployment.py
+      {{- end}}
+
+      {{- if or .Values.job.taconode.enabled .Values.job.argo.enabled }}
       - name: wait-and-initialize
         image: "{{ .Values.job.image.repository }}:{{ .Values.job.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.job.image.pullPolicy }}
@@ -46,7 +67,7 @@ spec:
         - "{{ .Values.job.taconode.enabled }}"
         - "{{ .Values.job.argo.enabled }}"
 
-        {{- if .Values.job.argo.enabled  }}
+        {{- if .Values.job.argo.enabled }}
         envFrom:
         - secretRef:
             name: decapod-argocd-config
@@ -75,4 +96,4 @@ spec:
           name: {{ include "cluster-api-aws.fullname" . }}
           defaultMode: 0555
       restartPolicy: OnFailure
-{{- end}}
+{{- end }}
