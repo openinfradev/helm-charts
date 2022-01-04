@@ -12,7 +12,7 @@ data:
 {{ .Files.Get "artifacts/node_label.py" | indent 4 }}
 
   mp.raw.yaml: |
-{{ tuple "mp/_mp.yaml" . | include "helper_template" | indent 4 }}
+{{ tuple "worker_machines/_mp.yaml" . | include "helper_template" | indent 4 }}
 
   argo-register.sh: |
 {{ .Files.Get "artifacts/argo-register.sh" | indent 4 }}
