@@ -1,0 +1,32 @@
+{{- if and .Values.grafanaDatasource.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasource
+  namespace: {{ printf "%s" (.Values.grafanaDatasource.namespace | default .Release.Namespace) }}
+  labels:
+    {{- if $.Values.grafanaDatasource.sidecar.label }}
+    {{ $.Values.grafanaDatasource.sidecar.label }}: "1"
+    {{- end }}
+    app: grafana
+data:
+  datasource.yaml: |-
+    apiVersion: 1
+    datasources:
+{{- if .Values.grafanaDatasource.prometheus.enabled }}
+    - name: Prometheus
+      type: prometheus
+      url: http://{{ .Values.grafanaDatasource.prometheus.url}}
+      access: proxy
+      isDefault: true
+{{- end }}
+{{- if .Values.grafanaDatasource.loki.enabled }}
+    - name: Loki
+      type: loki
+      url: http://{{ .Values.grafanaDatasource.loki.url}}
+      access: proxy
+{{- end }}
+{{- if .Values.grafanaDatasource.additionalDataSources }}
+{{ toYaml .Values.grafanaDatasource.additionalDataSources | indent 4}}
+{{- end }}
+{{- end }}

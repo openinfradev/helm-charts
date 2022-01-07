@@ -3,7 +3,7 @@ replicaCount: 1
 namespace: tks
 
 image:
-  repository: docker.io/seungkyua/tks-cluster-lcm
+  repository: docker.io/sktcloud/tks-cluster-lcm
   pullPolicy: Always
   tag: "latest"
 

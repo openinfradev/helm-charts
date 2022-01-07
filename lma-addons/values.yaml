@@ -123,18 +123,25 @@ serviceMonitor:
     enabled: false
     interval: "30s"
 
-grafanaDashboard:
+grafanaDatasource:
   enabled: true
-  # namespace installed grafana
+  # namespace where grafana is installed
   namespace: fed
   sidecar:
-    dashboards:
-      enabled: true
-      label: grafana_dashboard
-    datasources:
-      enabled: true
-      label: grafana_datasource
-      prometheusAddress: "lma-prometheus-fed-master-prometheus:9090" 
+    label: grafana_datasource
+  prometheus:
+    enabled: true
+    url: "lma-prometheus-fed-master-prometheus:9090" 
+  loki:
+    enabled: true
+    url: "loki.fed:3100" 
+
+grafanaDashboard:
+  enabled: true
+  # namespace where grafana is installed
+  namespace: fed
+  sidecar:
+    label: grafana_dashboard
   istio:
     enabled: false
   jaeger:

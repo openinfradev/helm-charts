@@ -5,8 +5,8 @@ metadata:
   name: grafana-dashboard-pool-detail
   namespace: {{ .Values.grafanaDashboard.namespace }}
   labels:
-    {{- if $.Values.grafanaDashboard.sidecar.dashboards.label }}
-    {{ $.Values.grafanaDashboard.sidecar.dashboards.label }}: "1"
+    {{- if $.Values.grafanaDashboard.sidecar.label }}
+    {{ $.Values.grafanaDashboard.sidecar.label }}: "1"
     {{- end }}
     app: grafana
 data:
