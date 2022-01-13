@@ -1,0 +1,6 @@
+apiVersion: v2
+name: cluster-autoscaler
+description: cluster-autoscaler for cluster-api cloud provder
+type: application
+version: 0.1.0
+appVersion: "1.22.2"

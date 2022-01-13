@@ -1,0 +1,25 @@
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: cluster-autoscaler-workload
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-autoscaler-workload
+subjects:
+- kind: ServiceAccount
+  name: {{ include "cluster-autoscaler.serviceAccountName" . }}
+  namespace: {{ default .Release.Namespace .Values.namespace }}
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: cluster-autoscaler-management
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-autoscaler-management
+subjects:
+- kind: ServiceAccount
+  name: {{ include "cluster-autoscaler.serviceAccountName" . }}
+  namespace: {{ default .Release.Namespace .Values.namespace }}

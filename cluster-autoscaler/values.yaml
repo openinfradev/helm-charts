@@ -1,0 +1,65 @@
+namespace: ""
+
+separateMgmtClusterEnabled: false
+
+# Workload cluster resources in the management cluster
+# Valid only when separateMgmtClusterEnabled is true
+discoveryNamespace: default
+discoveryClusterName: workload-cluster
+
+# Secret name in the workload cluster, has management cluster kubeconfig to run against
+# Valid only when separateMgmtClusterEnabled is true
+mgmtKubeconfigSecretName: mgmt-kubeconfig
+
+replicaCount: 1
+
+image:
+  repository: k8s.gcr.io/autoscaling/cluster-autoscaler
+  pullPolicy: IfNotPresent
+  tag: v1.22.2
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: "cluster-autoscaler"
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 8085
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 600Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 600Mi
+
+nodeSelector: {}
+
+tolerations:
+- effect: NoSchedule
+  key: node-role.kubernetes.io/master
+
+affinity: {}
