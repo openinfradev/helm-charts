@@ -26,6 +26,10 @@ cluster:
     disableIngressRules: false
     allowedCIDRBlocks:
     - 0.0.0.0/0
+    useSpotInstance:  #spotMarketOptions:
+      enabled: true
+      maxPrice: ''
+      # MaxPrice defines the maximum price the user is willing to pay for Spot VM instances
   # baseOS is the name of the base operating system to use for image lookup the
   # AMI is not set. (default: "ubuntu-18.04")
   # Available os options: "centos-7", "ubuntu-18.04", "ubuntu-20.04", "amazon-2"
@@ -48,6 +52,10 @@ kubeadmControlPlane:
     type: gp2
   # ami:
   #   id: ami-xxxxxxxxxxxxxxxxx
+  useSpotInstance:  #spotMarketOptions:
+    enabled: false
+    maxPrice: ''
+    # MaxPrice defines the maximum price the user is willing to pay for Spot VM instances
 
 machinePool: []
 # You can define machinePool. referce the belows.
@@ -61,6 +69,11 @@ machinePool: []
 #     type: gp2
 #   subnets: []
 #   labels: []
+# **this version dosen't support the spot instance, because the aws cluster api provider doesn't support it in awsmachinpool**
+# useSpotInstance:  #spotMarketOptions:
+#   enabled: false
+#   maxPrice: ''
+#   # MaxPrice defines the maximum price the user is willing to pay for Spot VM instances
 # - name: normal  
 #   machineType: t3.large
 #   replicas: 1
@@ -84,6 +97,10 @@ machineDeployment: []
 #   rootVolume:
 #     size: 20
 #     type: gp2
+#   useSpotInstance:  #spotMarketOptions:
+#     enabled: true
+#     maxPrice: ''
+#     # MaxPrice defines the maximum price the user is willing to pay for Spot VM instances
 
 job:
   image:
