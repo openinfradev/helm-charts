@@ -1,16 +1,16 @@
 apiVersion: v1
-appVersion: 1.4.5-skt
-description: Provide easy log collecting definition for kubernetes pods and their hosts, and management of fluentbit
-engine: gotpl
-name: fluentbit-operator
+appVersion: v1.8.3
+description: Provide easy log collecting definition for kubernetes pods and their
+  hosts, and management of fluentbit
 icon: https://dashboard.snapcraft.io/site_media/appmedia/2020/02/logo-square.png
 keywords:
 - fluentbit
 - operator
 maintainers:
 - name: TACO Team
-- name: sungil
-  email: usnexp@gmail.com
+- email: usnexp@gmail.com
+  name: sungil
+name: fluentbit-operator
 sources:
 - https://github.com/intelliguy/fluentbit-operator
-version: 1.1.0
+version: 1.2.0
