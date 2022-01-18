@@ -35,6 +35,7 @@ rules:
   - list
   - create
   - patch
+  - delete
 - apiGroups:
   - 'infrastructure.cluster.x-k8s.io'
   resources:
@@ -44,6 +45,7 @@ rules:
   - list
   - create
   - patch
+  - delete
 - apiGroups:
   - 'bootstrap.cluster.x-k8s.io'
   resources:
@@ -53,6 +55,7 @@ rules:
   - list
   - create
   - patch
+  - delete
 - apiGroups:
   - 'cluster.x-k8s.io'
   resources:
