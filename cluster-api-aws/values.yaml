@@ -76,7 +76,8 @@ machineDeployment: []
 # You can define machineDeployment to use cluster-autoscaler on aws. referce the belows.
 # - name: normal
 #   numberOfAZ: 3
-#   replicasPerAZ: 1
+#   minSizePerAZ: 1
+#   maxSizePerAZ: 3
 #   selector:
 #     matchLabels:
 #   machineType: t3.large

@@ -2,7 +2,8 @@
 {{- range .Values.machineDeployment }}
 {{- $mdName := .name }}
 {{- $numAZ := .numberOfAZ | int }}
-{{- $replicasPerAZ := .replicasPerAZ }}
+{{- $minSizePerAZ := .minSizePerAZ }}
+{{- $maxSizePerAZ := .maxSizePerAZ }}
 {{- $mdSelector := .selector }}
 {{- $mdMachineType := .machineType }}
 {{- $mdRootVolumeSize := .rootVolume.size }}
@@ -16,9 +17,12 @@
     metadata:
       name: {{ $envAll.Values.cluster.name }}-md-{{ $mdName }}-{{ . }}
       namespace: {{ $envAll.Release.Namespace }}
+      annotations:
+        cluster.x-k8s.io/cluster-api-autoscaler-node-group-min-size: "{{ $minSizePerAZ }}"
+        cluster.x-k8s.io/cluster-api-autoscaler-node-group-max-size: "{{ $maxSizePerAZ }}"
     spec:
       clusterName: {{ $envAll.Values.cluster.name }}
-      replicas: {{ $replicasPerAZ }}
+      replicas: {{ $minSizePerAZ }}
       template:
         spec:
           bootstrap:
