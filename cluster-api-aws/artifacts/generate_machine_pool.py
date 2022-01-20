@@ -11,13 +11,20 @@ def get_subnets(stream):
   subnets=[]
   try:
     parsed = yaml.safe_load(stream)
-    for entry in parsed['spec']['networkSpec']['subnets']:
-      if not entry['isPublic']:
-        subnets.append(entry['id'])
+    if (parsed['apiVersion'] == 'infrastructure.cluster.x-k8s.io/v1alpha3'):
+      for entry in parsed['spec']['networkSpec']['subnets']:
+        if not entry['isPublic']:
+          subnets.append(entry['id'])
+    else:
+      for entry in parsed['spec']['network']['subnets']:
+        if not entry['isPublic']:
+          subnets.append(entry['id'])
+
   except yaml.YAMLError as exc:
     print(exc)
   except TypeError as exc:
     print(exc)
+
   return subnets
 
 def gen_machinpool_resource_yaml(aws_machine_pool, subnets):
@@ -28,7 +35,12 @@ def gen_machinpool_resource_yaml(aws_machine_pool, subnets):
     parsed = yaml.safe_load(aws_machine_pool)
 
     for resource in parsed:
+      if (os.system('kubectl get crd machinepools.cluster.x-k8s.io')):
+        parsed[resource]['MP']['apiVersion']='exp.cluster.x-k8s.io/v1alpha3'
+      else:
+        parsed[resource]['MP']['apiVersion']='cluster.x-k8s.io/v1beta1'
       parsed[resource]['AMP']['spec']['subnets']=subnetd
+
   except yaml.YAMLError as exc:
     print(exc)
   except TypeError as exc:
