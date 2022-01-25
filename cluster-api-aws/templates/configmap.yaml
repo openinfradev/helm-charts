@@ -28,3 +28,6 @@ data:
 
   wait_and_k8s_init.sh: |
 {{ .Files.Get "artifacts/wait_and_k8s_init.sh" | indent 4 }}
+
+  delete_from_yaml_raw.py: |
+{{ .Files.Get "artifacts/delete_from_yaml_raw.py" | indent 4 }}
