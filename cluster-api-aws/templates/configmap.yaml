@@ -5,11 +5,8 @@ metadata:
   name: {{ include "cluster-api-aws.fullname" . }}
   namespace: {{ .Release.Namespace }}
 data:
-  generate_machine_pool.py: |
-{{ .Files.Get "artifacts/generate_machine_pool.py" | indent 4 }}
-
-  generate_machine_deployment.py: |
-{{ .Files.Get "artifacts/generate_machine_deployment.py" | indent 4 }}
+  generate_worker_machines.py: |
+{{ .Files.Get "artifacts/generate_worker_machines.py" | indent 4 }}
 
   node_label.py: |
 {{ .Files.Get "artifacts/node_label.py" | indent 4 }}
