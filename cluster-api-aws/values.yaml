@@ -31,11 +31,13 @@ cluster:
   # Available os options: "centos-7", "ubuntu-18.04", "ubuntu-20.04", "amazon-2"
   # baseOS: ubuntu-18.04
 
-apiVersion:
-  cluster: cluster.x-k8s.io/v1alpha3
-  infrastructure: infrastructure.cluster.x-k8s.io/v1alpha3
-  controlplane: controlplane.cluster.x-k8s.io/v1alpha3
-  bootstrap: bootstrap.cluster.x-k8s.io/v1alpha3
+api:
+  group:
+    cluster: cluster.x-k8s.io
+    infrastructure: infrastructure.cluster.x-k8s.io
+    controlplane: controlplane.cluster.x-k8s.io
+    bootstrap: bootstrap.cluster.x-k8s.io
+  version: v1beta1
 
 kubeadmControlPlane:
   enabled: true

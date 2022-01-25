@@ -1,5 +1,5 @@
 {{- if .Values.kubeadmControlPlane.enabled }}
-apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+apiVersion: {{ .Values.api.group.infrastructure }}/{{ .Values.api.version }}
 kind: AWSMachineTemplate
 metadata:
   name: {{ .Values.cluster.name }}-control-plane
