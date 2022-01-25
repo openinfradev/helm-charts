@@ -17,7 +17,7 @@ cluster:
     # - id: subnet-0c41662a89d7878a2
     # - id: subnet-03d16e2084d9f392b
     # - id: subnet-03ad0968f68bfa639
-  kubernetesVersion: v1.18.16
+  kubernetesVersion: v1.22.5
   podCidrBlocks:
   - 192.168.0.0/16
   bastion:
