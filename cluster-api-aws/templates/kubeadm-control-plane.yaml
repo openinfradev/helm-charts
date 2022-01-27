@@ -1,15 +1,23 @@
 {{- if .Values.kubeadmControlPlane.enabled }}
 kind: KubeadmControlPlane
-apiVersion: {{ .Values.apiVersion.controlplane }}
+apiVersion: {{ .Values.api.group.controlplane }}/{{ .Values.api.version }}
 metadata:
   name: "{{ .Values.cluster.name }}-control-plane"
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.kubeadmControlPlane.replicas }}
+  {{- if eq .Values.api.version "v1alpha3" }}
   infrastructureTemplate:
     kind: AWSMachineTemplate
-    apiVersion: {{ .Values.apiVersion.infrastructure }}
+    apiVersion: {{ .Values.api.group.infrastructure }}/{{ .Values.api.version }}
     name: "{{ .Values.cluster.name }}-control-plane"
+  {{- else }}
+  machineTemplate:
+    infrastructureRef:
+      apiVersion: {{ .Values.api.group.infrastructure }}/{{ .Values.api.version }}
+      kind: AWSMachineTemplate
+      name: "{{ .Values.cluster.name }}-control-plane"
+  {{- end }}
   kubeadmConfigSpec:
     initConfiguration:
       nodeRegistration:

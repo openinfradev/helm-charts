@@ -17,7 +17,7 @@ cluster:
     # - id: subnet-0c41662a89d7878a2
     # - id: subnet-03d16e2084d9f392b
     # - id: subnet-03ad0968f68bfa639
-  kubernetesVersion: v1.18.16
+  kubernetesVersion: v1.22.5
   podCidrBlocks:
   - 192.168.0.0/16
   bastion:
@@ -31,11 +31,13 @@ cluster:
   # Available os options: "centos-7", "ubuntu-18.04", "ubuntu-20.04", "amazon-2"
   # baseOS: ubuntu-18.04
 
-apiVersion:
-  cluster: cluster.x-k8s.io/v1alpha3
-  infrastructure: infrastructure.cluster.x-k8s.io/v1alpha3
-  controlplane: controlplane.cluster.x-k8s.io/v1alpha3
-  bootstrap: bootstrap.cluster.x-k8s.io/v1alpha3
+api:
+  group:
+    cluster: cluster.x-k8s.io
+    infrastructure: infrastructure.cluster.x-k8s.io
+    controlplane: controlplane.cluster.x-k8s.io
+    bootstrap: bootstrap.cluster.x-k8s.io
+  version: v1beta1
 
 kubeadmControlPlane:
   enabled: true
@@ -74,7 +76,8 @@ machineDeployment: []
 # You can define machineDeployment to use cluster-autoscaler on aws. referce the belows.
 # - name: normal
 #   numberOfAZ: 3
-#   replicasPerAZ: 1
+#   minSizePerAZ: 1
+#   maxSizePerAZ: 3
 #   selector:
 #     matchLabels:
 #   machineType: t3.large
