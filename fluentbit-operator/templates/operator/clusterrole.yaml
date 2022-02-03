@@ -38,6 +38,7 @@ rules:
       - ""
     resources:
       - secrets
+      - configmaps
     verbs:
       - create
       - delete
@@ -66,6 +67,7 @@ rules:
       - fluentbits
       - inputs
       - outputs
+      - parsers
     verbs:
       - create
       - delete

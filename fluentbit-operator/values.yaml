@@ -22,8 +22,8 @@ commonLabels: {}
 
 image:
   operator:
-    repository: siim/fluentbit-operator
-    tag: v0.1.1
+    repository: ghcr.io/openinfradev/fluentbit-operator
+    tag: 25bc31cd4333f7f77435561ec70bc68e0c73a194
     pullPolicy: IfNotPresent
   init:
     repository: docker
@@ -34,8 +34,8 @@ image:
     tag: v1.17.6
     pullPolicy: IfNotPresent
   fluentbit:
-    repository: siim/fluent-bit-for-operator
-    tag: v1.4.6
+    repository: ghcr.io/openinfradev/fluentbit
+    tag: 25bc31cd4333f7f77435561ec70bc68e0c73a194
   exporter:
     repository: siim/logalert-exporter
     tag: v0.1.1
