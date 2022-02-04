@@ -1,0 +1,59 @@
+{{- if or .Values.machinePool .Values.machineDeployment }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "cluster-api-aws.fullname" . }}-pre-delete
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-weight": "5"
+spec:
+  template:
+    metadata:
+      name: {{ include "cluster-api-aws.fullname" . }}
+    spec:
+      serviceAccountName: {{ include "cluster-api-aws.serviceAccountName" . }}
+      containers:
+      {{- if or .Values.machinePool }}
+      - name: delete-mp
+        image: "{{ .Values.job.image.repository }}:{{ .Values.job.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.job.image.pullPolicy }}
+        command:
+        - timeout
+        - 20m
+        - /delete_from_yaml_raw.py
+        - mp.raw.yaml
+        volumeMounts:
+        - name: vol
+          subPath: mp.raw.yaml
+          mountPath: /mp.raw.yaml
+        - name: vol
+          subPath: delete_from_yaml_raw.py
+          mountPath: /delete_from_yaml_raw.py
+      {{- end}}
+
+      {{- if or .Values.machineDeployment }}
+      - name: delete-md
+        image: "{{ .Values.job.image.repository }}:{{ .Values.job.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.job.image.pullPolicy }}
+        command:
+        - timeout
+        - 20m
+        - /delete_from_yaml_raw.py
+        - md.raw.yaml
+        volumeMounts:
+        - name: vol
+          subPath: md.raw.yaml
+          mountPath: /md.raw.yaml
+        - name: vol
+          subPath: delete_from_yaml_raw.py
+          mountPath: /delete_from_yaml_raw.py
+      {{- end}}
+
+      volumes:
+      - name: vol
+        configMap:
+          name: {{ include "cluster-api-aws.fullname" . }}
+          defaultMode: 0555
+      restartPolicy: OnFailure
+{{- end }}

@@ -2,7 +2,11 @@
 {{- range .Values.machinePool }}
 {{ .name }}:
   MP:
-    apiVersion: cluster.x-k8s.io/v1alpha3
+    {{- if eq $envAll.Values.api.version "v1alpha3" }}
+    apiVersion: exp.{{ $envAll.Values.api.group.cluster }}/{{ $envAll.Values.api.version }}
+    {{- else }}
+    apiVersion: {{ $envAll.Values.api.group.cluster }}/{{ $envAll.Values.api.version }}
+    {{- end }}
     kind: MachinePool
     metadata:
       name: {{ $envAll.Values.cluster.name }}-{{.name}}-mp-0
@@ -19,19 +23,19 @@
         spec:
           bootstrap:
             configRef:
-              apiVersion: {{ $envAll.Values.apiVersion.bootstrap }}
+              apiVersion: {{ $envAll.Values.api.group.bootstrap }}/{{ $envAll.Values.api.version }}
               kind: KubeadmConfig
               name: {{ $envAll.Values.cluster.name }}-{{.name}}-mp-0
               namespace: {{ $envAll.Release.Namespace }}
           clusterName: {{ $envAll.Values.cluster.name }}
           infrastructureRef:
-            apiVersion: {{ $envAll.Values.apiVersion.infrastructure }}
+            apiVersion: {{ $envAll.Values.api.group.infrastructure }}/{{ $envAll.Values.api.version }}
             kind: AWSMachinePool
             name: {{ $envAll.Values.cluster.name }}-{{.name}}-mp-0
             namespace: {{ $envAll.Release.Namespace }}
           version: {{ $envAll.Values.cluster.kubernetesVersion }}
   AMP:
-    apiVersion: {{ $envAll.Values.apiVersion.infrastructure }}
+    apiVersion: {{ $envAll.Values.api.group.infrastructure }}/{{ $envAll.Values.api.version }}
     kind: AWSMachinePool
     metadata:
       name: {{ $envAll.Values.cluster.name }}-{{.name}}-mp-0
@@ -57,7 +61,7 @@
         {{- toYaml . | nindent 6 }}
       {{- end }}
   KAC:
-    apiVersion: {{ $envAll.Values.apiVersion.bootstrap }}
+    apiVersion: {{ $envAll.Values.api.group.bootstrap }}/{{ $envAll.Values.api.version }}
     kind: KubeadmConfig
     metadata:
       name: {{ $envAll.Values.cluster.name }}-{{.name}}-mp-0

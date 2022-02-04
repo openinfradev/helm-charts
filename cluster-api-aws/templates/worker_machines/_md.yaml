@@ -2,7 +2,8 @@
 {{- range .Values.machineDeployment }}
 {{- $mdName := .name }}
 {{- $numAZ := .numberOfAZ | int }}
-{{- $replicasPerAZ := .replicasPerAZ }}
+{{- $minSizePerAZ := .minSizePerAZ }}
+{{- $maxSizePerAZ := .maxSizePerAZ }}
 {{- $mdSelector := .selector }}
 {{- $mdMachineType := .machineType }}
 {{- $mdRootVolumeSize := .rootVolume.size }}
@@ -11,24 +12,27 @@
 {{- range untilStep 0 $numAZ 1 }}
 {{ . }}:
   MachineDeployment:
-    apiVersion: cluster.x-k8s.io/v1alpha3
+    apiVersion: {{ $envAll.Values.api.group.cluster }}/{{ $envAll.Values.api.version }}
     kind: MachineDeployment
     metadata:
       name: {{ $envAll.Values.cluster.name }}-md-{{ $mdName }}-{{ . }}
       namespace: {{ $envAll.Release.Namespace }}
+      annotations:
+        cluster.x-k8s.io/cluster-api-autoscaler-node-group-min-size: "{{ $minSizePerAZ }}"
+        cluster.x-k8s.io/cluster-api-autoscaler-node-group-max-size: "{{ $maxSizePerAZ }}"
     spec:
       clusterName: {{ $envAll.Values.cluster.name }}
-      replicas: {{ $replicasPerAZ }}
+      replicas: {{ $minSizePerAZ }}
       template:
         spec:
           bootstrap:
             configRef:
-              apiVersion: {{ $envAll.Values.apiVersion.bootstrap }}
+              apiVersion: {{ $envAll.Values.api.group.bootstrap }}/{{ $envAll.Values.api.version }}
               kind: KubeadmConfigTemplate
               name: {{ $envAll.Values.cluster.name }}-md-{{ $mdName }}-{{ . }}
           clusterName: {{ $envAll.Values.cluster.name }}
           infrastructureRef:
-            apiVersion: {{ $envAll.Values.apiVersion.infrastructure }}
+            apiVersion: {{ $envAll.Values.api.group.infrastructure }}/{{ $envAll.Values.api.version }}
             kind: AWSMachineTemplate
             name: {{ $envAll.Values.cluster.name }}-md-{{ $mdName }}-{{ . }}
           version: {{ $envAll.Values.cluster.kubernetesVersion }}
@@ -37,7 +41,7 @@
         {{- toYaml . | nindent 8 }}
       {{- end }}
   AWSMachineTemplate:
-    apiVersion: {{ $envAll.Values.apiVersion.infrastructure }}
+    apiVersion: {{ $envAll.Values.api.group.infrastructure }}/{{ $envAll.Values.api.version }}
     kind: AWSMachineTemplate
     metadata:
       name: {{ $envAll.Values.cluster.name }}-md-{{ $mdName }}-{{ . }}
@@ -56,7 +60,7 @@
             id: {{ $mdSubnet }}
           {{- end }}
   KubeadmConfigTemplate:
-    apiVersion: {{ $envAll.Values.apiVersion.bootstrap }}
+    apiVersion: {{ $envAll.Values.api.group.bootstrap }}/{{ $envAll.Values.api.version }}
     kind: KubeadmConfigTemplate
     metadata:
       name: {{ $envAll.Values.cluster.name }}-md-{{ $mdName }}-{{ . }}

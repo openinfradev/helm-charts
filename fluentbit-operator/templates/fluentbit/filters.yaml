@@ -34,27 +34,17 @@ spec:
   - rewriteTag:
       rules:
 {{- range .Values.fluentbit.exclude }}
-      - key: {{.key}}
-        newTag: intended_drop.$TAG
-        regex: ^({{.value}})$
-        keep: false
+      - {{ printf "%v ^(%v)$ intended_drop.$TAG false" .key .value }}
 {{- end }}
 {{- range .Values.fluentbit.targetLogs }}
   {{- range .multi_index }}
-      - key: {{.key}}
-        newTag:  {{ printf "seperate.%v.$TAG" .index }}
-        regex: ^({{.value}})$
-        keep: false
+      - {{ printf "%v ^(%v)$ seperate.%v.$TAG false" .key .value .index }}
   {{- end}}
 {{- end}}
 {{- range .Values.fluentbit.alerts.rules }}
-      - key: "$log"
-        regex: "({{.regex}})"
-        newTag: m_{{.severity}}.$TAG
-        keep: true
+      - {{ printf "$log (%v) m_%v.$TAG true" .regex .severity }}
 {{- end }}
       emitterName: alertrule_match
-      emitterStorageType: memory
 ---
 apiVersion: logging.kubesphere.io/v1alpha2
 kind: Filter
