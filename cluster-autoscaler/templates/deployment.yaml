@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cluster-autoscaler.fullname" . }}
+  namespace: {{ default .Release.Namespace .Values.namespace }}
+  labels:
+    {{- include "cluster-autoscaler.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "cluster-autoscaler.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "cluster-autoscaler.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "cluster-autoscaler.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 8085
+          livenessProbe:
+            httpGet:
+              path: /health-check
+              port: 8085
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          command:
+          - /cluster-autoscaler
+          args:
+          - --cloud-provider=clusterapi
+          {{- if .Values.separateMgmtClusterEnabled }}
+          - --cloud-config=/etc/mgmt_cluster/kubeconfig
+          - --node-group-auto-discovery=clusterapi:namespace={{ .Values.discoveryNamespace }},clusterName={{ .Values.discoveryClusterName }}
+          volumeMounts:
+          - name: mgmt-kubeconfig
+            mountPath: "/etc/mgmt_cluster"
+            readOnly: true
+          {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: 10
+      {{- if .Values.separateMgmtClusterEnabled }}
+      volumes:
+      - name: mgmt-kubeconfig
+        secret:
+          secretName: "{{ .Values.mgmtKubeconfigSecretName }}"
+      {{- end }}
