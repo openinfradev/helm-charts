@@ -2,10 +2,14 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 etcd:
+  # For TKS #
   certdir: /etc/kubernetes/pki/etcd
   certfile: ca.crt
   client_certfile: peer.crt 
   client_keyfile: peer.key
+  # For Tacoplay #
+  tacoplay_certdir: /etc/ssl/etcd/ssl
+  tacoplay_certfile: ca.pem
 
 image:
   repository: k8s.gcr.io/hyperkube
@@ -31,3 +35,7 @@ tolerations: []
   #- key: "node-role.kubernetes.io/master"
   #  effect: "NoSchedule"
   #  operator: "Exists"
+
+
+# Valid values: 'tks' or 'tacoplay'
+deployer: "tks"

@@ -36,12 +36,13 @@ spec:
               kubectl delete output --all;
               kubectl delete fluentbitconfig --all;
               kubectl delete fluentbit --all;
-              sleep 10;
-
-              kubectl delete crd filters.logging.kubesphere.io;
-              kubectl delete crd fluentbitconfigs.logging.kubesphere.io;
-              kubectl delete crd fluentbits.logging.kubesphere.io;
-              kubectl delete crd inputs.logging.kubesphere.io;
-              kubectl delete crd outputs.logging.kubesphere.io;
+              # sleep 10;
+              
+              # kubectl delete crd filters.logging.kubesphere.io
+              # kubectl delete crd fluentbitconfigs.logging.kubesphere.io
+              # kubectl delete crd fluentbits.logging.kubesphere.io
+              # kubectl delete crd inputs.logging.kubesphere.io
+              # kubectl delete crd outputs.logging.kubesphere.io
+              # kubectl delete crd parsers.logging.kubesphere.io
       restartPolicy: OnFailure
 {{- end }}
