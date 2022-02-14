@@ -9,6 +9,7 @@
 {{- $mdRootVolumeSize := .rootVolume.size }}
 {{- $mdRootVolumeType := .rootVolume.type }}
 {{- $mdSubnet := .subnet }}
+{{- $spot := .spotInstance }}
 {{- range untilStep 0 $numAZ 1 }}
 {{ . }}:
   MachineDeployment:
@@ -58,6 +59,10 @@
           {{- if $mdSubnet }}
           subnet:
             id: {{ $mdSubnet }}
+          {{- end }}
+          {{- if $spot.enabled }}
+          spotMarketOptions:
+            maxPrice: {{ $spot.maxPrice}}
           {{- end }}
   KubeadmConfigTemplate:
     apiVersion: {{ $envAll.Values.api.group.bootstrap }}/{{ $envAll.Values.api.version }}
