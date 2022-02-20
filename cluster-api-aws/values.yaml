@@ -97,7 +97,7 @@ machineDeployment: []
 #   rootVolume:
 #     size: 20
 #     type: gp2
-#   useSpotInstance:  #spotMarketOptions:
+#   spotInstance:  #spotMarketOptions:
 #     enabled: true
 #     maxPrice: ''
 #     # MaxPrice defines the maximum price the user is willing to pay for Spot VM instances

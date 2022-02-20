@@ -62,7 +62,7 @@
           {{- end }}
           {{- if $spot.enabled }}
           spotMarketOptions:
-            maxPrice: {{ $spot.maxPrice}}
+            maxPrice: "{{ $spot.maxPrice}}"
           {{- end }}
   KubeadmConfigTemplate:
     apiVersion: {{ $envAll.Values.api.group.bootstrap }}/{{ $envAll.Values.api.version }}
