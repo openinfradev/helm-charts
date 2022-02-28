@@ -1,6 +1,11 @@
 #!/bin/bash
 set -ex
 
+kubectl get secret -n argo decapod-argocd-config  -o yaml | grep ARGO_ > argo.secret
+ARGO_SERVER=$(cat argo.secret | grep ARGO_SERVER | awk '{print $2}' | base64 -d)
+ARGO_USERNAME=$(cat argo.secret | grep ARGO_USERNAME | awk '{print $2}' | base64 -d)
+ARGO_PASSWORD=$(cat argo.secret | grep ARGO_PASSWORD | awk '{print $2}' | base64 -d)
+
 yes | argocd login --insecure $ARGO_SERVER --username $ARGO_USERNAME --password $ARGO_PASSWORD
 mkdir -p ~/.kube
 KUBECONFIG="/kube.config" kubectl config view --merge --flatten > ~/.kube/config

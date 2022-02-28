@@ -7,7 +7,6 @@ metadata:
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-weight": "5"
-    "helm.sh/hook-delete-policy": hook-succeeded
 spec:
   template:
     metadata:
@@ -49,11 +48,6 @@ spec:
         - "{{ .Values.job.taconode.enabled }}"
         - "{{ .Values.job.argo.enabled }}"
 
-        {{- if .Values.job.argo.enabled }}
-        envFrom:
-        - secretRef:
-            name: decapod-argocd-config
-        {{- end }}
         volumeMounts:
         - name: kubeconfig
           subPath: value

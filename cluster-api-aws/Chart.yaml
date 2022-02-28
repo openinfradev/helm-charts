@@ -4,6 +4,6 @@ description: A chart to install Kubernetes cluster using Cluster API Provider AW
 
 type: application
 
-version: 0.4.0
+version: 0.5.0
 
 appVersion: "1.0.0"
