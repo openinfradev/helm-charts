@@ -1,5 +1,5 @@
 apiVersion: v2
-name: keycloak-resources deployment for keycloak-operator
+name: keycloak-resources
 description: A Helm chart for keycloak-operator CRs deployment
 
 type: application
