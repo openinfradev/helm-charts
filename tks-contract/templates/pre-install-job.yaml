@@ -68,6 +68,9 @@ spec:
               INSERT INTO contracts(
                 contractor_name, id, available_services, updated_at, created_at)
                 VALUES ('tester', 'edcaa975-dde4-4c4d-94f7-36bc38fe7064', ARRAY['lma'], '2021-05-01'::timestamp, '2021-05-01'::timestamp);
+
+              INSERT INTO contracts ( contractor_name, id, available_services, updated_at, created_at ) 
+                VALUES ( 'default', 'f84df193-f6c8-45ad-867c-c0bcc48f09e5', ARRAY['LMA','SERVICE_MESH'], now(), now() );
               
               CREATE TABLE resource_quota
               (
