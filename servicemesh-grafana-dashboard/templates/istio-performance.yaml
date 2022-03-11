@@ -20,15 +20,24 @@ data:
             "hide": true,
             "iconColor": "rgba(0, 211, 255, 1)",
             "name": "Annotations & Alerts",
+            "target": {
+              "limit": 100,
+              "matchAny": false,
+              "tags": [],
+              "type": "dashboard"
+            },
             "type": "dashboard"
           }
         ]
       },
-      "description": "Istio Performance Dashboard version 1.10.2",
+      "description": "Istio Performance Dashboard version 1.13.1",
       "editable": false,
+      "fiscalYearStartMonth": 0,
       "gnetId": 11829,
       "graphTooltip": 0,
+      "id": 4,
       "links": [],
+      "liveNow": false,
       "panels": [
         {
           "collapsed": true,
@@ -51,8 +60,6 @@ data:
               "id": 19,
               "links": [],
               "mode": "markdown",
-              "timeFrom": null,
-              "timeShift": null,
               "title": "Performance Dashboard README",
               "transparent": true,
               "type": "text"
@@ -79,14 +86,19 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 8,
             "w": 12,
             "x": 0,
             "y": 2
           },
+          "hiddenSeries": false,
           "id": 4,
           "legend": {
             "avg": false,
@@ -101,7 +113,11 @@ data:
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
           "percentage": false,
+          "pluginVersion": "8.4.2",
           "pointradius": 2,
           "points": false,
           "renderer": "flot",
@@ -127,9 +143,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "vCPU / 1k rps",
           "tooltip": {
             "shared": true,
@@ -138,33 +152,24 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -172,14 +177,19 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 8,
             "w": 12,
             "x": 12,
             "y": 2
           },
+          "hiddenSeries": false,
           "id": 7,
           "legend": {
             "avg": false,
@@ -194,7 +204,11 @@ data:
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
           "percentage": false,
+          "pluginVersion": "8.4.2",
           "pointradius": 2,
           "points": false,
           "renderer": "flot",
@@ -219,9 +233,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "vCPU",
           "tooltip": {
             "shared": true,
@@ -230,33 +242,24 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -277,14 +280,19 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 8,
             "w": 12,
             "x": 0,
             "y": 11
           },
+          "hiddenSeries": false,
           "id": 902,
           "legend": {
             "avg": false,
@@ -299,7 +307,11 @@ data:
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
           "percentage": false,
+          "pluginVersion": "8.4.2",
           "pointradius": 2,
           "points": false,
           "renderer": "flot",
@@ -324,9 +336,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "Memory Usage",
           "tooltip": {
             "shared": true,
@@ -335,33 +345,24 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "bytes",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -369,14 +370,19 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 8,
             "w": 12,
             "x": 12,
             "y": 11
           },
+          "hiddenSeries": false,
           "id": 11,
           "legend": {
             "avg": false,
@@ -391,7 +397,11 @@ data:
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
           "percentage": false,
+          "pluginVersion": "8.4.2",
           "pointradius": 2,
           "points": false,
           "renderer": "flot",
@@ -416,9 +426,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "Bytes transferred / sec",
           "tooltip": {
             "shared": true,
@@ -427,33 +435,24 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "Bps",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -474,14 +473,19 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 8,
             "w": 24,
             "x": 0,
             "y": 20
           },
+          "hiddenSeries": false,
           "id": 15,
           "legend": {
             "avg": false,
@@ -496,7 +500,11 @@ data:
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
           "percentage": false,
+          "pluginVersion": "8.4.2",
           "pointradius": 2,
           "points": false,
           "renderer": "flot",
@@ -514,9 +522,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "Istio Components by Version",
           "tooltip": {
             "shared": true,
@@ -525,33 +531,24 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -560,7 +557,7 @@ data:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 31
+            "y": 28
           },
           "id": 71,
           "panels": [],
@@ -572,13 +569,16 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "fill": 1,
           "gridPos": {
             "h": 7,
             "w": 6,
             "x": 0,
-            "y": 32
+            "y": 29
           },
           "id": 72,
           "legend": {
@@ -595,6 +595,7 @@ data:
           "links": [],
           "nullPointMode": "null",
           "percentage": false,
+          "pluginVersion": "8.4.2",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -614,9 +615,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "Memory",
           "tooltip": {
             "shared": true,
@@ -625,33 +624,24 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "bytes",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": false
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -659,13 +649,16 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "fill": 1,
           "gridPos": {
             "h": 7,
             "w": 6,
             "x": 6,
-            "y": 32
+            "y": 29
           },
           "id": 73,
           "legend": {
@@ -682,6 +675,7 @@ data:
           "links": [],
           "nullPointMode": "null",
           "percentage": false,
+          "pluginVersion": "8.4.2",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -701,9 +695,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "vCPU",
           "tooltip": {
             "shared": true,
@@ -712,33 +704,24 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -746,13 +729,16 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "fill": 1,
           "gridPos": {
             "h": 7,
             "w": 6,
             "x": 12,
-            "y": 32
+            "y": 29
           },
           "id": 702,
           "legend": {
@@ -769,6 +755,7 @@ data:
           "links": [],
           "nullPointMode": "null",
           "percentage": false,
+          "pluginVersion": "8.4.2",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -787,9 +774,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "Disk",
           "tooltip": {
             "shared": true,
@@ -798,9 +783,7 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
@@ -809,23 +792,17 @@ data:
               "format": "bytes",
               "label": "",
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
-              "decimals": null,
               "format": "none",
               "label": "",
               "logBase": 1024,
-              "max": null,
-              "min": null,
               "show": false
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -834,7 +811,7 @@ data:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 39
+            "y": 36
           },
           "id": 69,
           "panels": [],
@@ -846,13 +823,16 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "fill": 1,
           "gridPos": {
             "h": 7,
             "w": 6,
             "x": 0,
-            "y": 40
+            "y": 37
           },
           "id": 5,
           "legend": {
@@ -869,6 +849,7 @@ data:
           "links": [],
           "nullPointMode": "null",
           "percentage": false,
+          "pluginVersion": "8.4.2",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -955,9 +936,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "Memory",
           "tooltip": {
             "shared": true,
@@ -966,33 +945,24 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "bytes",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": false
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -1000,13 +970,16 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "fill": 1,
           "gridPos": {
             "h": 7,
             "w": 6,
             "x": 6,
-            "y": 40
+            "y": 37
           },
           "id": 602,
           "legend": {
@@ -1023,6 +996,7 @@ data:
           "links": [],
           "nullPointMode": "null",
           "percentage": false,
+          "pluginVersion": "8.4.2",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -1060,9 +1034,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "vCPU",
           "tooltip": {
             "shared": true,
@@ -1071,33 +1043,24 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -1105,13 +1068,16 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "fill": 1,
           "gridPos": {
             "h": 7,
             "w": 6,
             "x": 12,
-            "y": 40
+            "y": 37
           },
           "id": 74,
           "legend": {
@@ -1128,6 +1094,7 @@ data:
           "links": [],
           "nullPointMode": "null",
           "percentage": false,
+          "pluginVersion": "8.4.2",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -1156,9 +1123,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "Disk",
           "tooltip": {
             "shared": true,
@@ -1167,9 +1132,7 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
@@ -1178,23 +1141,17 @@ data:
               "format": "bytes",
               "label": "",
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
-              "decimals": null,
               "format": "none",
               "label": "",
               "logBase": 1024,
-              "max": null,
-              "min": null,
               "show": false
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -1202,13 +1159,16 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "fill": 1,
           "gridPos": {
             "h": 7,
             "w": 6,
             "x": 18,
-            "y": 40
+            "y": 37
           },
           "id": 402,
           "legend": {
@@ -1225,6 +1185,7 @@ data:
           "links": [],
           "nullPointMode": "null",
           "percentage": false,
+          "pluginVersion": "8.4.2",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -1243,9 +1204,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "Goroutines",
           "tooltip": {
             "shared": true,
@@ -1254,9 +1213,7 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
@@ -1265,27 +1222,21 @@ data:
               "format": "short",
               "label": "",
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         }
       ],
       "refresh": "10s",
-      "schemaVersion": 18,
+      "schemaVersion": 35,
       "style": "dark",
       "tags": [],
       "templating": {
@@ -1323,5 +1274,6 @@ data:
       "timezone": "",
       "title": "Istio Performance Dashboard",
       "uid": "vu8e0VWZk",
-      "version": 22
+      "version": 1,
+      "weekStart": ""
     }

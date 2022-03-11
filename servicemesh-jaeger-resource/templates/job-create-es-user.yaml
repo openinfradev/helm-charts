@@ -1,0 +1,50 @@
+{{- if .Values.elasticsearch.user.enabled }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-es-user
+  namespace: {{ .Values.namespace }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "20"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    metadata:
+      name: create-es-user-template
+    spec:
+{{- if .Values.elasticsearch.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.elasticsearch.nodeSelector | indent 8 }}
+{{- end}}
+      containers:
+      - name: esuser
+        image: "{{ .Values.elasticsearch.image.repository }}:{{ .Values.elasticsearch.image.tag }}"
+        imagePullPolicy: "{{ .Values.elasticsearch.image.pullPolicy }}"
+        env:
+        - name: ES_URL
+          value: https://{{.Values.elasticsearch.host}}:{{.Values.elasticsearch.port}}
+        - name: ELASTIC_PW
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.elasticsearch.elasticPasswordSecret  }}
+              key: elastic
+        command:
+        - timeout
+        - 5m
+        - /tmp/create_user.sh
+        - {{ .Values.elasticsearch.user.username }}
+        - {{ .Values.elasticsearch.user.password }}
+        volumeMounts:
+        - name: create-es-user-cm
+          mountPath: /tmp/create_user.sh
+          subPath: create_user.sh
+          readOnly: true
+      volumes:
+      - name: create-es-user-cm
+        configMap:
+          name: create-es-user-cm
+          defaultMode: 0777
+      restartPolicy: OnFailure
+{{- end}}
