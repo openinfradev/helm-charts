@@ -6,8 +6,11 @@ metadata:
   namespace: {{ .Values.namespace }}
 spec:
   strategy: {{ .Values.strategy }}
-  agent:
-    strategy: Sidecar
+  sampling:
+    options:
+      default_strategy:
+        type: probabilistic
+        param: {{ .Values.sampling.param }}
   ingress:
     enabled: {{ .Values.ingress.enabled }}
   collector:
@@ -34,9 +37,11 @@ spec:
         password: {{ .Values.storage.options.es.password }}
         tls.ca: {{ .Values.storage.options.es.tlsCa }}
         server-urls: {{ .Values.storage.options.es.serverUrls }}
+  {{- if .Values.query.basePath }}
   query:
     options:
       query.base-path: {{ .Values.query.basePath }}
+  {{- end }}
   volumeMounts:
   - mountPath: /etc/ssl/certs
     name: es-tls

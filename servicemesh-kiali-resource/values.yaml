@@ -1,9 +1,5 @@
-nameOverride: kiali
-fullnameOverride: kiali
 namespace: istio-system
 istioNamespace: istio-system
-istioComponentNamespaces:
-  prometheus: prometheus
 deployment:
   ingress:
     enabled: false
@@ -14,7 +10,7 @@ deployment:
       cpu: 500m
       memory: 512Mi
     limits:
-      cpu: 500m
+      cpu: 1
       memory: 1024Mi
   replicas: 1
   nodeSelector:
@@ -28,14 +24,22 @@ externalServices:
   customDashboards:
     enabled: true
   istio:
-    configMapName: "istio-1-9-1"
+    configMapName: "istio"
     istioIdentityDomain: "svc.cluster.local"
+    componentStatus:
+      enabled: true
+      components:
+        istiodLabel: istiod
+        ingressGatewayLabel: istio-ingress-gateway
+        egressGatewayLabel: istio-egress-gateway
   prometheus:
-    url: http://prometheus-kube-prometheus-prometheus.prometheus.svc:9090
+    url: http://lma-prometheus.lma.svc:9090
   tracing:
     enabled: true
     namespaceSelector: true
     inClusterUrl: http://jaeger-operator-jaeger-query.istio-system:16686
+    url: https://jaeger-v2.taco-cat.xyz
+    useGrpc: false
   grafana:
     auth:
       password: password
@@ -43,25 +47,10 @@ externalServices:
       useKialiToken: false
       username: admin
     enabled: true
-    inClusterUrl: http://grafana.istio-system.svc:3000
-    url: http://k1-master01:30099
+    inClusterUrl: http://grafana.lma.svc:3000
+    url: https://grafana-v2.taco-cat.xyz
 server:
   metricsEnabled: true
   metricsPort: 9090
   port: 20001
   webRoot: /kiali
-
-KialiIngress:
-  enabled: true
-  namespace: istio-system
-  rules:
-  - host: kiali.k1-node01
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: kaili
-            port:
-              number: 20001

@@ -2,5 +2,5 @@ apiVersion: v2
 name: servicemesh-grafana-dashboard
 description: A chart for the additional grafana dashboard related to service mesh
 type: application
-appVersion: "1.9.1"
-version: 1.7.0
+appVersion: "1.13.1"
+version: 1.13.1
