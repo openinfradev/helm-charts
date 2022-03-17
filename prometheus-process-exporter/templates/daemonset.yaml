@@ -60,7 +60,7 @@ spec:
       nodeSelector:
         {{ .Values.labels.process_exporter.node_selector_key }}: {{ .Values.labels.process_exporter.node_selector_value }}
 {{ end }}
-      hostNetwork: true
+      hostNetwork: {{ .Values.pod.hostNetwork }}
       hostPID: true
       initContainers:
 {{ tuple $envAll "process_exporter" list | include "helm-toolkit.snippets.kubernetes_entrypoint_init_container" | indent 8 }}

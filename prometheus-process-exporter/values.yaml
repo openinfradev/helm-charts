@@ -36,6 +36,8 @@ labels:
     node_selector_value: enabled
 
 pod:
+  # Expose the service to the host network
+  hostNetwork: true
   security_context:
     metrics:
       pod:
@@ -159,4 +161,3 @@ manifests:
 conf:
   processes: dockerd,kubelet,kube-proxy,bgsagent,bgscollect,bgssd
   children: true
-...
