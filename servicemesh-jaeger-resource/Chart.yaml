@@ -2,6 +2,6 @@ apiVersion: v2
 name: servicemesh-jaeger-resource
 description: A chart for jaeger resource related to service mesh
 type: application
-appVersion: "1.22.1"
-version: 2.21.2
+appVersion: "1.29.1"
+version: 2.27.1
 

@@ -7,14 +7,8 @@ metadata:
   annotations:
     ansible.operator-sdk/verbosity: "1"
 spec:
-  nameOverride: {{ .Values.nameOverride }}
-  fullnameOverride: {{ .Values.fullnameOverride }}
-  istio_component_namespaces:
-    prometheus: {{ .Values.istioComponentNamespaces.prometheus }}
   istio_namespace: {{ .Values.istioNamespace }}
   deployment:
-    accessible_namespaces:
-    - '**'
     ingress_enabled: {{ .Values.deployment.ingress.enabled }}
     namespace: {{ .Values.deployment.namespace }}
     replicas: {{ .Values.deployment.replicas }}
@@ -40,12 +34,26 @@ spec:
     istio:
       config_map_name: {{ .Values.externalServices.istio.configMapName }}
       istio_identity_domain: {{ .Values.externalServices.istio.istioIdentityDomain }}
+      component_status:
+        enabled: {{ .Values.externalServices.istio.componentStatus.enabled }}
+        components:
+        - app_label: {{ .Values.externalServices.istio.componentStatus.components.istiodLabel }}
+          is_core: true
+          is_proxy: false
+        - app_label: {{ .Values.externalServices.istio.componentStatus.components.ingressGatewayLabel }}
+          is_core: true
+          is_proxy: true
+        - app_label: {{ .Values.externalServices.istio.componentStatus.components.egressGatewayLabel }}
+          is_core: false
+          is_proxy: true
     prometheus:
       url: {{ .Values.externalServices.prometheus.url }}
     tracing:
       enabled: {{ .Values.externalServices.tracing.enabled }}
       namespace_selector: {{ .Values.externalServices.tracing.namespaceSelector }}
       in_cluster_url: {{ .Values.externalServices.tracing.inClusterUrl }}
+      url: {{ .Values.externalServices.tracing.url }}
+      use_grpc: {{ .Values.externalServices.tracing.useGrpc }}
     grafana:
       auth:
         password: {{ .Values.externalServices.grafana.auth.password }}
