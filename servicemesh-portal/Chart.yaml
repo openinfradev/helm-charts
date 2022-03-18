@@ -1,0 +1,6 @@
+apiVersion: v2
+name: servicemesh-portal
+description: A chart for servicemesh-portal resource related to service mesh
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
