@@ -7,6 +7,11 @@ separateMgmtClusterEnabled: false
 discoveryNamespace: default
 discoveryClusterName: workload-cluster
 
+# ONLY creating a service account credential in the management cluster
+deployMgmtRbacOnly:
+  enabled: false
+  targetNamespace: default
+
 # Secret name in the workload cluster, has management cluster kubeconfig to run against
 # Valid only when separateMgmtClusterEnabled is true
 mgmtKubeconfigSecretName: mgmt-kubeconfig

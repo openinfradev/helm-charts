@@ -2,7 +2,6 @@ apiVersion: keycloak.org/v1alpha1
 kind: Keycloak
 metadata:
   name: {{ .Values.keycloak.name }}
-  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.keycloak.name }}
 spec:
