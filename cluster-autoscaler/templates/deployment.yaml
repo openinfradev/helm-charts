@@ -1,3 +1,4 @@
+{{- if not .Values.deployMgmtRbacOnly.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -71,3 +72,4 @@ spec:
         secret:
           secretName: "{{ .Values.mgmtKubeconfigSecretName }}"
       {{- end }}
+{{- end }}

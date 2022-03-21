@@ -1,3 +1,4 @@
+{{- if not .Values.deployMgmtRbacOnly.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -13,3 +14,4 @@ spec:
       name: http
   selector:
     {{- include "cluster-autoscaler.selectorLabels" . | nindent 4 }}
+{{- end }}
