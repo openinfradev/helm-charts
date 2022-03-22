@@ -43,6 +43,9 @@ spec:
           env:
           - name: LOG_LEVEL
             value: DEBUG
+          envFrom:
+            - secretRef:
+                name: "github-tks-mgmt-token"
           args: [
             "-port", "{{ .Values.args.port }}",
             "-info-address", "{{ .Values.args.tksInfoAddress }}",
@@ -50,7 +53,9 @@ spec:
             "-contract-address", "{{ .Values.args.tksContractAddress }}",
             "-contract-port", "{{ .Values.args.tksContractPort }}",
             "-argo-address", "{{ .Values.args.argoAddress }}",
-            "-argo-port", "{{ .Values.args.argoPort }}"
+            "-argo-port", "{{ .Values.args.argoPort }}",
+            "-revision", "{{ .Values.args.revision }}",
+            "-git-account", "{{ .Values.args.gitAccount }}",
           ]
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

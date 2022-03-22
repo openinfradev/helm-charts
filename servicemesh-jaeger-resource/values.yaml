@@ -1,8 +1,9 @@
 namespace: istio-system
 strategy: production
-logLevel: debug
+sampling:
+  param: 100
 ingress:
-  enabled: true
+  enabled: false
 collector:
   maxReplicas: 5
   resources:
@@ -23,21 +24,20 @@ storage:
       username: elastic
       password: tacoword
       tlsCa: /etc/ssl/certs/tls.crt
-      serverUrls: https://eck-elasticsearch-es-http.elastic-system.svc:9200
-      secretName: 
+      serverUrls: https://eck-elasticsearch-es-http.istio-system.svc:9200
+      secretName: eck-elasticsearch-es-http-certs-public
 query:
   basePath: /
-JaegerIngress:
-  enabled: true
-  namespace: istio-system
-  rules:
-  - host: jaeger.k1-node01
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: jaeger-operator-jaeger-query
-            port:
-              number: 16686
+
+elasticsearch:
+  image:
+    repository: docker.io/openstackhelm/heat
+    tag: newton
+    pullPolicy: IfNotPresent
+  host: eck-elasticsearch-es-http.istio-system.svc.cluster.local
+  port: 9200
+  elasticPasswordSecret: eck-elasticsearch-es-elastic-user
+  user:
+    enabled: true
+    username: taco-jaeger
+    password: tacoword
