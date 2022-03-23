@@ -17,6 +17,8 @@ serviceAccount:
   name: "tks-info"
 
 args:
+  tksContractAddress: tks-contract.tks.svc
+  tksContractPort: 9110
   port: 9110
   dbUrl: postgresql.decapod-db.svc
   dbPort: 5432
