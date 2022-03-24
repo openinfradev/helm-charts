@@ -41,6 +41,9 @@ spec:
           command:
             - /app/server
           args: [
+            "-contract-address", "{{ .Values.args.tksContractAddress }}",
+            "-contract-port", "{{ .Values.args.tksContractPort }}",
+            "-dbhost", "{{ .Values.args.dbUrl }}",
             "-port", "{{ .Values.args.port }}",
             "-dbhost", "{{ .Values.args.dbUrl }}",
             "-dbport", "{{ .Values.args.dbPort }}",

@@ -65,9 +65,6 @@ spec:
                   updated_at timestamp with time zone,
                   created_at timestamp with time zone
               );
-              INSERT INTO csp_infos ( id, contract_id, name, auth, csp_type, updated_at, created_at) 
-                VALUES ('c947d800-ac43-4bab-a8e1-4ceaa0ffec98', 'f84df193-f6c8-45ad-867c-c0bcc48f09e5', 'default', '', 1, now(), now() );
-
               CREATE TABLE clusters
               (
                   name character varying(50) COLLATE pg_catalog."default",
