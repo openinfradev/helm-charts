@@ -1,17 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "tks-info.fullname" . }}
-  namespace: {{ .Values.namespace }}
+  name: {{ include "servicemesh-portal.fullname" . }}
+  namespace: {{ default .Release.Namespace .Values.namespace }}
   labels:
-    {{- include "tks-info.labels" . | nindent 4 }}
+    {{- include "servicemesh-portal.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
-      {{- include "tks-info.selectorLabels" . | nindent 6 }}
+      {{- include "servicemesh-portal.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -19,13 +17,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "tks-info.selectorLabels" . | nindent 8 }}
+        {{- include "servicemesh-portal.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "tks-info.serviceAccountName" . }}
+      serviceAccountName: {{ include "servicemesh-portal.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -35,23 +33,20 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: tks-info
-              containerPort: {{ .Values.args.port }}
+            - name: port
+              containerPort: {{ .Values.service.containerPort }}
               protocol: TCP
-          command:
-            - /app/server
-          args: [
-            "-contract-address", "{{ .Values.args.tksContractAddress }}",
-            "-contract-port", "{{ .Values.args.tksContractPort }}",
-            "-dbhost", "{{ .Values.args.dbUrl }}",
-            "-port", "{{ .Values.args.port }}",
-            "-dbhost", "{{ .Values.args.dbUrl }}",
-            "-dbport", "{{ .Values.args.dbPort }}",
-            "-dbuser", "{{ .Values.args.dbUser }}",
-            "-dbpassword", "{{ .Values.args.dbPassword }}"
-          ]
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /opt/application.yaml
+              name: config
+              subPath: application.yaml
+      volumes:
+        - configMap:
+            defaultMode: 420
+            name: {{ include "servicemesh-portal.fullname" . }}
+          name: config
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

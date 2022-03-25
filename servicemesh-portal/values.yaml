@@ -1,0 +1,98 @@
+namespace: ""
+
+application:
+  spring:
+    profiles:
+      active: prod,log
+    jmx:
+      enabled: false
+    aop:
+      proxy-target-class: true
+
+  security:
+    oauth2:
+      # OAuth 서버 Client 정보
+      client:
+        client-id: registry
+        client-secret: registry-secret
+      resource:
+        token-info-uri: http://localhost:8080/oauth/check_token
+      auth-server-uri: http://localhost:8080
+
+  server:
+    port: 8080
+
+  tks:
+    admin:
+      username: admin 
+      password: admin-exntu
+    url: https://dashboard-awsk1.taco-cat.xyz
+
+  harbor:
+    url: https://harbor-v2.taco-cat.xyz
+
+  keycloak:
+    realm: exntu
+    resource: portal
+    credentials:
+      secret: 5abd9104-6480-4914-ac14-dcf2cce84396
+    auth-server-url: https://keycloak-awsk1.taco-cat.xyz/auth
+    ssl-required: external
+    verify-token-audience: true
+    use-resource-role-mappings: false
+    confidential-port: 0
+    policy-enforcer: {}
+
+  config:
+
+  logging:
+    config: classpath:logback-console.xml
+
+
+replicaCount: 1
+
+image:
+  repository: docker.io/sktcloud/tks-portal
+  pullPolicy: Always
+  tag: "1.0.0"
+
+imagePullSecrets: []
+nameOverride: "servicemesh-portal"
+fullnameOverride: "servicemesh-portal"
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: "servicemesh-portal"
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 9110
+  containerPort: 8080
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: servicemesh-portal.taco-cat.xyz
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: taco-cat-tls
+      hosts:
+        - servicemesh-portal.taco-cat.xyz
+
+resources: {}
+
+tolerations: []
+
+affinity: {}
+
