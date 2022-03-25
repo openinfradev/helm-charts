@@ -7,6 +7,12 @@ spec:
   version: {{ default "7.4.2" .Values.kibana.image.tag }}
   image: "{{ .Values.kibana.image.repository }}:{{ .Values.kibana.image.tag }}"
   count: 1
+{{- if .Values.kibana.server.basePath }}
+  config:
+    server:
+      basePath: {{ .Values.kibana.server.basePath }}
+      rewriteBasePath: true
+{{- end }}
   elasticsearchRef:
     name: {{ template "eck-resource.name" . }}-elasticsearch
 {{- if .Values.kibana.http }}
@@ -22,7 +28,15 @@ spec:
         resources:
           limits:
             memory: {{ .Values.kibana.limitMem | quote }}
-            cpu: {{ .Values.kibana.limitCpu }}             
+            cpu: {{ .Values.kibana.limitCpu }}
+{{- if .Values.kibana.readinessPath }}
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: {{ .Values.kibana.readinessPath }}
+          port: 5601
+          scheme: HTTP
+{{- end }}
 {{- if .Values.kibana.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.kibana.nodeSelector | indent 8 }}
