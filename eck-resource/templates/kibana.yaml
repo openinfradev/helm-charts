@@ -30,12 +30,12 @@ spec:
             memory: {{ .Values.kibana.limitMem | quote }}
             cpu: {{ .Values.kibana.limitCpu }}
 {{- if .Values.kibana.readinessPath }}
-      readinessProbe:
-        failureThreshold: 3
-        httpGet:
-          path: {{ .Values.kibana.readinessPath }}
-          port: 5601
-          scheme: HTTP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: {{ .Values.kibana.readinessPath }}
+            port: 5601
+            scheme: HTTP
 {{- end }}
 {{- if .Values.kibana.nodeSelector }}
       nodeSelector:
