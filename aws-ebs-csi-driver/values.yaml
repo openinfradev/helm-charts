@@ -176,3 +176,6 @@ storageClasses: []
 #   reclaimPolicy: Retain
 #   parameters:
 #     encrypted: "true"
+
+# SKT custom value
+snapshotterSidecarEnabled: true
