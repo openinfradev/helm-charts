@@ -1,3 +1,6 @@
 cni:
   calico:
     enabled: true
+
+storageclass:
+  enabled: true
