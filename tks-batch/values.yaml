@@ -1,0 +1,49 @@
+replicaCount: 1
+
+namespace: tks
+
+image:
+  repository: docker.io/sktcloud/tks-batch
+  pullPolicy: Always
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: "tks-batch"
+fullnameOverride: "tks-batch"
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: "tks-batch"
+
+args:
+  port: 9110
+  dbUrl: postgresql.decapod-db.svc
+  dbPort: 5432
+  dbUser: tksuser
+  dbPassword: tkspassword
+  argoAddress: argo-workflows-operator-server.argo.svc
+  argoPort: 2746
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 9110
+
+ingress:
+  enabled: false
+
+autoscaling:
+  enabled: false
+
+nodeSelector:
+  taco-tks: enabled
+
+tolerations: []
+
+affinity: {}
