@@ -52,7 +52,8 @@ spec:
             "-info-address", "{{ .Values.args.tksInfoAddress }}",
             "-info-port", "{{ .Values.args.tksInfoPort }}",
             "-argo-address", "{{ .Values.args.argoAddress }}",
-            "-argo-port", "{{ .Values.args.argoPort }}"
+            "-argo-port", "{{ .Values.args.argoPort }}",
+            "-revision", "{{ .Values.args.revision }}"
           ]
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

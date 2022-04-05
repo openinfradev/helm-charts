@@ -26,6 +26,7 @@ args:
   tksInfoPort: 9110
   argoAddress: argo-workflows-operator-server.argo.svc
   argoPort: 2746
+  revision: main
 
 db:
   adminUser: postgres
