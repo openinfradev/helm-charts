@@ -59,7 +59,9 @@ def gen_machinedeployment_resource(subnets):
     machinedeployments = yaml.safe_load(open('md.raw.yaml', 'r'))
 
     for resource in machinedeployments:
-      machinedeployments[resource]['AWSMachineTemplate']['spec']['template']['spec']['subnet']=subnetd[resource]
+      # resource => "MD_NAME-[0-(NUMBER_OF_AZ - 1)]"
+      az_index = int(resource[-1])
+      machinedeployments[resource]['AWSMachineTemplate']['spec']['template']['spec']['subnet']=subnetd[az_index]
   except yaml.YAMLError as exc:
     print(exc)
   except TypeError as exc:
