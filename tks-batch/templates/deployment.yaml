@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tks-batch.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "tks-batch.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "tks-batch.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "tks-batch.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "tks-batch.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: tks-batch
+              containerPort: {{ .Values.args.port }}
+              protocol: TCP
+          command:
+            - /app/server
+          env:
+          - name: LOG_LEVEL
+            value: DEBUG
+          args: [
+            "-port", "{{ .Values.args.port }}",
+            "-dbhost", "{{ .Values.args.dbUrl }}",
+            "-dbport", "{{ .Values.args.dbPort }}",
+            "-dbuser", "{{ .Values.args.dbUser }}",
+            "-dbpassword", "{{ .Values.args.dbPassword }}",
+            "-argo-address", "{{ .Values.args.argoAddress }}",
+            "-argo-port", "{{ .Values.args.argoPort }}"
+          ]
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
