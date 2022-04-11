@@ -11,7 +11,7 @@
 {{- $mdSubnet := .subnet }}
 {{- $spot := .spotInstance }}
 {{- range untilStep 0 $numAZ 1 }}
-{{ . }}:
+{{ $mdName }}-{{ . }}:
   MachineDeployment:
     apiVersion: {{ $envAll.Values.api.group.cluster }}/{{ $envAll.Values.api.version }}
     kind: MachineDeployment
