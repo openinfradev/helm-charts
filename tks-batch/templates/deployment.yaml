@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "tks-contract.fullname" . }}
+  name: {{ include "tks-batch.fullname" . }}
   namespace: {{ .Values.namespace }}
   labels:
-    {{- include "tks-contract.labels" . | nindent 4 }}
+    {{- include "tks-batch.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "tks-contract.selectorLabels" . | nindent 6 }}
+      {{- include "tks-batch.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -19,13 +19,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "tks-contract.selectorLabels" . | nindent 8 }}
+        {{- include "tks-batch.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "tks-contract.serviceAccountName" . }}
+      serviceAccountName: {{ include "tks-batch.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -35,7 +35,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: tks-contract
+            - name: tks-batch
               containerPort: {{ .Values.args.port }}
               protocol: TCP
           command:
@@ -49,11 +49,8 @@ spec:
             "-dbport", "{{ .Values.args.dbPort }}",
             "-dbuser", "{{ .Values.args.dbUser }}",
             "-dbpassword", "{{ .Values.args.dbPassword }}",
-            "-info-address", "{{ .Values.args.tksInfoAddress }}",
-            "-info-port", "{{ .Values.args.tksInfoPort }}",
             "-argo-address", "{{ .Values.args.argoAddress }}",
-            "-argo-port", "{{ .Values.args.argoPort }}",
-            "-revision", "{{ .Values.args.revision }}"
+            "-argo-port", "{{ .Values.args.argoPort }}"
           ]
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
