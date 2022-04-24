@@ -43,9 +43,6 @@ spec:
           env:
           - name: LOG_LEVEL
             value: DEBUG
-          envFrom:
-            - secretRef:
-                name: "github-tks-mgmt-token"
           args: [
             "-port", "{{ .Values.args.port }}",
             "-info-address", "{{ .Values.args.tksInfoAddress }}",

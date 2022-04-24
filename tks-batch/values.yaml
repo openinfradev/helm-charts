@@ -41,9 +41,6 @@ ingress:
 autoscaling:
   enabled: false
 
-nodeSelector:
-  taco-tks: enabled
-
 tolerations: []
 
 affinity: {}
