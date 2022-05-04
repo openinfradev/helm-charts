@@ -30,5 +30,8 @@ spec:
     parser: {{ $input.parser }}
     path: {{ $input.path }}
     tag: "{{ $input.tag }}"
+{{- with $input.extraArgs }}
+{{ toYaml . | indent 4 }}
+{{- end }}
 {{- end }}
 {{- end }}

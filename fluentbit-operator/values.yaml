@@ -325,18 +325,21 @@ fluentbit:
     - key: "$kubernetes['namespace_name']"
       value: "kube-system|lma|fed|argo|openstack"
       index: platform
+    extraArgs: {}
   - name: syslog
     tag: kubenode.*
     path: /var/log/syslog
     type: syslog
     index: syslog
     parser: syslog-rfc5424
+    extraArgs: {}
   - name: etcd
     tag: etcdnode.*
     path: /var/log/etcd.log
     type: etcd
     index: etcd
     parser: docker
+    extraArgs: {}
   outputs:
     es: 
       enabled: false
