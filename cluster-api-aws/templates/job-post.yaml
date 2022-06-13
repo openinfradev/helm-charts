@@ -35,44 +35,7 @@ spec:
           subPath: generate_worker_machines.py
           mountPath: /generate_worker_machines.py
 
-      {{- if or .Values.job.taconode.enabled .Values.job.argo.enabled }}
-      - name: wait-and-initialize
-        image: "{{ .Values.job.image.repository }}:{{ .Values.job.image.tag | default .Chart.AppVersion }}"
-        imagePullPolicy: {{ .Values.job.image.pullPolicy }}
-        command:
-        - timeout
-        - 20m
-        - /wait_and_k8s_init.sh
-        - {{ .Values.cluster.name }}
-        - taco
-        - {{ .Release.Namespace }}
-        - "{{ .Values.job.taconode.enabled }}"
-        - "{{ .Values.job.argo.enabled }}"
-
-        {{- if .Values.job.argo.enabled }}
-        envFrom:
-        - secretRef:
-            name: decapod-argocd-config
-        {{- end }}
-        volumeMounts:
-        - name: kubeconfig
-          subPath: value
-          mountPath: /kube.config
-        - name: vol
-          subPath: node_label.py
-          mountPath: /node_label.py
-        - name: vol
-          subPath: wait_and_k8s_init.sh
-          mountPath: /wait_and_k8s_init.sh
-        - name: vol
-          subPath: argo-register.sh
-          mountPath: /argo-register.sh
-      {{- end }}
-
       volumes:
-      - name: kubeconfig
-        secret:
-          secretName: {{ .Values.cluster.name }}-kubeconfig
       - name: vol
         configMap:
           name: {{ include "cluster-api-aws.fullname" . }}

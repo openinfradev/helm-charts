@@ -8,23 +8,14 @@ data:
   generate_worker_machines.py: |
 {{ .Files.Get "artifacts/generate_worker_machines.py" | indent 4 }}
 
-  node_label.py: |
-{{ .Files.Get "artifacts/node_label.py" | indent 4 }}
-
   mp.raw.yaml: |
 {{ tuple "worker_machines/_mp.yaml" . | include "helper_template" | indent 4 }}
 
   md.raw.yaml: |
 {{ tuple "worker_machines/_md.yaml" . | include "helper_template" | indent 4 }}
 
-  argo-register.sh: |
-{{ .Files.Get "artifacts/argo-register.sh" | indent 4 }}
-
   wait_for_kubeconfig.sh: |
 {{ .Files.Get "artifacts/wait_for_kubeconfig.sh" | indent 4 }}
-
-  wait_and_k8s_init.sh: |
-{{ .Files.Get "artifacts/wait_and_k8s_init.sh" | indent 4 }}
 
   delete_from_yaml_raw.py: |
 {{ .Files.Get "artifacts/delete_from_yaml_raw.py" | indent 4 }}
