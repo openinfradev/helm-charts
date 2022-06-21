@@ -1,0 +1,20 @@
+apiVersion: {{ .Values.api.group.cluster }}/{{ .Values.api.version }}
+kind: Cluster
+metadata:
+  name: {{ .Values.cluster.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks: {{ .Values.cluster.podCidrBlocks }}
+    serviceDomain: cluster.local
+    services:
+      cidrBlocks: {{ .Values.cluster.serviceCidrBlocks }}
+  controlPlaneRef:
+    apiVersion: {{ .Values.api.group.controlplane }}/{{ .Values.api.version }}
+    kind: KubeadmControlPlane
+    name: {{ .Values.cluster.name }}-control-plane
+  infrastructureRef:
+    apiVersion: {{ .Values.api.group.infrastructure }}/{{ .Values.api.version }}
+    kind: ByoCluster
+    name: {{ .Values.cluster.name }}

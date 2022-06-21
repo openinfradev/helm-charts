@@ -1,0 +1,10 @@
+apiVersion: v2
+name: cluster-api-byoh
+description: A chart to install Kubernetes cluster using Cluster API Provider BYOH
+ - https://github.com/vmware-tanzu/cluster-api-provider-bringyourownhost
+
+type: application
+
+version: 0.1.0
+
+appVersion: "0.2.0"

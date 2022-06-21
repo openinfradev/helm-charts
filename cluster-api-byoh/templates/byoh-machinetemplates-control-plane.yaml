@@ -1,0 +1,11 @@
+apiVersion: {{ .Values.api.group.infrastructure }}/{{ .Values.api.version }}
+kind: ByoMachineTemplate
+metadata:
+  name: {{ .Values.cluster.name }}-control-plane
+  namespace: {{ .Release.Namespace }}
+spec:
+  template:
+    spec:
+      selector:
+        matchLabels:
+          role: control-plane

@@ -1,0 +1,59 @@
+{{- $envAll := . }}
+{{- range .Values.machineDeployment }}
+apiVersion: {{ $envAll.Values.api.group.cluster }}/{{ $envAll.Values.api.version }}
+kind: MachineDeployment
+metadata:
+  name: {{ $envAll.Values.cluster.name }}-md-{{ .name }}
+  namespace: {{ $envAll.Release.Namespace }}
+  {{- with .autoscaling }}
+  annotations:
+    cluster.x-k8s.io/cluster-api-autoscaler-node-group-min-size: "{{ .minSize }}"
+    cluster.x-k8s.io/cluster-api-autoscaler-node-group-max-size: "{{ .maxSize }}"
+  {{- end }}
+spec:
+  clusterName: {{ $envAll.Values.cluster.name }}
+  replicas: {{ .replicas }}
+  selector:
+    matchLabels: null
+  template:
+    metadata:
+      {{- with .labels }}
+      labels:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: {{ $envAll.Values.api.group.bootstrap }}/{{ $envAll.Values.api.version }}
+          kind: KubeadmConfigTemplate
+          name: {{ $envAll.Values.cluster.name }}-md-{{ .name }}
+      clusterName: {{ $envAll.Values.cluster.name }}
+      infrastructureRef:
+        apiVersion: {{ $envAll.Values.api.group.infrastructure }}/{{ $envAll.Values.api.version }}
+        kind: ByoMachineTemplate
+        name: {{ $envAll.Values.cluster.name }}-md-{{ .name }}
+      version: {{ $envAll.Values.cluster.kubernetesVersion }}
+---
+apiVersion: {{ $envAll.Values.api.group.infrastructure }}/{{ $envAll.Values.api.version }}
+kind: ByoMachineTemplate
+metadata:
+  name: {{ $envAll.Values.cluster.name }}-md-{{ .name }}
+  namespace: {{ $envAll.Release.Namespace }}
+spec:
+  template:
+    spec:
+      {{- with .selector }}
+      selector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: {{ $envAll.Values.api.group.bootstrap }}/{{ $envAll.Values.api.version }}
+kind: KubeadmConfigTemplate
+metadata:
+  name: {{ $envAll.Values.cluster.name }}-md-{{ .name }}
+  namespace: {{ $envAll.Release.Namespace }}
+spec:
+  template:
+    spec: {}
+---
+{{- end }}

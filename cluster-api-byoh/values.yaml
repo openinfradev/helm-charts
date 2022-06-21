@@ -1,0 +1,52 @@
+cluster:
+  name: byoh-cluster
+  podCidrBlocks:
+  - 10.233.64.0/18
+  serviceCidrBlocks:
+  - 10.233.0.0/18
+  kubernetesVersion: v1.22.3
+
+kubeVip:
+  enabled: false
+
+byoCluster:
+  bundleLookupBaseRegistry: projects.registry.vmware.com/cluster_api_provider_bringyourownhost
+  bundleLookupTag: v1.22.3
+  controlPlaneEndpoint:
+    host: 192.168.0.1
+    port: 6443
+
+api:
+  group:
+    cluster: cluster.x-k8s.io
+    infrastructure: infrastructure.cluster.x-k8s.io
+    controlplane: controlplane.cluster.x-k8s.io
+    bootstrap: bootstrap.cluster.x-k8s.io
+  version: v1beta1
+
+kubeadmControlPlane:
+  replicas: 3
+
+machineDeployment:
+- name: tks
+  replicas: 1
+  selector:
+    matchLabels:
+      role: tks
+  labels:
+    servicemesh: enabled
+    taco-egress-gateway: enabled
+    taco-ingress-gateway: enabled
+    taco-lma: enabled
+
+- name: normal
+  replicas: 1
+  autoscaling:
+    minSize: 1
+    maxSize: 5
+  selector:
+    matchLabels:
+      role: worker
+
+nameOverride: ""
+fullnameOverride: ""
