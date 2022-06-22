@@ -102,24 +102,6 @@ machineDeployment: []
 #     maxPrice: ''
 #     # MaxPrice defines the maximum price the user is willing to pay for Spot VM instances
 
-job:
-  image:
-    repository: ghcr.io/openinfradev/python_kubectl_argo
-    pullPolicy: IfNotPresent
-    tag: v1.1.0
-  taconode:
-    enabled: false
-    labels:
-    - taco-lma
-    - taco-ingress-gateway
-    - taco-egress-gateway
-    - servicemesh
-  argo:
-    enabled: false
-    url: argocd-v2.taco-cat.xyz
-    user: admin
-    password: aFgSFwjtrBRwKgci
-
 nameOverride: ""
 fullnameOverride: ""
 
