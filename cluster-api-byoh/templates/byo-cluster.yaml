@@ -1,0 +1,11 @@
+apiVersion: {{ .Values.api.group.infrastructure }}/{{ .Values.api.version }}
+kind: ByoCluster
+metadata:
+  name: {{ .Values.cluster.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  bundleLookupBaseRegistry: {{ .Values.byoCluster.bundleLookupBaseRegistry }}
+  bundleLookupTag: {{ .Values.byoCluster.bundleLookupTag }}
+  controlPlaneEndpoint:
+    host: {{ .Values.byoCluster.controlPlaneEndpoint.host }}
+    port: {{ .Values.byoCluster.controlPlaneEndpoint.port }}
