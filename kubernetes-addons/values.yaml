@@ -2,5 +2,10 @@ cni:
   calico:
     enabled: true
 
-storageclass:
-  enabled: true
+csi:
+  aws:
+    enabled: true
+    storageClassName: taco-storage
+  local-path:
+    enabled: false
+    storageClassName: taco-storage
