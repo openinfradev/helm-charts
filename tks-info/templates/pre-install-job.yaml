@@ -89,7 +89,7 @@ spec:
               CREATE TABLE application_groups
               (
                 name character varying(50) COLLATE pg_catalog."default",
-                id uuid primary key,
+                id character varying(10) COLLATE pg_catalog."default" primary key,
                 type bigint,
                 workflow_id character varying(100) COLLATE pg_catalog."default",
                 status integer,
@@ -103,7 +103,7 @@ spec:
               (
                 id uuid primary key,
                 type bigint,
-                app_group_id uuid,
+                app_group_id character varying(10) COLLATE pg_catalog."default",
                 endpoint character varying(200) COLLATE pg_catalog."default",
                 metadata json,
                 updated_at timestamp with time zone,
