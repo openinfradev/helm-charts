@@ -1,4 +1,4 @@
-{{- if or .Values.fluentbit.outputs.es.template.enabled .Values.fluentbit.outputs.es.enabled }}
+{{- if or .Values.fluentbit.outputs.es }}
 {{- $envAll := . }}
 ---
 apiVersion: v1
@@ -13,76 +13,15 @@ metadata:
     app: {{ template "fluentbit-operator.name" . }}-operator
 {{ include "fluentbit-operator.labels" . | indent 4 }}
 data:
-  create_template.sh: |-
-    #!/bin/sh
-    set -ex
-
-{{ range .Values.fluentbit.outputs.es.template.ilms }}
-    echo "trying to setting policy {{.name}}..."
-    curl -k -u elastic:${ELASTIC_PW} -X PUT "${ES_URL}/_ilm/policy/{{.name}}" \
-      -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/ilm-{{.name}}.json
-{{- end}}
-
-{{ range .Values.fluentbit.outputs.es.template.templates }}
-    echo "trying to setting Template {{.name}}..."
-    curl -k -u elastic:${ELASTIC_PW} -X PUT "${ES_URL}/_template/{{.name}}" \
-      -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/template-{{.name}}.json
-{{- end}}
-
-{{ range .Values.fluentbit.targetLogs }}
-  {{ if .index}}
-    echo "trying to create initial index {{.index}}-000001..."
-    curl -k -u elastic:${ELASTIC_PW} -X PUT "${ES_URL}/{{.index}}-000001" \
-      -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/index-{{.index}}.json
-  {{- end }}
-  {{ range .multi_index}}
-    echo "trying to create initial index {{.index}}-000001..."
-    curl -k -u elastic:${ELASTIC_PW} -X PUT "${ES_URL}/{{.index}}-000001" \
-      -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/index-{{.index}}.json
-  {{- end }}
-{{- end }}
-
-{{ range .Values.fluentbit.outputs.es.template.ilms }}
-  ilm-{{ .name }}.json: |- 
-    {{ toJson .json }}
-{{- end }}
-
-{{ range .Values.fluentbit.outputs.es.template.templates }}
-  template-{{ .name }}.json: |-
-    {{ toJson .json }}
-{{- end }}
-
-{{ range .Values.fluentbit.targetLogs }}
-  {{ if .index}}
-  index-{{ .index }}.json: |-
-    {
-      "aliases": {
-        "{{.index}}":{
-          "is_write_index": true
-        }
-      }
-    }
-  {{- end }}
-
-  {{ range .multi_index}}
-  index-{{ .index }}.json: |-
-    {
-      "aliases": {
-        "{{.index}}":{
-          "is_write_index": true
-        }
-      }
-    }
-  {{- end }}
-{{- end }}
-
-{{- if .Values.fluentbit.outputs.es.enabled }}
-  create_user.sh: |-
+{{- range .Values.fluentbit.outputs.es }}
+  {{- $es := . }}
+  {{- if .createuser }}
+  create_user_{{$es.name}}.sh: |-
     #!/bin/sh
     set -ex
     curl -k -u elastic:${ELASTIC_PW} -X POST ${ES_URL}/_security/user/$1 -H 'Content-Type: application/json' -d'
     {
-      "password" : {{ .Values.fluentbit.outputs.es.password | quote }},
+      "password" : {{ .password | quote }},
       "roles" : [ "superuser" ],
       "full_name" : "LMA user by TACO",
       "email" : "taco@taco.com",
@@ -91,6 +30,65 @@ data:
       }
     }
     '
-{{- end}}
+  {{- end}}
+  {{- if .template }}
+  create_template_{{$es.name}}.sh: |-
+    #!/bin/sh
+    set -ex
+    
+    ### Index Lifecycle Management
+    {{- range .template.ilms }}
+    echo "trying to setting policy {{.name}}..."
+    curl -k -u elastic:${ELASTIC_PW} -X PUT "${ES_URL}/_ilm/policy/{{.name}}" \
+      -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/ilm-{{.name}}_{{$es.name}}.json
+    {{- end}}
+    ### Templates
+    {{- range .template.templates }}
+    echo "trying to setting Template {{.name}}..."
+    curl -k -u elastic:${ELASTIC_PW} -X PUT "${ES_URL}/_template/{{.name}}" \
+      -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/template-{{.name}}_{{$es.name}}.json
+    {{- end }}
+    ### generate first index 
+    {{- range $envAll.Values.fluentbit.targetLogs }}
+      {{- if and .index ( eq .es_name $es.name ) }}
+    echo "trying to create initial index {{.index}}-000001..."
+    curl -k -u elastic:${ELASTIC_PW} -X PUT "${ES_URL}/{{.index}}-000001" \
+      -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/index-{{.index}}_{{$es.name}}.json
+      {{- end }}
 
+      {{- range .multi_index}}
+        {{- if and .index ( eq .es_name $es.name ) }}
+    echo "trying to create initial index {{.index}}-000001..."
+    curl -k -u elastic:${ELASTIC_PW} -X PUT "${ES_URL}/{{.index}}-000001" \
+      -H 'Content-Type:application/json' -H 'kbn-xsrf:true' -d @/tmp/index-{{.index}}_{{$es.name}}.json
+      {{- end }}
+    {{- end }}
+  {{- end }}
+
+  {{- range .template.ilms }}
+  ilm-{{.name}}_{{$es.name}}.json: |- 
+    {{ toJson .json }}
+  {{- end }}
+
+  {{- range .template.templates }}
+  template-{{.name}}_{{$es.name}}.json: |-
+    {{ toJson .json }}
+  {{- end }}
+
+  {{- range $envAll.Values.fluentbit.targetLogs }}
+    {{- if .index}}
+  index-{{.index}}_{{$es.name}}.json: |-
+    { "aliases": { "{{.index}}":{ "is_write_index": true } } }
+    {{- end }}
+
+    {{- range .multi_index}}
+      {{- if and .index ( eq .es_name $es.name ) }}
+  index-{{.index}}_{{$es.name}}.json: |-
+    { "aliases": { "{{.index}}":{ "is_write_index": true } } }
+      {{- end }}
+    {{- end }}
+  {{- end }}
+
+{{- end}}
+{{- end}}
 {{- end}}

@@ -1,4 +1,4 @@
-{{- if and .Values.fluentbit.enabled .Values.fluentbit.outputs.es.enabled .Values.fluentbit.outputs.es.template.enabled }}
+{{- if and .Values.fluentbit.enabled .Values.fluentbit.outputs.es }}
 {{- $envAll := . }}
 ---
 apiVersion: batch/v1
@@ -26,60 +26,66 @@ spec:
 {{ toYaml .Values.fluentbit.nodeSelector | indent 8 }}
 {{- end}}
       containers:
-      - name: template
-        image: "{{ .Values.image.elasticsearchTemplates.repository }}:{{ .Values.image.elasticsearchTemplates.tag }}"
-        imagePullPolicy: "{{ .Values.image.elasticsearchTemplates.pullPolicy }}"
+
+  {{- range .Values.fluentbit.outputs.es }}
+    {{- if .template.enabled }}
+      {{- $esname := .name }}
+      - name: template-{{$esname}}
+        image: "{{ $envAll.Values.image.elasticsearchTemplates.repository }}:{{ $envAll.Values.image.elasticsearchTemplates.tag }}"
+        imagePullPolicy: "{{ $envAll.Values.image.elasticsearchTemplates.pullPolicy }}"
         env:
           - name: ES_URL
-            value: https://{{.Values.fluentbit.outputs.es.host}}:{{.Values.fluentbit.outputs.es.port}}
+            value: https://{{.host}}:{{.port}}
           - name: ES_USER
-            value: {{ .Values.fluentbit.outputs.es.username }}
+            value: {{ .username }}
           - name: ES_PW
-            value: {{ .Values.fluentbit.outputs.es.password  }}
+            value: {{ .password  }}
           - name: ELASTIC_PW
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.fluentbit.outputs.es.elasticPasswordSecret  }}
+                name: {{ .elasticPasswordSecret  }}
                 key: elastic
         command:
         - /bin/sh
         - -c
-        - /tmp/create_template.sh
+        - /tmp/create_template_{{$esname}}.sh
         volumeMounts:
         - name: {{ $.Release.Name }}-cr-cm
-          mountPath: /tmp/create_template.sh
-          subPath: create_template.sh
+          mountPath: /tmp/create_template_{{$esname}}.sh
+          subPath: create_template_{{$esname}}.sh
           readOnly: true
-        {{ range .Values.fluentbit.outputs.es.template.templates }}
+        {{- range .template.templates }}
         - name: {{ $.Release.Name }}-cr-cm
-          mountPath: /tmp/template-{{.name}}.json
-          subPath: template-{{.name}}.json
+          mountPath: /tmp/template-{{.name}}_{{$esname}}.json
+          subPath: template-{{.name}}_{{$esname}}.json
           readOnly: true
-        {{ end }}
-        {{ range .Values.fluentbit.outputs.es.template.ilms }}
+        {{- end }}
+        {{- range .template.ilms }}
         - name: {{ $.Release.Name }}-cr-cm
-          mountPath: /tmp/ilm-{{.name}}.json
-          subPath: ilm-{{.name}}.json
+          mountPath: /tmp/ilm-{{.name}}_{{$esname}}.json
+          subPath: ilm-{{.name}}_{{$esname}}.json
           readOnly: true
-        {{ end }}
-        {{ range .Values.fluentbit.targetLogs }}
-        {{if .index}}
+        {{- end }}
+        {{- range $envAll.Values.fluentbit.targetLogs }}
+          {{- if .index}}
         - name: {{ $.Release.Name }}-cr-cm
-          mountPath: /tmp/index-{{.index }}.json
-          subPath: index-{{.index }}.json
-          readOnly: true
-          {{- range .multi_index}}
-        - name: {{ $.Release.Name }}-cr-cm
-          mountPath: /tmp/index-{{.index }}.json
-          subPath: index-{{.index }}.json
+          mountPath: /tmp/index-{{.index }}_{{$esname}}.json
+          subPath: index-{{.index }}_{{$esname}}.json
           readOnly: true
           {{- end }}
-        {{ end }}
-        {{ end }}
+          {{- range .multi_index}}
+        - name: {{ $.Release.Name }}-cr-cm
+          mountPath: /tmp/index-{{.index }}_{{$esname}}.json
+          subPath: index-{{.index }}_{{$esname}}.json
+          readOnly: true
+          {{- end }}
+        {{- end }}
+    {{- end }}
+  {{- end }}
+      restartPolicy: OnFailure
       volumes:
       - name: {{ $.Release.Name }}-cr-cm
         configMap:
           name: {{ $.Release.Name }}-cr-cm
           defaultMode: 365
-      restartPolicy: OnFailure
 {{- end }}

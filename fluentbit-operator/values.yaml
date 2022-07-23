@@ -166,6 +166,7 @@ fluentbit:
     tag: kube.*
     path: /var/log/containers/*.log
     type: fluent
+    es_name: tacoes
     index: container
     parser: docker
     memBufLimit: 20MB
@@ -181,6 +182,7 @@ fluentbit:
     tag: kubenode.*
     path: /var/log/syslog
     type: syslog
+    es_name: tacoes
     index: syslog
     parser: syslog-rfc5424
     extraArgs: {}
@@ -188,98 +190,101 @@ fluentbit:
     tag: etcdnode.*
     path: /var/log/etcd.log
     type: etcd
+    es_name: tacoes
     index: etcd
     parser: docker
     extraArgs: {}
   outputs:
-    es:
-      enabled: false
-      createuser: false
-      username: fluentbit
-      password: password
-      elasticPasswordSecret: elasticsearch-es-elastic-user
-      host: taco-elasticsearch-es-http.lma.svc.cluster.local
-      port: 9200
-      template:
-        enabled: false
-        url: https://taco-elasticsearch-es-http.lma.svc.cluster.local:9200
-        ilms:
-        - name: hot-delete-14days
-          json:
-            policy:
-              phases:
-                hot:
-                  actions:
-                    rollover:
-                      max_size: 30gb
-                      max_age: 1d
-                      max_docs: 5000000000
-                    set_priority:
-                      priority: 100
-                delete:
-                  min_age: 14d
-                  actions:
-                    delete: {}
-        - name: hot-delete-7days
-          json:
-            policy:
-              phases:
-                hot:
-                  actions:
-                    rollover:
-                      max_size: 30gb
-                      max_age: 1d
-                      max_docs: 5000000000
-                    set_priority:
-                      priority: 100
-                delete:
-                  min_age: 7d
-                  actions:
-                    delete: {}
-        - name: hot-delete-3hour
-          json:
-            policy:
-              phases:
-                hot:
-                  actions:
-                    rollover:
-                      max_size: 30gb
-                      max_age: 1h
-                      max_docs: 5000000000
-                    set_priority:
-                      priority: 100
-                delete:
-                  min_age: 3h
-                  actions:
-                    delete: {}
-        templates:
-        - name: platform
-          json:
-            index_patterns: "platform*"
-            settings:
-              refresh_interval: 30s
-              number_of_shards: 3
-              number_of_replicas: 1
-              index.lifecycle.name: hot-delete-14days
-              index.lifecycle.rollover_alias: platform
-        - name: application
-          json:
-            index_patterns: "container*"
-            settings:
-              refresh_interval: 30s
-              number_of_shards: 3
-              number_of_replicas: 1
-              index.lifecycle.name: hot-delete-3hour
-              index.lifecycle.rollover_alias: container
-        - name: syslog
-          json:
-            index_patterns: "syslog*"
-            settings:
-              refresh_interval: 30s
-              number_of_shards: 2
-              number_of_replicas: 1
-              index.lifecycle.name: hot-delete-14days
-              index.lifecycle.rollover_alias: syslog
+    es: [ ]
+    # - name: taco-es
+    #   enabled: false
+    #   createuser: false
+    #   username: fluentbit
+    #   password: password
+    #   elasticPasswordSecret: elasticsearch-es-elastic-user
+    #   host: taco-elasticsearch-es-http.lma.svc.cluster.local
+    #   port: 9200
+    #   template:
+    #     enabled: false
+    #     url: https://taco-elasticsearch-es-http:9200 # taco release v2.0
+    #     # example url - https://taco-elasticsearch-es-http.lma.svc.cluster.local:9200
+    #     ilms:
+    #     - name: hot-delete-14days
+    #       json:
+    #         policy:
+    #           phases:
+    #             hot:
+    #               actions:
+    #                 rollover:
+    #                   max_size: 30gb
+    #                   max_age: 1d
+    #                   max_docs: 5000000000
+    #                 set_priority:
+    #                   priority: 100
+    #             delete:
+    #               min_age: 14d
+    #               actions:
+    #                 delete: {}
+    #     - name: hot-delete-7days
+    #       json:
+    #         policy:
+    #           phases:
+    #             hot:
+    #               actions:
+    #                 rollover:
+    #                   max_size: 30gb
+    #                   max_age: 1d
+    #                   max_docs: 5000000000
+    #                 set_priority:
+    #                   priority: 100
+    #             delete:
+    #               min_age: 7d
+    #               actions:
+    #                 delete: {}
+    #     - name: hot-delete-3hour
+    #       json:
+    #         policy:
+    #           phases:
+    #             hot:
+    #               actions:
+    #                 rollover:
+    #                   max_size: 30gb
+    #                   max_age: 1h
+    #                   max_docs: 5000000000
+    #                 set_priority:
+    #                   priority: 100
+    #             delete:
+    #               min_age: 3h
+    #               actions:
+    #                 delete: {}
+    #     templates:
+    #     - name: platform
+    #       json:
+    #         index_patterns: "platform*"
+    #         settings:
+    #           refresh_interval: 30s
+    #           number_of_shards: 3
+    #           number_of_replicas: 1
+    #           index.lifecycle.name: hot-delete-14days
+    #           index.lifecycle.rollover_alias: platform
+    #     - name: application
+    #       json:
+    #         index_patterns: "container*"
+    #         settings:
+    #           refresh_interval: 30s
+    #           number_of_shards: 3
+    #           number_of_replicas: 1
+    #           index.lifecycle.name: hot-delete-3hour
+    #           index.lifecycle.rollover_alias: container
+    #     - name: syslog
+    #       json:
+    #         index_patterns: "syslog*"
+    #         settings:
+    #           refresh_interval: 30s
+    #           number_of_shards: 2
+    #           number_of_replicas: 1
+    #           index.lifecycle.name: hot-delete-14days
+    #           index.lifecycle.rollover_alias: syslog
 
     kafka:
       enabled: false
