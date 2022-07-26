@@ -1,0 +1,221 @@
+fluentbit:
+  alerts:
+    makeAlertRule: true
+  clusterName: siim-dev
+  daemonset:
+    spec:
+      pod:
+        tolerations:
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+        - key: node-role.kubernetes.io/node
+          operator: Exists
+  enabled: true
+  exclude:
+  - key: $kubernetes['container_name']
+    value: kibana|elasticsearch|fluent-bit
+  nodeSelector:
+    taco-lma: enabled
+  outputs:
+    es:
+    - name: taco-es
+      host: eck-elasticsearch-es-http.lma.svc.siim-dev
+      port: 9200
+      createuser: true
+      username: taco-fluentbit
+      password: tacoword
+      elasticPasswordSecret: eck-elasticsearch-es-elastic-user
+      template:
+        enabled: true
+        ilms:
+        - name: hot-delete-14days
+          json:
+            policy:
+              phases:
+                delete:
+                  actions:
+                    delete: {}
+                  min_age: 14d
+                hot:
+                  actions:
+                    rollover:
+                      max_age: 1d
+                      max_docs: 5000000000
+                      max_size: 30gb
+                    set_priority:
+                      priority: 100
+        - name: hot-delete-7days
+          json:
+            policy:
+              phases:
+                delete:
+                  actions:
+                    delete: {}
+                  min_age: 7d
+                hot:
+                  actions:
+                    rollover:
+                      max_age: 1d
+                      max_docs: 5000000000
+                      max_size: 30gb
+                    set_priority:
+                      priority: 100
+        - name: hot-delete-3hour
+          json:
+            policy:
+              phases:
+                delete:
+                  actions:
+                    delete: {}
+                  min_age: 3h
+                hot:
+                  actions:
+                    rollover:
+                      max_age: 1h
+                      max_docs: 5000000000
+                      max_size: 30gb
+                    set_priority:
+                      priority: 100
+        templates:
+        - name: platform
+          json:
+            index_patterns: platform*
+            settings:
+              index.lifecycle.name: hot-delete-14days
+              index.lifecycle.rollover_alias: platform
+              number_of_replicas: 1
+              number_of_shards: 3
+              refresh_interval: 30s
+        - name: syslog
+          json:
+            index_patterns: syslog*
+            settings:
+              index.lifecycle.name: hot-delete-14days
+              index.lifecycle.rollover_alias: syslog
+              number_of_replicas: 1
+              number_of_shards: 2
+              refresh_interval: 30s
+        - name: application
+          json:
+            index_patterns: container*
+            settings:
+              index.lifecycle.name: hot-delete-3hour
+              index.lifecycle.rollover_alias: container
+              number_of_replicas: 1
+              number_of_shards: 3
+              refresh_interval: 30s
+    - name: external-es
+      host: eck-elasticsearch-es-http.byoh.svc.siim-dev
+      port: 9200
+      createuser: true
+      username: taco-fluentbit
+      password: tacoword
+      elasticPasswordSecret: eck-elasticsearch-es-elastic-user
+      template:
+        enabled: true
+        ilms:
+        - name: hot-delete-14days
+          json:
+            policy:
+              phases:
+                delete:
+                  actions:
+                    delete: {}
+                  min_age: 14d
+                hot:
+                  actions:
+                    rollover:
+                      max_age: 1d
+                      max_docs: 5000000000
+                      max_size: 30gb
+                    set_priority:
+                      priority: 100
+        - name: hot-delete-7days
+          json:
+            policy:
+              phases:
+                delete:
+                  actions:
+                    delete: {}
+                  min_age: 7d
+                hot:
+                  actions:
+                    rollover:
+                      max_age: 1d
+                      max_docs: 5000000000
+                      max_size: 30gb
+                    set_priority:
+                      priority: 100
+        templates:
+        - name: coreapp
+          json:
+            index_patterns: coreapp*
+            settings:
+              index.lifecycle.name: hot-delete-14days
+              index.lifecycle.rollover_alias: coreapp
+              number_of_replicas: 1
+              number_of_shards: 3
+              refresh_interval: 30s
+        - name: svcapp
+          json:
+            index_patterns: svcapp*
+            settings:
+              index.lifecycle.name: hot-delete-14days
+              index.lifecycle.rollover_alias: svcapp
+              number_of_replicas: 1
+              number_of_shards: 2
+              refresh_interval: 30s
+    http:
+      enabled: true
+    kafka:
+      broker: YOUR_BORKER_INFO
+      enabled: false
+      topic: YOUR_TACO_LOG_INFO
+  targetLogs:
+  - name: dockerlog
+    do_not_store_as_default: true
+    bufferChunkSize: 2M
+    bufferMaxSize: 5M
+    index: container
+    memBufLimit: 20MB
+    multi_index:
+    - index: platform
+      es_name: taco-es
+      key: $kubernetes['namespace_name']
+      value: kube-system|lma|fed|argo|openstack|istio-system|istio-services|trident|registry
+    - index: coreapp
+      es_name: external-es
+      key: $kubernetes['namespace_name']
+      value: byoh*
+    - index: svcapp
+      es_name: external-es
+      key: $kubernetes['container_name']
+      value: ceph*
+    parser: docker
+    path: /var/log/containers/*.log
+    tag: kube.*
+    type: fluent
+  - name: syslog
+    do_not_store_as_default: false
+    es_name: taco-es
+    index: syslog
+    parser: syslog-rfc5424
+    path: /var/log/syslog
+    tag: syslog.*
+    type: syslog
+fluentbitOperator:
+  cleanupCustomResource: false
+  createCustomResource: false
+  enabled: false
+fullnameOverride: fluentbit-cr-taco
+global:
+  base_cluster_url: siim-dev
+  nodeSelector:
+    taco-lma: enabled
+image:
+  hyperkube:
+    tag: v1.17.6
+logExporter:
+  enabled: false
+  serviceMonitor:
+    enabled: true
