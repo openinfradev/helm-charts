@@ -31,7 +31,7 @@ data:
   {{- end }}
 {{- end }}
 
-{{ if and $envAll.Values.fluentbit.outputs.http.enabled }}
+{{- if and $envAll.Values.fluentbit.outputs.http.enabled }}
 ---
 # regex-based log exporter
 apiVersion: logging.kubesphere.io/v1alpha2
