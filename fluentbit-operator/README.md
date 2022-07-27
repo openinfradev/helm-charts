@@ -7,9 +7,9 @@
 
 This chart will do the following:
 
-* Install FluentBit-Oprator
 * Install Fluent Bit Custom Resource Definition
 * Generat Fluent Bit Custom Resource with various cofigurations
 
 ## Installing the Chart
 
+## Caution
