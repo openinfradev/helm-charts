@@ -1,4 +1,6 @@
 {{- if and .Values.fluentbit.enabled }}
+{{- $envAll := . }}
+
 apiVersion: logging.kubesphere.io/v1alpha2
 kind: Filter
 metadata:
@@ -45,6 +47,13 @@ spec:
       - {{ printf "$log (%v) m_%v.$TAG true" .regex .severity }}
 {{- end }}
       emitterName: alertrule_match
+---
+{{- range .Values.fluentbit.targetLogs }}
+  {{- tuple $envAll . | include "fluentbit-operator.fluentbit.filter.throttle" }}
+  {{- range .multi_index }}
+    {{- tuple $envAll . | include "fluentbit-operator.fluentbit.filter.throttle" }}
+  {{- end}}
+{{- end}}
 ---
 apiVersion: logging.kubesphere.io/v1alpha2
 kind: Filter
