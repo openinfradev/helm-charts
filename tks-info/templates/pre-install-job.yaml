@@ -57,67 +57,69 @@ spec:
               \c ${DB_NAME};
               CREATE TABLE csp_infos
               (
-                  id uuid primary key,
-                  contract_id uuid,
-                  name character varying(50) COLLATE pg_catalog."default",
-                  auth character varying(200) COLLATE pg_catalog."default",
-                  csp_type integer,
-                  updated_at timestamp with time zone,
-                  created_at timestamp with time zone
+                id uuid primary key,
+                contract_id character varying(10) COLLATE pg_catalog."default",
+                name character varying(50) COLLATE pg_catalog."default",
+                auth character varying(200) COLLATE pg_catalog."default",
+                csp_type integer,
+                updated_at timestamp with time zone,
+                created_at timestamp with time zone
+
               );
               CREATE TABLE clusters
               (
-                  name character varying(50) COLLATE pg_catalog."default",
-                  id uuid primary key,
-                  contract_id uuid,
-                  csp_id uuid,
-                  workflow_id character varying(100) COLLATE pg_catalog."default",
-                  status integer,
-                  status_desc character varying(10000) COLLATE pg_catalog."default",
-                  ssh_key_name character varying(50) COLLATE pg_catalog."default",
-                  region character varying(50) COLLATE pg_catalog."default",
-                  num_of_az integer,
-                  machine_type character varying(50) COLLATE pg_catalog."default",
-                  min_size_per_az integer,
-                  max_size_per_az integer,
-                  kubeconfig character varying(1000) COLLATE pg_catalog."default",
-                  updated_at timestamp with time zone,
-                  created_at timestamp with time zone
+                id character varying(10) COLLATE pg_catalog."default" primary key,
+                name character varying(50) COLLATE pg_catalog."default",
+                contract_id character varying(10) COLLATE pg_catalog."default",
+                csp_id uuid,
+                workflow_id character varying(100) COLLATE pg_catalog."default",
+                status bigint,
+                status_desc character varying(10000) COLLATE pg_catalog."default",
+                ssh_key_name character varying(50) COLLATE pg_catalog."default",
+                region character varying(50) COLLATE pg_catalog."default",
+                num_of_az integer,
+                machine_type character varying(50) COLLATE pg_catalog."default",
+                min_size_per_az integer,
+                max_size_per_az integer,
+                kubeconfig character varying(1000) COLLATE pg_catalog."default",
+                updated_at timestamp with time zone,
+                created_at timestamp with time zone
+
               );
               CREATE TABLE application_groups
               (
-                  name character varying(50) COLLATE pg_catalog."default",
-                  id uuid primary key,
-                  type bigint,
-                  workflow_id character varying(100) COLLATE pg_catalog."default",
-                  status integer,
-                  status_desc character varying(10000) COLLATE pg_catalog."default",
-                  cluster_id uuid,
-                  external_label character varying(50) COLLATE pg_catalog."default",
-                  updated_at timestamp with time zone,
-                  created_at timestamp with time zone
+                name character varying(50) COLLATE pg_catalog."default",
+                id character varying(10) COLLATE pg_catalog."default" primary key,
+                type bigint,
+                workflow_id character varying(100) COLLATE pg_catalog."default",
+                status integer,
+                status_desc character varying(10000) COLLATE pg_catalog."default",
+                cluster_id character varying(10) COLLATE pg_catalog."default",
+                external_label character varying(50) COLLATE pg_catalog."default",
+                updated_at timestamp with time zone,
+                created_at timestamp with time zone
               );
               CREATE TABLE applications
               (
-                  id uuid primary key,
-                  type bigint,
-                  app_group_id uuid,
-                  endpoint character varying(200) COLLATE pg_catalog."default",
-                  metadata json,
-                  updated_at timestamp with time zone,
-                  created_at timestamp with time zone
+                id uuid primary key,
+                type bigint,
+                app_group_id character varying(10) COLLATE pg_catalog."default",
+                endpoint character varying(200) COLLATE pg_catalog."default",
+                metadata json,
+                updated_at timestamp with time zone,
+                created_at timestamp with time zone
               );
               CREATE TABLE keycloak_infos
               (
-                  id uuid primary key,
-                  cluster_id uuid,
-                  realm character varying(100) COLLATE pg_catalog."default",
-                  client_id character varying(100) COLLATE pg_catalog."default",
-                  secret character varying(1000) COLLATE pg_catalog."default",
-                  private_key character varying(1000) COLLATE pg_catalog."default",
-                  updated_at timestamp with time zone,
-                  created_at timestamp with time zone,
-                  CONSTRAINT keycloak_infos_ukey UNIQUE (cluster_id, realm, secret)
+                id uuid primary key,
+                cluster_id character varying(10) COLLATE pg_catalog."default",
+                realm character varying(100) COLLATE pg_catalog."default",
+                client_id character varying(100) COLLATE pg_catalog."default",
+                secret character varying(1000) COLLATE pg_catalog."default",
+                private_key character varying(1000) COLLATE pg_catalog."default",
+                updated_at timestamp with time zone,
+                created_at timestamp with time zone,
+                CONSTRAINT keycloak_infos_ukey UNIQUE (cluster_id, realm, secret)
               );
               
             """ | psql -h ${DB_URL} -p ${DB_PORT} -U ${DB_ADMIN_USER}
