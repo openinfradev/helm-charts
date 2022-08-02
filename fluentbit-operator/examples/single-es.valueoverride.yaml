@@ -1,7 +1,7 @@
 fluentbit:
   alerts:
     makeAlertRule: true
-  clusterName: siim-dev
+  clusterName: cluster.local
   daemonset:
     spec:
       pod:
@@ -19,7 +19,7 @@ fluentbit:
   outputs:
     es:
     - name: taco-es
-      host: eck-elasticsearch-es-http.lma.svc.siim-dev
+      host: eck-elasticsearch-es-http.lma.svc.cluster.local
       port: 9200
       createuser: true
       username: taco-fluentbit
@@ -105,7 +105,7 @@ fluentbit:
               number_of_shards: 3
               refresh_interval: 30s
     - name: external-es
-      host: eck-elasticsearch-es-http.byoh.svc.siim-dev
+      host: eck-elasticsearch-es-http.byoh.svc.cluster.local
       port: 9200
       createuser: true
       username: taco-fluentbit
@@ -209,7 +209,7 @@ fluentbitOperator:
   enabled: false
 fullnameOverride: fluentbit-cr-taco
 global:
-  base_cluster_url: siim-dev
+  base_cluster_url: cluster.local
   nodeSelector:
     taco-lma: enabled
 image:
