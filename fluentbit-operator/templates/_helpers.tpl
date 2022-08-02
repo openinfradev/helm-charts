@@ -12,36 +12,21 @@ The components in this chart create additional resources that expand the longest
 The longest name that gets created adds and extra 37 characters, so truncation should be 63-35=26.
 */}}
 {{- define "fluentbit-operator.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 26 | trimSuffix "-" -}}
-{{- else -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- if contains $name .Release.Name -}}
-{{- .Release.Name | trunc 26 | trimSuffix "-" -}}
-{{- else -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 26 | trimSuffix "-" -}}
+  {{- if .Values.fullnameOverride -}}
+    {{- .Values.fullnameOverride | trunc 26 | trimSuffix "-" -}}
+  {{- else -}}
+    {{- $name := default .Chart.Name .Values.nameOverride -}}
+    {{- if contains $name .Release.Name -}}
+      {{- .Release.Name | trunc 26 | trimSuffix "-" -}}
+    {{- else -}}
+      {{- printf "%s-%s" .Release.Name $name | trunc 26 | trimSuffix "-" -}}
+    {{- end -}}
+  {{- end -}}
 {{- end -}}
-{{- end -}}
-{{- end -}}
-
-{{/* Fullname suffixed with operator */}}
-{{- define "fluentbit-operator.operator.fullname" -}}
-{{- printf "%s-operator" (include "fluentbit-operator.fullname" .) -}}
-{{- end }}
-
-{{/* Fullname suffixed with fluentbit */}}
-{{- define "fluentbit-operator.fluentbit.fullname" -}}
-{{- printf "%s-fluentbit" (include "fluentbit-operator.fullname" .) -}}
-{{- end }}
 
 {{/* Fullname suffixed with operator */}}
 {{- define "fluentbit-operator.exporter.fullname" -}}
 {{- printf "alerted-log-exporter" -}}
-{{- end }}
-
-{{/* Fullname suffixed with alertmanager */}}
-{{- define "fluentbit-operator.alertmanager.fullname" -}}
-{{- printf "%s-alertmanager" (include "fluentbit-operator.fullname" .) -}}
 {{- end }}
 
 {{/* Create chart name and version as used by the chart label. */}}
@@ -86,18 +71,24 @@ heritage: {{ $.Release.Service | quote }}
 {{- end -}}
 {{- end -}}
 
+{{/* secret name suffixed with operator */}}
+{{- define "fluentbit-operator.operator.es-secret" -}}
+{{- printf "fluentbit-es-user-%s" . -}}
+{{- end }}
+
 {{/* Generate output for elasticsearch */}}
 {{- define "fluentbit-operator.fluentbit.output.es" -}}
 {{- $envAll := index . 0 -}}
-{{- $input := index . 1 -}}
-{{- $index := index . 2 -}}
-{{- $tag := index . 3 -}}
+{{- $es := index . 1 -}}
+{{- $type := index . 2 -}}
+{{- $index_name := index . 3 -}}
+{{- $tag := index . 4 -}}
 ---
 # Elasticsearch index 
 apiVersion: logging.kubesphere.io/v1alpha2
 kind: Output
 metadata:
-  name: {{ template "fluentbit-operator.fullname" $envAll  }}-es-{{ $index }}
+  name: {{ template "fluentbit-operator.fullname" $envAll  }}-{{ $es.name }}-{{ $index_name }}
   namespace: {{ $envAll.Release.Namespace }}
   labels:
     logging.kubesphere.io/enabled: "true"
@@ -105,24 +96,24 @@ metadata:
 spec:
   match: {{ $tag | quote }}
   es:
-{{- if $input.logstashFormat}}
-    logstashPrefix: {{ $index }}
+{{- if $es.logstashFormat}}
+    logstashPrefix: {{ $es.index }}
     logstashFormat: true
-{{- else if $index }}
-    index: {{ $index }}
+{{- else if $index_name }}
+    index: {{ $index_name }}
 {{- end}}
-    host: {{ $envAll.Values.fluentbit.outputs.es.host }}
-    port: {{ $envAll.Values.fluentbit.outputs.es.port }}
-    type: {{ $input.type }}
+    host: {{ $es.host }}
+    port: {{ $es.port }}
+    type: {{ index . 2  }}
     httpUser:
       valueFrom:
         secretKeyRef:
-          name: {{ $envAll.Values.fluentbit.outputs.es.username }}-es-secret
+          name: {{ include "fluentbit-operator.operator.es-secret" $es.name }}
           key: username
     httpPassword:
       valueFrom:
         secretKeyRef:
-          name: {{ $envAll.Values.fluentbit.outputs.es.username }}-es-secret
+          name: {{ include "fluentbit-operator.operator.es-secret" $es.name }}
           key: password
     tls:
       verify: false

@@ -1,26 +1,33 @@
 {{- if .Values.fluentbit.enabled }}
 {{- $envAll := . }}
-{{- if $envAll.Values.fluentbit.outputs.es.enabled }}
+
+{{ range .Values.fluentbit.outputs.es }}
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ .Values.fluentbit.outputs.es.username }}-es-secret
+  name: {{ include "fluentbit-operator.operator.es-secret" .name }}
   namespace: {{ $envAll.Release.Namespace }}
 type: Opaque
 data:
-  username: {{ .Values.fluentbit.outputs.es.username | b64enc }}
-  password: {{ .Values.fluentbit.outputs.es.password | b64enc }}
-{{- range $i, $input := $envAll.Values.fluentbit.targetLogs }}
-{{- if not $input.do_not_store_as_default}}
----
-  {{- tuple  $envAll $input $input.index $input.tag | include "fluentbit-operator.fluentbit.output.es" }}
-{{- end }}
+  username: {{ .username | b64enc }}
+  password: {{ .password | b64enc }}
 
-  {{ range $input.multi_index }}
---- 
-    {{- $newTag := (printf "seperate.%s.*" .index) }}
-    {{- tuple  $envAll $input .index $newTag | include "fluentbit-operator.fluentbit.output.es" }}
+  {{- $es := . -}}
+  {{- range $i, $input := $envAll.Values.fluentbit.targetLogs }}
+    {{- $log := . -}}
+    {{- if and (not $input.do_not_store_as_default) (eq .es_name $es.name) }}
+---
+    {{- tuple  $envAll $es .type $input.name $input.tag | include "fluentbit-operator.fluentbit.output.es" }}
+    {{- end }}
+    {{ range $input.multi_index }}
+      {{- if  eq .es_name $es.name  }}
+---
+      {{- $newTag := (printf "seperate.%s.*" .index) }}
+    # all, es, type, name, tag, index
+      {{- tuple  $envAll $es $log.type .index $newTag .index | include "fluentbit-operator.fluentbit.output.es" }}
+      {{- end }}
+    {{- end }}
   {{- end }}
 {{- end }}
 
@@ -43,8 +50,7 @@ spec:
     uri: "/logs"
     format: json
 {{- end }}
-{{- end }}
-{{- if and $envAll.Values.fluentbit.outputs.kafka.enabled }}
+{{- if $envAll.Values.fluentbit.outputs.kafka.enabled }}
 ---
 # kafka support
 apiVersion: logging.kubesphere.io/v1alpha2

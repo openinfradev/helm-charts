@@ -21,10 +21,6 @@ commonLabels: {}
 # myLabel: aakkmd
 
 image:
-  operator:
-    repository: ghcr.io/openinfradev/fluentbit-operator
-    tag: 25bc31cd4333f7f77435561ec70bc68e0c73a194
-    pullPolicy: IfNotPresent
   init:
     repository: docker
     tag: 19.03
@@ -67,108 +63,6 @@ global:
 
   base_cluster_url: cluster.local
 
-## Manages Fluentbit and Alertmanager components
-##
-fluentbitOperator:
-  enabled: true
-
-  ## Namespaces to scope the interaction of the Fluentbit Operator and the apiserver (allow list).
-  ## This is mutually exclusive with denyNamespaces. Setting this to an empty object will disable the configuration
-  ##
-  namespaces: {}
-    # releaseNamespace: true
-    # additional:
-    # - kube-system
-
-  ## Namespaces not to scope the interaction of the Fluentbit Operator (deny list).
-  ##
-  denyNamespaces: []
-
-  ## Service account for Alertmanager to use.
-  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-  ##
-  serviceAccount:
-    create: true
-    name: ""
-
-  ## Deploy CRDs used by Fluentbit Operator.
-  ##
-  createCustomResource: true
-
-  # ## Attempt to clean up CRDs created by Fluentbit Operator.
-  # ##
-  # cleanupCustomResource: false
-
-  ## Labels to add to the operator pod
-  ##
-  podLabels: {}
-
-  ## Annotations to add to the operator pod
-  ##
-  podAnnotations: {}
-
-  ## Assign a PriorityClassName to pods if set
-  # priorityClassName: ""
-
-  ## Define Log Format
-  # Use logfmt (default) or json-formatted logging
-  # logFormat: logfmt
-
-  ## Decrease log verbosity to errors only
-  # logLevel: error
-
-  ## Resource limits & requests
-  ##
-
-  #ORI  resources: {}
-  resources: 
-    limits:
-      cpu: 100m
-      memory: 30Mi
-    requests:
-      cpu: 100m
-      memory: 20Mi
-  # limits:
-  #   cpu: 200m
-  #   memory: 200Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 100Mi
-
-  ## Define which Nodes the Pods are scheduled on.
-  ## ref: https://kubernetes.io/docs/user-guide/node-selection/
-  ##
-  # nodeSelector: 
-  #   taco-lma: enabled
-
-  ## Tolerations for use with node taints
-  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-  ##
-  tolerations: []
-  # - key: "key"
-  #   operator: "Equal"
-  #   value: "value"
-  #   effect: "NoSchedule"
-
-  ## Assign custom affinity rules to the fluentbit operator
-  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-  ##
-  affinity: {}
-    # nodeAffinity:
-    #   requiredDuringSchedulingIgnoredDuringExecution:
-    #     nodeSelectorTerms:
-    #     - matchExpressions:
-    #       - key: kubernetes.io/e2e-az-name
-    #         operator: In
-    #         values:
-    #         - e2e-az1
-    #         - e2e-az2
-
-  securityContext: {}
-  # securityContext:
-  #   runAsNonRoot: true
-  #   runAsUser: 65534
-
 ## Deploy a Fluentbit instance
 ##
 fluentbit:
@@ -184,8 +78,7 @@ fluentbit:
   ##
   serviceAccount:
     create: true
-  #ORI    name: ""
-    name: "fluentbit-operator"
+    name: fluentbit
 
   daemonset:
     spec:
@@ -197,14 +90,6 @@ fluentbit:
         operator: Exists
       - key: node-role.kubernetes.io/node
         operator: Exists
-      #  - key: "key"
-      #    operator: "Equal"
-      #    value: "value"
-      #    effect: "NoSchedule"
-
-      ## External URL at which Fluentbit will be reachable.
-      ##
-      externalUrl: ""
 
       ## Define which Nodes the Pods are scheduled on.
       ## ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -257,9 +142,6 @@ fluentbit:
       #         - e2e-az1
       #         - e2e-az2
 
-      ## Enable/Disable Grafana dashboards provisioning for fluentbit remote write feature
-      remoteWriteDashboards: false
-
       ## Resource limits & requests
       ##
       resources: {}
@@ -275,37 +157,6 @@ fluentbit:
       ##
       priorityClassName: ""
 
-      ## Thanos configuration allows configuring various aspects of a Fluentbit server in a Thanos environment.
-      ## This section is experimental, it may change significantly without deprecation notice in any release.
-      ## This is experimental and may change significantly without backward compatibility in any release.
-      ## ref: https://github.com/coreos/fluentbit-operator/blob/master/Documentation/api.md#thanosspec
-      ##
-      thanos: {}
-
-      ## Containers allows injecting additional containers. This is meant to allow adding an authentication proxy to a Fluentbit pod.
-      ##  if using proxy extraContainer  update targetPort with proxy container port
-      containers: []
-
-      ## InitContainers allows injecting additional initContainers. This is meant to allow doing some changes
-      ## (permissions, dir tree) on mounted volumes before starting fluentbit
-      initContainers: []
-
-      ## Enable additional scrape configs that are managed externally to this chart. Note that the fluentbit
-      ## will fail to provision if the correct secret does not exist.
-      ## This option requires that you are maintaining a secret in the same namespace as Fluentbit with
-      ## a name of 'fluentbit-operator-fluentbit-scrape-confg' and a key of 'additional-scrape-configs.yaml' that
-      ## contains a list of scrape_config's. The name of the secret may vary if you utilize the "fullnameOverride".
-      ## This feature cannot be used in conjunction with the additionalScrapeConfigs attribute (the helm-generated
-      ## secret will overwrite your self-maintained secret).
-      ##
-      ## scrape_config docs: https://fluentbit.io/docs/fluentbit/latest/configuration/configuration/#scrape_config
-      ## explanation of "confg" typo: https://github.com/helm/charts/issues/13368
-      additionalScrapeConfigsExternal: false
-
-      ## PortName to use for Fluentbit.
-      ##
-      portName: "web"
-
       ## Default rulset to send exporter
       ## format is "level: keyword"   for example "critical: error"
       ## VERY VERY VERY IMPORTANT ==> At least one tuple should be defined
@@ -315,6 +166,7 @@ fluentbit:
     tag: kube.*
     path: /var/log/containers/*.log
     type: fluent
+    es_name: tacoes
     index: container
     parser: docker
     memBufLimit: 20MB
@@ -330,6 +182,7 @@ fluentbit:
     tag: kubenode.*
     path: /var/log/syslog
     type: syslog
+    es_name: tacoes
     index: syslog
     parser: syslog-rfc5424
     extraArgs: {}
@@ -337,98 +190,101 @@ fluentbit:
     tag: etcdnode.*
     path: /var/log/etcd.log
     type: etcd
+    es_name: tacoes
     index: etcd
     parser: docker
     extraArgs: {}
   outputs:
-    es: 
-      enabled: false
-      createuser: false
-      username: fluentbit
-      password: password
-      elasticPasswordSecret: elasticsearch-es-elastic-user
-      host: taco-elasticsearch-es-http.lma.svc.cluster.local
-      port: 9200
-      template:
-        enabled: false
-        url: https://taco-elasticsearch-es-http.lma.svc.cluster.local:9200
-        ilms:
-        - name: hot-delete-14days
-          json:
-            policy:
-              phases:
-                hot:
-                  actions:
-                    rollover:
-                      max_size: 30gb
-                      max_age: 1d
-                      max_docs: 5000000000
-                    set_priority:
-                      priority: 100
-                delete:
-                  min_age: 14d
-                  actions:
-                    delete: {}
-        - name: hot-delete-7days
-          json:
-            policy:
-              phases:
-                hot:
-                  actions:
-                    rollover:
-                      max_size: 30gb
-                      max_age: 1d
-                      max_docs: 5000000000
-                    set_priority:
-                      priority: 100
-                delete:
-                  min_age: 7d
-                  actions:
-                    delete: {}
-        - name: hot-delete-3hour
-          json:
-            policy:
-              phases:
-                hot:
-                  actions:
-                    rollover:
-                      max_size: 30gb
-                      max_age: 1h
-                      max_docs: 5000000000
-                    set_priority:
-                      priority: 100
-                delete:
-                  min_age: 3h
-                  actions:
-                    delete: {}
-        templates:
-        - name: platform
-          json:
-            index_patterns: "platform*"
-            settings:
-              refresh_interval: 30s
-              number_of_shards: 3
-              number_of_replicas: 1
-              index.lifecycle.name: hot-delete-14days
-              index.lifecycle.rollover_alias: platform
-        - name: application
-          json:
-            index_patterns: "container*"
-            settings:
-              refresh_interval: 30s
-              number_of_shards: 3
-              number_of_replicas: 1
-              index.lifecycle.name: hot-delete-3hour
-              index.lifecycle.rollover_alias: container
-        - name: syslog
-          json:
-            index_patterns: "syslog*"
-            settings:
-              refresh_interval: 30s
-              number_of_shards: 2
-              number_of_replicas: 1
-              index.lifecycle.name: hot-delete-14days
-              index.lifecycle.rollover_alias: syslog
+    es: [ ]
+    # - name: taco-es
+    #   enabled: false
+    #   createuser: false
+    #   username: fluentbit
+    #   password: password
+    #   elasticPasswordSecret: elasticsearch-es-elastic-user
+    #   host: taco-elasticsearch-es-http.lma.svc.cluster.local
+    #   port: 9200
+    #   template:
+    #     enabled: false
+    #     url: https://taco-elasticsearch-es-http:9200 # taco release v2.0
+    #     # example url - https://taco-elasticsearch-es-http.lma.svc.cluster.local:9200
+    #     ilms:
+    #     - name: hot-delete-14days
+    #       json:
+    #         policy:
+    #           phases:
+    #             hot:
+    #               actions:
+    #                 rollover:
+    #                   max_size: 30gb
+    #                   max_age: 1d
+    #                   max_docs: 5000000000
+    #                 set_priority:
+    #                   priority: 100
+    #             delete:
+    #               min_age: 14d
+    #               actions:
+    #                 delete: {}
+    #     - name: hot-delete-7days
+    #       json:
+    #         policy:
+    #           phases:
+    #             hot:
+    #               actions:
+    #                 rollover:
+    #                   max_size: 30gb
+    #                   max_age: 1d
+    #                   max_docs: 5000000000
+    #                 set_priority:
+    #                   priority: 100
+    #             delete:
+    #               min_age: 7d
+    #               actions:
+    #                 delete: {}
+    #     - name: hot-delete-3hour
+    #       json:
+    #         policy:
+    #           phases:
+    #             hot:
+    #               actions:
+    #                 rollover:
+    #                   max_size: 30gb
+    #                   max_age: 1h
+    #                   max_docs: 5000000000
+    #                 set_priority:
+    #                   priority: 100
+    #             delete:
+    #               min_age: 3h
+    #               actions:
+    #                 delete: {}
+    #     templates:
+    #     - name: platform
+    #       json:
+    #         index_patterns: "platform*"
+    #         settings:
+    #           refresh_interval: 30s
+    #           number_of_shards: 3
+    #           number_of_replicas: 1
+    #           index.lifecycle.name: hot-delete-14days
+    #           index.lifecycle.rollover_alias: platform
+    #     - name: application
+    #       json:
+    #         index_patterns: "container*"
+    #         settings:
+    #           refresh_interval: 30s
+    #           number_of_shards: 3
+    #           number_of_replicas: 1
+    #           index.lifecycle.name: hot-delete-3hour
+    #           index.lifecycle.rollover_alias: container
+    #     - name: syslog
+    #       json:
+    #         index_patterns: "syslog*"
+    #         settings:
+    #           refresh_interval: 30s
+    #           number_of_shards: 2
+    #           number_of_replicas: 1
+    #           index.lifecycle.name: hot-delete-14days
+    #           index.lifecycle.rollover_alias: syslog
 
     kafka:
       enabled: false
