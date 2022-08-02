@@ -182,10 +182,17 @@ fluentbit:
       key: $kubernetes['container_name']
       value: csi-rbdplugin
 #      value: cap[a-z,\-,0-9]+|ceph[a-z,\-,0-9]+
+      throttle:
+        interval: 1m
+        printStatus: true
+        rate: 10
+        window: 3
     parser: docker
     path: /var/log/containers/*.log
     tag: kube.*
     type: fluent
+    extraArgs:
+      multilineParser: docker, cri
   - name: syslog
     do_not_store_as_default: false
     es_name: taco-es

@@ -195,6 +195,8 @@ fluentbit:
     path: /var/log/containers/*.log
     tag: kube.*
     type: fluent
+    extraArgs:
+      multilineParser: docker, cri
   - name: syslog
     do_not_store_as_default: false
     es_name: taco-es

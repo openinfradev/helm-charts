@@ -44,15 +44,6 @@ heritage: {{ $.Release.Service | quote }}
 {{- end }}
 {{- end }}
 
-{{/* Create the name of fluentbit-operator service account to use */}}
-{{- define "fluentbit-operator.operator.serviceAccountName" -}}
-{{- if .Values.fluentbitOperator.serviceAccount.create -}}
-    {{ default (include "fluentbit-operator.operator.fullname" .) .Values.fluentbitOperator.serviceAccount.name }}
-{{- else -}}
-    {{ default "default" .Values.fluentbitOperator.serviceAccount.name }}
-{{- end -}}
-{{- end -}}
-
 {{/* Create the name of fluentbit service account to use */}}
 {{- define "fluentbit-operator.fluentbit.serviceAccountName" -}}
 {{- if .Values.fluentbit.serviceAccount.create -}}
@@ -117,4 +108,28 @@ spec:
           key: password
     tls:
       verify: false
+{{- end -}}
+
+{{/* Generate filter for throttle */}}
+{{- define "fluentbit-operator.fluentbit.filter.throttle" -}}
+{{- $envAll := index . 0 -}}
+{{- $input := index . 1 -}}
+{{- if and $input.index $input.throttle }}
+---
+# throttle
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Filter
+metadata:
+  name: throttle-{{ $input.index  }}
+  namespace: {{ $envAll.Release.Namespace }}
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    app.kubernetes.io/version: v0.0.1
+spec:
+  match: seperate.{{ $input.index }}.*
+  filters:
+  - throttle:
+{{ toYaml  $input.throttle | indent 6 }}
+
+{{- end -}}
 {{- end -}}
