@@ -17,6 +17,14 @@ fluentbit:
       nodeSelector:
         taco-lma: enabled
 
+  parsers:
+  - name: taco-syslog-parser-for-ubuntu # modified from syslog-rfc3164
+    regex:
+      regex: '^(?<time>[^ ]* {1,2}[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[a-zA-Z0-9_\/\.\-]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? *(?<message>.*)$'
+      timeFormat: '%d/%b/%Y:%H:%M:%S %z'
+      timeKeep: false
+      timeKey: 'time'
+
   outputs:
     es:
     - name: taco-es
@@ -107,6 +115,10 @@ fluentbit:
               number_of_replicas: 1
               index.lifecycle.name: hot-delete-14days
               index.lifecycle.rollover_alias: syslog
+    loki: 
+    - name: taco-loki
+      host: loki
+      port: 3100
   targetLogs:
   - tag: kube.*
     bufferChunkSize: 2M
@@ -114,21 +126,24 @@ fluentbit:
     do_not_store_as_default: false
     es_name: taco-es
     index: container
+    loki_name: taco-loki
     memBufLimit: 20MB
     multi_index:
     - index: platform
       es_name: taco-es
+      loki_name: taco-loki
       key: $kubernetes['namespace_name']
       value: kube-system|taco-system|lma|argo
     parser: docker
     path: /var/log/containers/*.log
-    type: fluent
+    type: kubernates
     extraArgs:
       multilineParser: docker, cri
   - tag: syslog.*
     es_name: taco-es
+    loki_name: taco-loki
     index: syslog
-    parser: syslog-rfc5424
+    parser: taco-syslog-parser-for-ubuntu
     path: /var/log/syslog
     type: syslog
 

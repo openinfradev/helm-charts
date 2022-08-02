@@ -1,0 +1,21 @@
+{{- if and .Values.fluentbit.enabled }}
+{{- range $parser := .Values.fluentbit.parsers }}
+---
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Parser
+metadata:
+  name: {{ $parser.name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    app.kubernetes.io/version: v0.0.1
+spec:
+  {{- range list "decoders" "json" "logfmt" "ltsv" "regex" }}
+    {{- $k := . }}
+    {{- if (index $parser $k ) }}
+{{ $k| indent 2}}:
+{{ toYaml ( index $parser $k ) | indent 4 }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- end }}

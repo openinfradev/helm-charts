@@ -12,23 +12,35 @@ type: Opaque
 data:
   username: {{ .dedicatedUser.username | b64enc }}
   password: {{ .dedicatedUser.password | b64enc }}
-
+# outputs for elasticsearch
   {{- $es := . -}}
-  {{- range $i, $input := $envAll.Values.fluentbit.targetLogs }}
-    {{- $log := . -}}
-    {{- if and (not $input.do_not_store_as_default) (eq .es_name $es.name) }}
----
-    {{- tuple  $envAll $es .type $input.index $input.tag | include "fluentbit-operator.fluentbit.output.es" }}
+  {{- range $i, $log := $envAll.Values.fluentbit.targetLogs }}
+    {{- if and (not $log.do_not_store_as_default) (eq .es_name $es.name) }}
+      {{- tuple  $envAll $es $log.type $log.index $log.tag | include "fluentbit-operator.fluentbit.output.es" }}
     {{- end }}
-    {{ range $input.multi_index }}
+    {{- range $j, $multi := $log.multi_index }}
       {{- if  eq .es_name $es.name  }}
----
-      {{- $newTag := (printf "seperate.%s.*" .index) }}
-    # all, es, type, name, tag, index
-      {{- tuple  $envAll $es $log.type .index $newTag .index | include "fluentbit-operator.fluentbit.output.es" }}
+        {{- $newTag := tuple "seperate" $log $j | include "fluentbit-operator.fluentbit.newTag" }}
+        {{- tuple  $envAll $es $log.type .index $newTag .index | include "fluentbit-operator.fluentbit.output.es" }}
       {{- end }}
     {{- end }}
   {{- end }}
+{{- end }}
+
+{{ range .Values.fluentbit.outputs.loki }}
+  {{- $loki := . }}
+# outputs for loki
+  {{- range $i, $log := $envAll.Values.fluentbit.targetLogs }}
+    {{- if and (not $log.do_not_store_as_default) (eq .loki_name $loki.name) }}
+      {{- tuple  $envAll $loki $log.type $log.index $log.tag | include "fluentbit-operator.fluentbit.output.loki" }}
+    {{- end }}
+    {{- range $j, $multi := $log.multi_index }}
+      {{- if eq $multi.loki_name $loki.name }}
+        {{- $newTag := tuple "seperate" $log $j | include "fluentbit-operator.fluentbit.newTag" }}
+        {{- tuple $envAll $loki $log.type $multi.index $newTag | include "fluentbit-operator.fluentbit.output.loki" }}
+      {{- end}}
+    {{- end}}
+  {{- end}}
 {{- end }}
 
 {{- if and $envAll.Values.fluentbit.outputs.http.enabled }}
