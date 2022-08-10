@@ -5,13 +5,13 @@ description: Provide easy log collecting definition for kubernetes pods and thei
 icon: https://dashboard.snapcraft.io/site_media/appmedia/2020/02/logo-square.png
 keywords:
 - fluentbit
-- operator
+- custom resouces
 maintainers:
 - name: TACO Team
 - email: usnexp@gmail.com
   name: sungil
-name: fluentbit-operator
+name: fluentbit-resource
 sources:
 - https://github.com/intelliguy/fluentbit-operator
-version: 1.3.0
+version: 1.0.0
 # Support Multi-ElasticSeach clusters (1.3)

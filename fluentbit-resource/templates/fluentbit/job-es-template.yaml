@@ -21,9 +21,9 @@ spec:
         app: {{ template "fluentbit-operator.name" . }}
 {{ include "fluentbit-operator.labels" . | indent 8 }}
     spec:
-{{- if .Values.fluentbit.nodeSelector }}
+{{- if and .Values.fluentbit.job.spec .Values.fluentbit.job.spec.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.fluentbit.nodeSelector | indent 8 }}
+{{ toYaml .Values.fluentbit.job.spec.nodeSelector | indent 8 }}
 {{- end}}
       containers:
 

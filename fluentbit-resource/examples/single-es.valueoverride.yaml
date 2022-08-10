@@ -1,7 +1,8 @@
 fluentbit:
+  enabled: true
   alerts:
     makeAlertRule: true
-  clusterName: cluster.local
+  clusterName: taco
   daemonset:
     spec:
       pod:
@@ -10,7 +11,6 @@ fluentbit:
           operator: Exists
         - key: node-role.kubernetes.io/node
           operator: Exists
-  enabled: true
   exclude:
   - key: $kubernetes['container_name']
     value: kibana|elasticsearch|fluent-bit
@@ -167,10 +167,6 @@ fluentbit:
               refresh_interval: 30s
     http:
       enabled: true
-    kafka:
-      broker: YOUR_BORKER_INFO
-      enabled: false
-      topic: YOUR_TACO_LOG_INFO
   targetLogs:
   - name: dockerlog
     do_not_store_as_default: true
@@ -182,7 +178,7 @@ fluentbit:
     - index: platform
       es_name: taco-es
       key: $kubernetes['namespace_name']
-      value: kube-system|lma|fed|argo|openstack|istio-system|istio-services|trident|registry
+      value: kube-system|taco-system|lma|argo|istio-system|istio-services
     - index: coreapp
       es_name: external-es
       key: $kubernetes['namespace_name']
@@ -209,15 +205,11 @@ fluentbitOperator:
   cleanupCustomResource: false
   createCustomResource: false
   enabled: false
-fullnameOverride: fluentbit-cr-taco
-global:
-  base_cluster_url: cluster.local
-  nodeSelector:
-    taco-lma: enabled
-image:
-  hyperkube:
-    tag: v1.17.6
+fullnameOverride: fbcr-taco
 logExporter:
   enabled: false
   serviceMonitor:
     enabled: true
+  spec:
+    nodeSelect: 
+      taco-lma: enabled

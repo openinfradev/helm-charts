@@ -1,0 +1,136 @@
+fluentbit:
+  alerts:
+    makeAlertRule: true
+  clusterName: cluster.local
+  daemonset:
+    spec:
+      pod:
+        tolerations:
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+        - key: node-role.kubernetes.io/node
+          operator: Exists
+  enabled: true
+  exclude:
+  - key: $kubernetes['container_name']
+    value: kibana|elasticsearch|fluent-bit
+  nodeSelector:
+    taco-lma: enabled
+  outputs:
+    es:
+    - name: taco-es
+      enabled: false
+      createuser: false
+      username: fluentbit
+      password: password
+      elasticPasswordSecret: elasticsearch-es-elastic-user
+      host: taco-elasticsearch-es-http.lma.svc.cluster.local
+      port: 9200
+      template:
+        enabled: false
+        url: https://taco-elasticsearch-es-http:9200 # taco release v2.0
+        ilms:
+        - name: hot-delete-14days
+          json:
+            policy:
+              phases:
+                hot:
+                  actions:
+                    rollover:
+                      max_size: 30gb
+                      max_age: 1d
+                      max_docs: 5000000000
+                    set_priority:
+                      priority: 100
+                delete:
+                  min_age: 14d
+                  actions:
+                    delete: {}
+        - name: hot-delete-7days
+          json:
+            policy:
+              phases:
+                hot:
+                  actions:
+                    rollover:
+                      max_size: 30gb
+                      max_age: 1d
+                      max_docs: 5000000000
+                    set_priority:
+                      priority: 100
+                delete:
+                  min_age: 7d
+                  actions:
+                    delete: {}
+        - name: hot-delete-3hour
+          json:
+            policy:
+              phases:
+                hot:
+                  actions:
+                    rollover:
+                      max_size: 30gb
+                      max_age: 1h
+                      max_docs: 5000000000
+                    set_priority:
+                      priority: 100
+                delete:
+                  min_age: 3h
+                  actions:
+                    delete: {}
+        templates:
+        - name: platform
+          json:
+            index_patterns: "platform*"
+            settings:
+              refresh_interval: 30s
+              number_of_shards: 3
+              number_of_replicas: 1
+              index.lifecycle.name: hot-delete-14days
+              index.lifecycle.rollover_alias: platform
+        - name: application
+          json:
+            index_patterns: "container*"
+            settings:
+              refresh_interval: 30s
+              number_of_shards: 3
+              number_of_replicas: 1
+              index.lifecycle.name: hot-delete-3hour
+              index.lifecycle.rollover_alias: container
+        - name: syslog
+          json:
+            index_patterns: "syslog*"
+            settings:
+              refresh_interval: 30s
+              number_of_shards: 2
+              number_of_replicas: 1
+              index.lifecycle.name: hot-delete-14days
+              index.lifecycle.rollover_alias: syslog
+  targetLogs:
+  - bufferChunkSize: 2M
+    bufferMaxSize: 5M
+    do_not_store_as_default: true
+    index: container
+    memBufLimit: 20MB
+    multi_index:
+    - index: platform
+      key: $kubernetes['namespace_name']
+      value: kube-system|taco-system|lma|argo
+    name: dockerlog
+    parser: docker
+    path: /var/log/containers/*.log
+    tag: kube.*
+    type: fluent
+  - index: syslog
+    name: syslog
+    parser: syslog-rfc5424
+    path: /var/log/syslog
+    tag: syslog.*
+    type: syslog
+fullnameOverride: fbcr-taco
+global:
+  base_cluster_url: taco-basic
+  nodeSelector:
+    taco-lma: enabled
+logExporter:
+  enabled: true

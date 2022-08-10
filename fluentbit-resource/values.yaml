@@ -21,14 +21,6 @@ commonLabels: {}
 # myLabel: aakkmd
 
 image:
-  init:
-    repository: docker
-    tag: 19.03
-    pullPolicy: IfNotPresent
-  hyperkube:
-    repository: k8s.gcr.io/hyperkube
-    tag: v1.17.6
-    pullPolicy: IfNotPresent
   fluentbit:
     repository: ghcr.io/openinfradev/fluentbit
     tag: 25bc31cd4333f7f77435561ec70bc68e0c73a194
@@ -40,34 +32,11 @@ image:
     repository: docker.io/openstackhelm/heat
     tag: newton
     pullPolicy: IfNotPresent
-##
-global:
-  rbac:
-    create: true
-    pspEnabled: false
-    pspAnnotations: {}
-      ## Specify pod annotations
-      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
-      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
-      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
-      ##
-      # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
-      # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
-      # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
-
-  ## Reference to one or more secrets to be used when pulling images
-  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
-  ##
-  imagePullSecrets: []
-  # - name: "image-pull-secret"
-
-  base_cluster_url: cluster.local
 
 ## Deploy a Fluentbit instance
 ##
 fluentbit:
-
-  enabled: false
+  enabled: true
 
   ## Annotations for Fluentbit
   ##
@@ -94,8 +63,7 @@ fluentbit:
       ## Define which Nodes the Pods are scheduled on.
       ## ref: https://kubernetes.io/docs/user-guide/node-selection/
       ##
-      # nodeSelector: 
-      #   taco-lma: enabled
+      nodeSelector: {}
 
       ## Secrets is a list of Secrets in the same namespace as the Fluentbit object, which shall be mounted into the Fluentbit Pods.
       ## The Secrets are mounted into /etc/fluentbit/secrets/. Secrets changes after initial creation of a Fluentbit object are not
@@ -148,52 +116,51 @@ fluentbit:
       # requests:
       #   memory: 400Mi
 
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        fsGroup: 2000
-
-      ## 	Priority class assigned to the Pods
+  job:
+    spec:
+      ## Define which Nodes the Pods are scheduled on.
+      ## ref: https://kubernetes.io/docs/user-guide/node-selection/
       ##
-      priorityClassName: ""
+      nodeSelector: {}
+      ## Resource limits & requests
+      ##
+      resources: {}
+      # requests:
+      #   memory: 400Mi
 
-      ## Default rulset to send exporter
-      ## format is "level: keyword"   for example "critical: error"
-      ## VERY VERY VERY IMPORTANT ==> At least one tuple should be defined
-    
-  targetLogs:
-  - name: dockerlog
-    tag: kube.*
-    path: /var/log/containers/*.log
-    type: fluent
-    es_name: tacoes
-    index: container
-    parser: docker
-    memBufLimit: 20MB
-    bufferChunkSize: 2M
-    bufferMaxSize: 5M
-    do_not_store_as_default: false
-    multi_index:
-    - key: "$kubernetes['namespace_name']"
-      value: "kube-system|lma|fed|argo|openstack"
-      index: platform
-    extraArgs: {}
-  - name: syslog
-    tag: kubenode.*
-    path: /var/log/syslog
-    type: syslog
-    es_name: tacoes
-    index: syslog
-    parser: syslog-rfc5424
-    extraArgs: {}
-  - name: etcd
-    tag: etcdnode.*
-    path: /var/log/etcd.log
-    type: etcd
-    es_name: tacoes
-    index: etcd
-    parser: docker
-    extraArgs: {}
+  targetLogs: [ ]
+  # - name: dockerlog
+  #   tag: kube.*
+  #   path: /var/log/containers/*.log
+  #   type: fluent
+  #   es_name: tacoes
+  #   index: container
+  #   parser: docker
+  #   memBufLimit: 20MB
+  #   bufferChunkSize: 2M
+  #   bufferMaxSize: 5M
+  #   do_not_store_as_default: false
+  #   multi_index:
+  #   - key: "$kubernetes['namespace_name']"
+  #     value: "kube-system|lma|fed|argo|openstack"
+  #     index: platform
+  #   extraArgs: {}
+  # - name: syslog
+  #   tag: kubenode.*
+  #   path: /var/log/syslog
+  #   type: syslog
+  #   es_name: tacoes
+  #   index: syslog
+  #   parser: syslog-rfc5424
+  #   extraArgs: {}
+  # - name: etcd
+  #   tag: etcdnode.*
+  #   path: /var/log/etcd.log
+  #   type: etcd
+  #   es_name: tacoes
+  #   index: etcd
+  #   parser: docker
+  #   extraArgs: {}
   outputs:
     es: [ ]
     # - name: taco-es
@@ -288,18 +255,18 @@ fluentbit:
 
     kafka:
       enabled: false
-      broker: my-kafka-0.my-kafka-headless.lma.svc.cluster.local:9092,
-      topics: taco
+      # broker: my-kafka-0.my-kafka-headless.lma.svc.cluster.local:9092,
+      # topics: taco
     http:
       enabled: false
 
   alerts:
     enabled: false
-    namespace: fed
-    message: |-
-      {{ $labels.container }} in {{ $labels.pod }} ({{ $labels.taco_cluster }}/{{ $labels.namespace }} ) generate a error due to log = {{ $labels.log }}
-    summary: |-
-      {{ $labels.container }} in {{ $labels.pod }} ({{ $labels.taco_cluster }}/{{ $labels.namespace }} ) generate a error
+    # namespace: fed
+    # message: |-
+    #   {{ $labels.container }} in {{ $labels.pod }} ({{ $labels.taco_cluster }}/{{ $labels.namespace }} ) generate a error due to log = {{ $labels.log }}
+    # summary: |-
+    #   {{ $labels.container }} in {{ $labels.pod }} ({{ $labels.taco_cluster }}/{{ $labels.namespace }} ) generate a error
     # ******************** VERY IMPORTANT ************
     # current version of log-exporter(siim/logalert-exporter:v0.1.1) support only one notification
     # so you should not define more than one rule at installation
@@ -310,7 +277,7 @@ fluentbit:
       regex: "update.?error"
 
   # Define cluster name which is shown in collected logs
-  clusterName: unknown
+  clusterName: demo-cluster
   exclude:
   - key: "$kubernetes['container_name']"
     value: kibana
@@ -319,5 +286,5 @@ logExporter:
   serviceMonitor:
     enabled: false
     interval: 1m
-# nodeSelector: 
-#   taco-lma: enabled
+  spec:
+    nodeSelector: {}

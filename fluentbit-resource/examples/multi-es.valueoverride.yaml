@@ -1,7 +1,7 @@
 fluentbit:
   alerts:
     makeAlertRule: true
-  clusterName: cluster.local
+  clusterName: dev # indicate the scraped cluster
   daemonset:
     spec:
       pod:
@@ -207,7 +207,6 @@ fluentbitOperator:
   enabled: false
 fullnameOverride: fbcr
 global:
-  base_cluster_url: cluster.local
   nodeSelector:
     taco-lma: enabled
 image:

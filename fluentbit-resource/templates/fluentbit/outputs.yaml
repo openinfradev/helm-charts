@@ -45,7 +45,7 @@ metadata:
 spec:
   match: "m_*"
   http:
-    host: {{ template "fluentbit-operator.name" $envAll  }}-exporter.{{ $envAll.Release.Namespace }}.svc.{{ $envAll.Values.global.base_cluster_url }}
+    host: {{ template "fluentbit-operator.name" $envAll  }}-exporter.{{ $envAll.Release.Namespace }}.svc
     port: 2112
     uri: "/logs"
     format: json
