@@ -1,7 +1,8 @@
+fullnameOverride: fbcr-taco
+
 fluentbit:
-  alerts:
-    makeAlertRule: true
-  clusterName: cluster.local
+  enabled: true
+
   daemonset:
     spec:
       pod:
@@ -10,25 +11,25 @@ fluentbit:
           operator: Exists
         - key: node-role.kubernetes.io/node
           operator: Exists
-  enabled: true
-  exclude:
-  - key: $kubernetes['container_name']
-    value: kibana|elasticsearch|fluent-bit
-  nodeSelector:
-    taco-lma: enabled
+
+  job:
+    spec:
+      nodeSelector:
+        taco-lma: enabled
+
   outputs:
     es:
     - name: taco-es
-      enabled: false
-      createuser: false
-      username: fluentbit
-      password: password
-      elasticPasswordSecret: elasticsearch-es-elastic-user
-      host: taco-elasticsearch-es-http.lma.svc.cluster.local
+      host: eck-elasticsearch-es-http
       port: 9200
+
+      dedicatedUser: 
+        username: taco-fluentbit
+        password: password
+        elasticPasswordSecret: eck-elasticsearch-es-elastic-user
+      
       template:
-        enabled: false
-        url: https://taco-elasticsearch-es-http:9200 # taco release v2.0
+        enabled: true
         ilms:
         - name: hot-delete-14days
           json:
@@ -107,30 +108,54 @@ fluentbit:
               index.lifecycle.name: hot-delete-14days
               index.lifecycle.rollover_alias: syslog
   targetLogs:
-  - bufferChunkSize: 2M
+  - tag: kube.*
+    bufferChunkSize: 2M
     bufferMaxSize: 5M
-    do_not_store_as_default: true
+    do_not_store_as_default: false
+    es_name: taco-es
     index: container
     memBufLimit: 20MB
     multi_index:
     - index: platform
+      es_name: taco-es
       key: $kubernetes['namespace_name']
       value: kube-system|taco-system|lma|argo
-    name: dockerlog
     parser: docker
     path: /var/log/containers/*.log
-    tag: kube.*
     type: fluent
-  - index: syslog
-    name: syslog
+    extraArgs:
+      multilineParser: docker, cri
+  - tag: syslog.*
+    es_name: taco-es
+    index: syslog
     parser: syslog-rfc5424
     path: /var/log/syslog
-    tag: syslog.*
     type: syslog
-fullnameOverride: fbcr-taco
-global:
-  base_cluster_url: taco-basic
-  nodeSelector:
-    taco-lma: enabled
+
+  alerts:
+    enabled: true
+    namespace: taco-system
+    message: |-
+      {{ $labels.container }} in {{ $labels.pod }} ({{ $labels.taco_cluster }}/{{ $labels.namespace }} ) generate a error due to log = {{ $labels.log }}
+    summary: |-
+      {{ $labels.container }} in {{ $labels.pod }} ({{ $labels.taco_cluster }}/{{ $labels.namespace }} ) generate a error
+    rules:
+    # - name: critical-example
+    #   severity: critical
+    #   regex: "OOM Killed|Evict"
+    - name: warning-example
+      severity: warning
+      regex: "update.?error"
+
+  clusterName: taco-cluster.local
+  exclude:
+  - key: $kubernetes['container_name']
+    value: kibana|elasticsearch|fluent-bit
+
 logExporter:
   enabled: true
+  serviceMonitor:
+    enabled: true
+  spec:
+    nodeSelector:
+      taco-lma: enabled

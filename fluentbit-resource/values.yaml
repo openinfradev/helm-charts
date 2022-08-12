@@ -129,52 +129,40 @@ fluentbit:
       #   memory: 400Mi
 
   targetLogs: [ ]
-  # - name: dockerlog
-  #   tag: kube.*
-  #   path: /var/log/containers/*.log
-  #   type: fluent
-  #   es_name: tacoes
-  #   index: container
-  #   parser: docker
-  #   memBufLimit: 20MB
+  # - tag: kube.*
   #   bufferChunkSize: 2M
   #   bufferMaxSize: 5M
   #   do_not_store_as_default: false
+  #   es_name: taco-es
+  #   index: container
+  #   memBufLimit: 20MB
   #   multi_index:
-  #   - key: "$kubernetes['namespace_name']"
-  #     value: "kube-system|lma|fed|argo|openstack"
-  #     index: platform
-  #   extraArgs: {}
-  # - name: syslog
-  #   tag: kubenode.*
-  #   path: /var/log/syslog
-  #   type: syslog
-  #   es_name: tacoes
+  #   - index: platform
+  #     es_name: taco-es
+  #     key: $kubernetes['namespace_name']
+  #     value: kube-system|taco-system|lma|argo
+  #   parser: docker
+  #   path: /var/log/containers/*.log
+  #   type: fluent
+  # - tag: syslog.*
+  #   es_name: taco-es
   #   index: syslog
   #   parser: syslog-rfc5424
-  #   extraArgs: {}
-  # - name: etcd
-  #   tag: etcdnode.*
-  #   path: /var/log/etcd.log
-  #   type: etcd
-  #   es_name: tacoes
-  #   index: etcd
-  #   parser: docker
-  #   extraArgs: {}
+  #   path: /var/log/syslog
+  #   type: syslog
   outputs:
     es: [ ]
     # - name: taco-es
-    #   enabled: false
-    #   createuser: false
-    #   username: fluentbit
-    #   password: password
-    #   elasticPasswordSecret: elasticsearch-es-elastic-user
-    #   host: taco-elasticsearch-es-http.lma.svc.cluster.local
+    #   host: eck-elasticsearch-es-http
     #   port: 9200
+
+    #   dedicatedUser: 
+    #     username: taco-fluentbit
+    #     password: password
+    #     elasticPasswordSecret: eck-elasticsearch-es-elastic-user
+      
     #   template:
-    #     enabled: false
-    #     url: https://taco-elasticsearch-es-http:9200 # taco release v2.0
-    #     # example url - https://taco-elasticsearch-es-http.lma.svc.cluster.local:9200
+    #     enabled: true
     #     ilms:
     #     - name: hot-delete-14days
     #       json:
@@ -262,11 +250,11 @@ fluentbit:
 
   alerts:
     enabled: false
-    # namespace: fed
-    # message: |-
-    #   {{ $labels.container }} in {{ $labels.pod }} ({{ $labels.taco_cluster }}/{{ $labels.namespace }} ) generate a error due to log = {{ $labels.log }}
-    # summary: |-
-    #   {{ $labels.container }} in {{ $labels.pod }} ({{ $labels.taco_cluster }}/{{ $labels.namespace }} ) generate a error
+    namespace: kube-system
+    message: |-
+      {{ $labels.container }} in {{ $labels.pod }} ({{ $labels.taco_cluster }}/{{ $labels.namespace }} ) generate a error due to log = {{ $labels.log }}
+    summary: |-
+      {{ $labels.container }} in {{ $labels.pod }} ({{ $labels.taco_cluster }}/{{ $labels.namespace }} ) generate a error
     # ******************** VERY IMPORTANT ************
     # current version of log-exporter(siim/logalert-exporter:v0.1.1) support only one notification
     # so you should not define more than one rule at installation
@@ -280,7 +268,8 @@ fluentbit:
   clusterName: demo-cluster
   exclude:
   - key: "$kubernetes['container_name']"
-    value: kibana
+    value: kibana|elasticsearch|fluent-bit
+
 logExporter:
   enabled: false
   serviceMonitor:

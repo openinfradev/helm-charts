@@ -26,7 +26,7 @@ spec:
   {{- end}}
       containers:
   {{- range .Values.fluentbit.outputs.es }}
-    {{- if .createuser }}
+    {{- if .dedicatedUser.elasticPasswordSecret }}
       {{- $esname := .name }}
       - name: esuser-{{$esname}}
         image: "{{ $envAll.Values.image.elasticsearchTemplates.repository }}:{{ $envAll.Values.image.elasticsearchTemplates.tag }}"
@@ -37,16 +37,16 @@ spec:
         - name: ELASTIC_PW
           valueFrom:
             secretKeyRef:
-              name: {{ .elasticPasswordSecret  }}
+              name: {{ .dedicatedUser.elasticPasswordSecret  }}
               key: elastic
         command:
         - timeout
         - 5m
         - /tmp/create_user_{{$esname}}.sh
-        - {{ .username }}
-        - {{ .password }}
+        - {{ .dedicatedUser.username }}
+        - {{ .dedicatedUser.password }}
         volumeMounts:
-        - name: {{ $.Release.Name }}-cr-cm
+        - name: {{ $.Release.Name }}-configmap
           mountPath: /tmp/create_user_{{$esname}}.sh
           subPath: create_user_{{$esname}}.sh
           readOnly: true
@@ -54,8 +54,8 @@ spec:
   {{- end }}
       restartPolicy: OnFailure
       volumes:
-      - name: {{ $.Release.Name }}-cr-cm
+      - name: {{ $.Release.Name }}-configmap
         configMap:
-          name: {{ $.Release.Name }}-cr-cm
+          name: {{ $.Release.Name }}-configmap
           defaultMode: 0777
 {{- end }}
