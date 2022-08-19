@@ -10,15 +10,15 @@ metadata:
   namespace: {{ $envAll.Release.Namespace }}
 type: Opaque
 data:
-  username: {{ .username | b64enc }}
-  password: {{ .password | b64enc }}
+  username: {{ .dedicatedUser.username | b64enc }}
+  password: {{ .dedicatedUser.password | b64enc }}
 
   {{- $es := . -}}
   {{- range $i, $input := $envAll.Values.fluentbit.targetLogs }}
     {{- $log := . -}}
     {{- if and (not $input.do_not_store_as_default) (eq .es_name $es.name) }}
 ---
-    {{- tuple  $envAll $es .type $input.name $input.tag | include "fluentbit-operator.fluentbit.output.es" }}
+    {{- tuple  $envAll $es .type $input.index $input.tag | include "fluentbit-operator.fluentbit.output.es" }}
     {{- end }}
     {{ range $input.multi_index }}
       {{- if  eq .es_name $es.name  }}
@@ -45,7 +45,7 @@ metadata:
 spec:
   match: "m_*"
   http:
-    host: {{ template "fluentbit-operator.name" $envAll  }}-exporter.{{ $envAll.Release.Namespace }}.svc.{{ $envAll.Values.global.base_cluster_url }}
+    host: {{ template "fluentbit-operator.name" $envAll  }}-exporter.{{ $envAll.Release.Namespace }}.svc
     port: 2112
     uri: "/logs"
     format: json

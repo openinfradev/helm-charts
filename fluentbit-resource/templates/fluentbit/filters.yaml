@@ -13,7 +13,7 @@ spec:
   match: "kube.*"
   filters:
   - kubernetes:
-      kubeURL: https://kubernetes.default.svc.{{.Values.global.base_cluster_url }}:443
+      kubeURL: https://kubernetes.default.svc:443
       mergeLog: true
       labels: false
       annotations: false

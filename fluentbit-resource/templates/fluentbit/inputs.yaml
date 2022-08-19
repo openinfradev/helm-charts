@@ -4,7 +4,7 @@
 apiVersion: logging.kubesphere.io/v1alpha2
 kind: Input
 metadata:
-  name: input-{{ $input.name }}
+  name: input-{{ trimSuffix ".*"  $input.tag }}
   namespace: {{ $.Release.Namespace }}
   labels:
     logging.kubesphere.io/enabled: "true"

@@ -1,0 +1,161 @@
+fullnameOverride: fbcr-taco
+
+fluentbit:
+  enabled: true
+
+  daemonset:
+    spec:
+      pod:
+        tolerations:
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+        - key: node-role.kubernetes.io/node
+          operator: Exists
+
+  job:
+    spec:
+      nodeSelector:
+        taco-lma: enabled
+
+  outputs:
+    es:
+    - name: taco-es
+      host: eck-elasticsearch-es-http
+      port: 9200
+
+      dedicatedUser: 
+        username: taco-fluentbit
+        password: password
+        elasticPasswordSecret: eck-elasticsearch-es-elastic-user
+      
+      template:
+        enabled: true
+        ilms:
+        - name: hot-delete-14days
+          json:
+            policy:
+              phases:
+                hot:
+                  actions:
+                    rollover:
+                      max_size: 30gb
+                      max_age: 1d
+                      max_docs: 5000000000
+                    set_priority:
+                      priority: 100
+                delete:
+                  min_age: 14d
+                  actions:
+                    delete: {}
+        - name: hot-delete-7days
+          json:
+            policy:
+              phases:
+                hot:
+                  actions:
+                    rollover:
+                      max_size: 30gb
+                      max_age: 1d
+                      max_docs: 5000000000
+                    set_priority:
+                      priority: 100
+                delete:
+                  min_age: 7d
+                  actions:
+                    delete: {}
+        - name: hot-delete-3hour
+          json:
+            policy:
+              phases:
+                hot:
+                  actions:
+                    rollover:
+                      max_size: 30gb
+                      max_age: 1h
+                      max_docs: 5000000000
+                    set_priority:
+                      priority: 100
+                delete:
+                  min_age: 3h
+                  actions:
+                    delete: {}
+        templates:
+        - name: platform
+          json:
+            index_patterns: "platform*"
+            settings:
+              refresh_interval: 30s
+              number_of_shards: 3
+              number_of_replicas: 1
+              index.lifecycle.name: hot-delete-14days
+              index.lifecycle.rollover_alias: platform
+        - name: application
+          json:
+            index_patterns: "container*"
+            settings:
+              refresh_interval: 30s
+              number_of_shards: 3
+              number_of_replicas: 1
+              index.lifecycle.name: hot-delete-3hour
+              index.lifecycle.rollover_alias: container
+        - name: syslog
+          json:
+            index_patterns: "syslog*"
+            settings:
+              refresh_interval: 30s
+              number_of_shards: 2
+              number_of_replicas: 1
+              index.lifecycle.name: hot-delete-14days
+              index.lifecycle.rollover_alias: syslog
+  targetLogs:
+  - tag: kube.*
+    bufferChunkSize: 2M
+    bufferMaxSize: 5M
+    do_not_store_as_default: false
+    es_name: taco-es
+    index: container
+    memBufLimit: 20MB
+    multi_index:
+    - index: platform
+      es_name: taco-es
+      key: $kubernetes['namespace_name']
+      value: kube-system|taco-system|lma|argo
+    parser: docker
+    path: /var/log/containers/*.log
+    type: fluent
+    extraArgs:
+      multilineParser: docker, cri
+  - tag: syslog.*
+    es_name: taco-es
+    index: syslog
+    parser: syslog-rfc5424
+    path: /var/log/syslog
+    type: syslog
+
+  alerts:
+    enabled: true
+    namespace: taco-system
+    message: |-
+      {{ $labels.container }} in {{ $labels.pod }} ({{ $labels.taco_cluster }}/{{ $labels.namespace }} ) generate a error due to log = {{ $labels.log }}
+    summary: |-
+      {{ $labels.container }} in {{ $labels.pod }} ({{ $labels.taco_cluster }}/{{ $labels.namespace }} ) generate a error
+    rules:
+    # - name: critical-example
+    #   severity: critical
+    #   regex: "OOM Killed|Evict"
+    - name: warning-example
+      severity: warning
+      regex: "update.?error"
+
+  clusterName: taco-cluster.local
+  exclude:
+  - key: $kubernetes['container_name']
+    value: kibana|elasticsearch|fluent-bit
+
+logExporter:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+  spec:
+    nodeSelector:
+      taco-lma: enabled

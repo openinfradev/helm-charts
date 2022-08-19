@@ -21,9 +21,9 @@ spec:
         app: {{ template "fluentbit-operator.name" . }}
 {{ include "fluentbit-operator.labels" . | indent 8 }}
     spec:
-{{- if .Values.fluentbit.nodeSelector }}
+{{- if and .Values.fluentbit.job.spec .Values.fluentbit.job.spec.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.fluentbit.nodeSelector | indent 8 }}
+{{ toYaml .Values.fluentbit.job.spec.nodeSelector | indent 8 }}
 {{- end}}
       containers:
 
@@ -37,44 +37,44 @@ spec:
           - name: ES_URL
             value: https://{{.host}}:{{.port}}
           - name: ES_USER
-            value: {{ .username }}
+            value: {{ .dedicatedUser.username }}
           - name: ES_PW
-            value: {{ .password  }}
+            value: {{ .dedicatedUser.password  }}
           - name: ELASTIC_PW
             valueFrom:
               secretKeyRef:
-                name: {{ .elasticPasswordSecret  }}
+                name: {{ .dedicatedUser.elasticPasswordSecret  }}
                 key: elastic
         command:
         - /bin/sh
         - -c
         - /tmp/create_template_{{$esname}}.sh
         volumeMounts:
-        - name: {{ $.Release.Name }}-cr-cm
+        - name: {{ $.Release.Name }}-configmap
           mountPath: /tmp/create_template_{{$esname}}.sh
           subPath: create_template_{{$esname}}.sh
           readOnly: true
         {{- range .template.templates }}
-        - name: {{ $.Release.Name }}-cr-cm
+        - name: {{ $.Release.Name }}-configmap
           mountPath: /tmp/template-{{.name}}_{{$esname}}.json
           subPath: template-{{.name}}_{{$esname}}.json
           readOnly: true
         {{- end }}
         {{- range .template.ilms }}
-        - name: {{ $.Release.Name }}-cr-cm
+        - name: {{ $.Release.Name }}-configmap
           mountPath: /tmp/ilm-{{.name}}_{{$esname}}.json
           subPath: ilm-{{.name}}_{{$esname}}.json
           readOnly: true
         {{- end }}
         {{- range $envAll.Values.fluentbit.targetLogs }}
           {{- if .index}}
-        - name: {{ $.Release.Name }}-cr-cm
+        - name: {{ $.Release.Name }}-configmap
           mountPath: /tmp/index-{{.index }}_{{$esname}}.json
           subPath: index-{{.index }}_{{$esname}}.json
           readOnly: true
           {{- end }}
           {{- range .multi_index}}
-        - name: {{ $.Release.Name }}-cr-cm
+        - name: {{ $.Release.Name }}-configmap
           mountPath: /tmp/index-{{.index }}_{{$esname}}.json
           subPath: index-{{.index }}_{{$esname}}.json
           readOnly: true
@@ -84,8 +84,8 @@ spec:
   {{- end }}
       restartPolicy: OnFailure
       volumes:
-      - name: {{ $.Release.Name }}-cr-cm
+      - name: {{ $.Release.Name }}-configmap
         configMap:
-          name: {{ $.Release.Name }}-cr-cm
+          name: {{ $.Release.Name }}-configmap
           defaultMode: 365
 {{- end }}
