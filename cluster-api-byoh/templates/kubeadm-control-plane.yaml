@@ -1,8 +1,6 @@
 apiVersion: {{ .Values.api.group.controlplane }}/{{ .Values.api.version }}
 kind: KubeadmControlPlane
 metadata:
-  labels:
-    nodepool: pool0
   name: {{ .Values.cluster.name }}-control-plane
   namespace: {{ .Release.Namespace }}
 spec:

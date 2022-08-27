@@ -5,7 +5,6 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   bundleLookupBaseRegistry: {{ .Values.byoCluster.bundleLookupBaseRegistry }}
-  bundleLookupTag: {{ .Values.byoCluster.bundleLookupTag }}
   controlPlaneEndpoint:
     host: {{ .Values.byoCluster.controlPlaneEndpoint.host }}
     port: {{ .Values.byoCluster.controlPlaneEndpoint.port }}
