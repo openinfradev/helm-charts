@@ -9,3 +9,19 @@ spec:
       selector:
         matchLabels:
           role: control-plane
+      installerRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+        kind: K8sInstallerConfigTemplate
+        name: {{ .Values.cluster.name }}-control-plane
+        namespace: {{ .Release.Namespace }}
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: K8sInstallerConfigTemplate
+metadata:
+  name: {{ .Values.cluster.name }}-control-plane
+  namespace: {{ .Release.Namespace }}
+spec:
+  template:
+    spec:
+      bundleRepo: {{ .Values.byoCluster.bundleLookupBaseRegistry }}
+      bundleType: k8s

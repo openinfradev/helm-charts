@@ -46,6 +46,22 @@ spec:
       selector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      installerRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+        kind: K8sInstallerConfigTemplate
+        name: {{ $envAll.Values.cluster.name }}-md-{{ .name }}
+        namespace: {{ $envAll.Release.Namespace }}
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: K8sInstallerConfigTemplate
+metadata:
+  name: {{ $envAll.Values.cluster.name }}-md-{{ .name }}
+  namespace: {{ $envAll.Release.Namespace }}
+spec:
+  template:
+    spec:
+      bundleRepo: {{ $envAll.Values.byoCluster.bundleLookupBaseRegistry }}
+      bundleType: k8s
 ---
 apiVersion: {{ $envAll.Values.api.group.bootstrap }}/{{ $envAll.Values.api.version }}
 kind: KubeadmConfigTemplate
