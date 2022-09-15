@@ -25,6 +25,12 @@ spec:
 {{ toYaml .Values.fluentbit.job.spec.nodeSelector | indent 8 }}
   {{- end}}
       containers:
+      - name: dummy
+        image: "{{ $envAll.Values.image.elasticsearchTemplates.repository }}:{{ $envAll.Values.image.elasticsearchTemplates.tag }}"
+        imagePullPolicy: "{{ $envAll.Values.image.elasticsearchTemplates.pullPolicy }}"
+        command:
+        - echo
+        - "dummy: Naver mind"
   {{- range .Values.fluentbit.outputs.es }}
     {{- if .dedicatedUser.elasticPasswordSecret }}
       {{- $esname := .name }}
