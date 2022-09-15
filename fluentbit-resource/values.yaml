@@ -33,6 +33,7 @@ image:
     tag: newton
     pullPolicy: IfNotPresent
 
+
 ## Deploy a Fluentbit instance
 ##
 fluentbit:
@@ -128,6 +129,15 @@ fluentbit:
       # requests:
       #   memory: 400Mi
 
+  parsers: [ ]
+  # - name: taco-syslog-parser-for-ubuntu # modified from syslog-rfc3164
+  #   parser:
+  #     regex:
+  #       regex: '^(?<time>[^ ]* {1,2}[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[a-zA-Z0-9_\/\.\-]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? *(?<message>.*)$'
+  #       timeFormat: '%d/%b/%Y:%H:%M:%S %z'
+  #       timeKeep: false
+  #       timeKey: 'time'
+
   targetLogs: [ ]
   # - tag: kube.*
   #   bufferChunkSize: 2M
@@ -151,7 +161,7 @@ fluentbit:
   #   path: /var/log/syslog
   #   type: syslog
   outputs:
-    es: [ ]
+    es: []
     # - name: taco-es
     #   host: eck-elasticsearch-es-http
     #   port: 9200
@@ -168,85 +178,79 @@ fluentbit:
     #       json:
     #         policy:
     #           phases:
+    #             delete:
+    #               actions:
+    #                 delete: {}
+    #               min_age: 14d
     #             hot:
     #               actions:
     #                 rollover:
-    #                   max_size: 30gb
     #                   max_age: 1d
     #                   max_docs: 5000000000
+    #                   max_size: 30gb
     #                 set_priority:
     #                   priority: 100
-    #             delete:
-    #               min_age: 14d
-    #               actions:
-    #                 delete: {}
     #     - name: hot-delete-7days
     #       json:
     #         policy:
     #           phases:
+    #             delete:
+    #               actions:
+    #                 delete: {}
+    #               min_age: 7d
     #             hot:
     #               actions:
     #                 rollover:
-    #                   max_size: 30gb
     #                   max_age: 1d
     #                   max_docs: 5000000000
+    #                   max_size: 30gb
     #                 set_priority:
     #                   priority: 100
-    #             delete:
-    #               min_age: 7d
-    #               actions:
-    #                 delete: {}
     #     - name: hot-delete-3hour
     #       json:
     #         policy:
     #           phases:
+    #             delete:
+    #               actions:
+    #                 delete: {}
+    #               min_age: 3h
     #             hot:
     #               actions:
     #                 rollover:
-    #                   max_size: 30gb
     #                   max_age: 1h
     #                   max_docs: 5000000000
+    #                   max_size: 30gb
     #                 set_priority:
     #                   priority: 100
-    #             delete:
-    #               min_age: 3h
-    #               actions:
-    #                 delete: {}
     #     templates:
     #     - name: platform
     #       json:
-    #         index_patterns: "platform*"
+    #         index_patterns: platform*
     #         settings:
-    #           refresh_interval: 30s
-    #           number_of_shards: 3
-    #           number_of_replicas: 1
     #           index.lifecycle.name: hot-delete-14days
     #           index.lifecycle.rollover_alias: platform
-    #     - name: application
-    #       json:
-    #         index_patterns: "container*"
-    #         settings:
-    #           refresh_interval: 30s
-    #           number_of_shards: 3
     #           number_of_replicas: 1
-    #           index.lifecycle.name: hot-delete-3hour
-    #           index.lifecycle.rollover_alias: container
+    #           number_of_shards: 3
+    #           refresh_interval: 30s
     #     - name: syslog
     #       json:
-    #         index_patterns: "syslog*"
+    #         index_patterns: syslog*
     #         settings:
-    #           refresh_interval: 30s
-    #           number_of_shards: 2
-    #           number_of_replicas: 1
     #           index.lifecycle.name: hot-delete-14days
     #           index.lifecycle.rollover_alias: syslog
-
+    #           number_of_replicas: 1
+    #           number_of_shards: 2
+    #           refresh_interval: 30s
     kafka:
       enabled: false
       # broker: my-kafka-0.my-kafka-headless.lma.svc.cluster.local:9092,
       # topics: taco
     http:
       enabled: false
+    loki: []
+    # - name: taco-loki
+    #   host: loki
+    #   port: 3100
 
   alerts:
     enabled: false

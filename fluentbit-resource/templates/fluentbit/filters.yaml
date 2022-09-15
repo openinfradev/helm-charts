@@ -38,9 +38,10 @@ spec:
 {{- range .Values.fluentbit.exclude }}
       - {{ printf "%v ^(%v)$ intended_drop.$TAG false" .key .value }}
 {{- end }}
-{{- range .Values.fluentbit.targetLogs }}
-  {{- range .multi_index }}
-      - {{ printf "%v ^(%v)$ seperate.%v.$TAG false" .key .value .index }}
+{{- range $i, $log := .Values.fluentbit.targetLogs }}
+  {{- range $j, $multi := $log.multi_index }}
+    {{- $newTag := tuple "seperate" $log $j | include "fluentbit-operator.fluentbit.newTag" | trimSuffix ".*"  }}
+      - {{ printf "%v ^(%v)$ %v.$TAG false" $multi.key $multi.value $newTag }}
   {{- end}}
 {{- end}}
 {{- range .Values.fluentbit.alerts.rules }}

@@ -73,9 +73,9 @@ heritage: {{ $.Release.Service | quote }}
 {{- $es := index . 1 -}}
 {{- $type := index . 2 -}}
 {{- $index_name := index . 3 -}}
-{{- $tag := index . 4 -}}
+{{- $tag := index . 4 }}
 ---
-# Elasticsearch index 
+# Elasticsearch index {{ $es.index }} in {{ $es.name }}
 apiVersion: logging.kubesphere.io/v1alpha2
 kind: Output
 metadata:
@@ -95,7 +95,7 @@ spec:
 {{- end}}
     host: {{ $es.host }}
     port: {{ $es.port }}
-    type: {{ index . 2  }}
+    type: {{ $type  }}
     httpUser:
       valueFrom:
         secretKeyRef:
@@ -108,7 +108,43 @@ spec:
           key: password
     tls:
       verify: false
-{{- end -}}
+{{- end }}
+
+{{/* Generate output for loki */}}
+{{- define "fluentbit-operator.fluentbit.output.loki" -}}
+{{- $envAll := index . 0 -}}
+{{- $loki := index . 1 -}}
+{{- $type := index . 2 -}}
+{{- $index_name := index . 3 -}}
+{{- $tag := index . 4 -}}
+---
+# Loki {{ $loki.name }}
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Output
+metadata:
+  name: {{ template "fluentbit-operator.fullname" $envAll  }}-loki-{{ $loki.name  }}-{{ trimSuffix ".*" $tag  }}
+  namespace: {{ $envAll.Release.Namespace }}
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    app.kubernetes.io/version: v0.0.1
+spec:
+  match: {{ $tag | quote }}
+  loki:
+    autoKubernetesLabels: "on"
+    host: {{ $loki.host  }}
+    port: {{ $loki.port  }}
+    labels:
+    - job={{- $index_name }}
+  {{- if (eq $type "kubernates" ) }}
+    - $kubernetes['pod_name']
+    - $kubernetes['namespace_name']
+    - $kubernetes['container_name']
+  {{- else if (eq $type "syslog" ) }}
+    - $host
+    - $ident
+  {{- end}}
+
+{{end}}
 
 {{/* Generate filter for throttle */}}
 {{- define "fluentbit-operator.fluentbit.filter.throttle" -}}
@@ -120,7 +156,7 @@ spec:
 apiVersion: logging.kubesphere.io/v1alpha2
 kind: Filter
 metadata:
-  name: throttle-{{ $input.index  }}
+  name: {{ template "fluentbit-operator.fullname" $envAll  }}-throttle-{{ $input.index  }}
   namespace: {{ $envAll.Release.Namespace }}
   labels:
     logging.kubesphere.io/enabled: "true"
@@ -131,5 +167,13 @@ spec:
   - throttle:
 {{ toYaml  $input.throttle | indent 6 }}
 
-{{- end -}}
-{{- end -}}
+{{- end }}
+{{- end }}
+
+{{/* Generate newTag for internal usage to seperate logs */}}
+{{- define "fluentbit-operator.fluentbit.newTag" }}
+{{- $prefix := index . 0 -}}
+{{- $target := index . 1 -}}
+{{- $multi_idx := index . 2 -}}
+{{ $prefix }}-{{ trimSuffix ".*" $target.tag  }}-{{ $multi_idx }}.*
+{{- end }}
