@@ -1,0 +1,18 @@
+conf:
+  logLevel: debug
+  logFormat: json
+  recievers:
+  # chek https://github.com/resmoio/kubernetes-event-exporter#note
+  - name: default
+    type: elasticsearch
+    config:
+      hosts:
+      - "https://eck-elasticsearch-es-http.lma.svc.siim-dev:9200"
+      index: kube-events-2
+      username: elastic
+      password: tacoword
+      tls: # optional, advanced options for tls
+        insecureSkipVerify: true
+      # user: elasticsearch_user
+      # password: elasticsearch_password
+    

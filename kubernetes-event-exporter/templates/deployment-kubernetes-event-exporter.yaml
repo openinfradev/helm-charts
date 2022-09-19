@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kubernetes-event-exporter.fullname" . }}
+  labels:
+    {{- include "kubernetes-event-exporter.labels" . | nindent 4 }}
+spec:
+  replicas: {{.Values.replicas}}
+  template:
+    metadata:
+      labels:
+        {{- include "kubernetes-event-exporter.selectorLabels" . | nindent 8 }}
+      annotations:
+        {{- toYaml .Values.annotations | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: event-exporter
+      containers:
+      - name: {{ include "kubernetes-event-exporter.name" . }}
+        # The good practice would be to pin the version. This is just a reference so that we don't
+        # have to update this file in each release.
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag  }}"
+        imagePullPolicy: IfNotPresent
+        args:
+          - -conf=/data/config.yaml
+        volumeMounts:
+        - name: shared-data
+          mountPath: /tmp
+        - mountPath: /data
+          name: cfg
+{{- if .Values.addons.loki.enabled }}
+      - name: fluentbit
+        image: fluent/fluent-bit:1.9.7-debug
+        command: ['sh', '-c', '/fluent-bit/bin/fluent-bit -c /fluent-bit/config/fluent-bit.conf']
+        env:
+        - name: FLUENT_LOKI_HOST
+          value: loki
+        - name: FLUENT_LOKI_PORT
+          value: "3100"
+        volumeMounts:
+        - name: shared-data
+          mountPath: /tmp
+        - name: cfg
+          readOnly: true
+          mountPath: /fluent-bit/config
+{{- end }}
+      volumes:
+      - name: shared-data
+        emptyDir: {}
+      - name: cfg
+        configMap:
+          name: {{ include "kubernetes-event-exporter.fullname" . }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+  selector:
+    matchLabels:
+      {{- include "kubernetes-event-exporter.selectorLabels" . | nindent 6 }}
