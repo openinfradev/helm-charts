@@ -13,6 +13,8 @@ metadata:
     app: {{ template "fluentbit-operator.name" . }}-operator
 {{ include "fluentbit-operator.labels" . | indent 4 }}
 data:
+  dummy: |-
+    dummy 
 {{- range .Values.fluentbit.outputs.es }}
   {{- $es := . }}
   {{- if .dedicatedUser.elasticPasswordSecret }}
