@@ -1,0 +1,33 @@
+nameOverride: event-exporter
+
+conf:
+  logLevel: debug
+  logFormat: json
+  recievers:
+  # chek https://github.com/resmoio/kubernetes-event-exporter#note
+  - name: default
+    type: elasticsearch
+    config:
+      hosts:
+      - "https://eck-elasticsearch-es-http.lma.svc.siim-dev:9200"
+      index: kube-events
+      username: elastic
+      password: tacoword
+      tls: # optional, advanced options for tls
+        insecureSkipVerify: true
+      # user: elasticsearch_user
+      # password: elasticsearch_password
+  - name: stdout
+    type: stdout
+    config: { }
+  - name: loki
+    type: file
+    config:
+      path: "/tmp/kubernetes-event.log"
+    
+addons:
+  loki: 
+    enabled: true
+    host: loki
+    port: 3100      
+    target_file: "/tmp/kubernetes-event.log"

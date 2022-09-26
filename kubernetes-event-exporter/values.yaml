@@ -3,13 +3,11 @@
 # Declare variables to be passed into your templates.
 nameOverride: event-exporter
 image:
-  repository: siim/kubernetes-event-exporter
-  tag: 0.1.0
+  repository: ghcr.io/resmoio/kubernetes-event-exporter
+  tag: v1.0
   PullPolicy: IfNotPresent
 
-replicaCount: 1
-
-fullnameOverride: ""
+replicas: 1
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -20,8 +18,12 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: event-exporter
 
-podSecurityContext: {}
-  # fsGroup: 2000
+additionalRbacs:
+
+annotations:
+  # prometheus.io/scrape: 'true'
+  # prometheus.io/port: '2112'
+  # prometheus.io/path: '/metrics'
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -44,14 +46,31 @@ affinity: {}
 conf:
   logLevel: debug
   logFormat: json
-  default: 
-    hosts:
-    - "https://taco-elasticsearch-es-http.lma.svc.siim-dev:9200"
-    index: kube-events
-    user: elasticsearch_user
-    password: elasticsearch_password
-    additionalDefaultReceivers: []
-  additionalRoutes: {}
-  additionalReceivers: {}
-# reference for route and receiver
-# https://github.com/intelliguy/kubernetes-event-exporter/blob/master/config.example.yaml
+  recievers:
+  # chek https://github.com/resmoio/kubernetes-event-exporter#note
+  # - name: default
+  #   type: elasticsearch
+  #   config:
+  #     hosts:
+  #     - "https://taco-elasticsearch-es-http.lma.svc.siim-dev:9200"
+  #     index: kube-events
+  #     username: elasticsearch_user
+  #     password: elasticsearch_password
+  #     tls: # optional, advanced options for tls
+  #       insecureSkipVerify: true
+  - name: stdout
+    type: stdout
+    config: { }
+  # - name: loki
+  #   type: file
+  #   config:
+  #     path: "/tmp/kubernetes-event.log"
+
+clustername: cluster.local
+
+addons:
+  loki: 
+    enabled: false
+    # host: loki
+    # port: 3100      
+    # target_file: "/tmp/kubernetes-event.log"

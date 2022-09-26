@@ -1,4 +1,3 @@
-{{- if .Values.serviceAccount.create -}}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -24,4 +23,7 @@ subjects:
   - kind: ServiceAccount
     name: {{ include "kubernetes-event-exporter.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
+{{- if .Values.additionalRbacs -}}
+---
+
 {{- end -}}

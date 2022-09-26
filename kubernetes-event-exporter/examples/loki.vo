@@ -1,0 +1,16 @@
+conf:
+  logLevel: debug
+  logFormat: json
+  recievers:
+  # chek https://github.com/resmoio/kubernetes-event-exporter#note
+  - name: loki
+    type: file
+    config:
+      path: "/tmp/kubernetes-event.log"
+    
+addons:
+  loki: 
+    enabled: true
+    host: loki
+    port: 3100      
+    target_file: "/tmp/kubernetes-event.log"
