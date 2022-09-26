@@ -1,23 +1,25 @@
 {{- if .Values.grafanaDashboard.enabled }}
-{{- $files := .Files.Glob "dashboards/*.json" }}
+{{- $files := .Files.Glob "artifacts/dashboard/*.json" }}
 {{- if $files }}
-apiVersion: v1
-kind: ConfigMapList
-items:
+{{- $envAll := . }}
+
 {{- range $path, $fileContents := $files }}
 {{- $dashboardName := regexReplaceAll "(^.*/)(.*)\\.json$" $path "${2}" }}
-- apiVersion: v1
-  kind: ConfigMap
-  metadata:
-    name: {{ printf "%s-%s" "grafana" $dashboardName | trunc 63 | trimSuffix "-" }}
-    namespace: {{ printf "%s" (.Values.grafanaDashboard.namespace | default .Release.Namespace) }}
-    labels:
-      {{- if $.Values.grafanaDashboard.sidecar.label }}
-      {{ $.Values.grafanaDashboard.sidecar.label }}: "1"
-      {{- end }}
-      app: grafana
-  data:
-    {{ $dashboardName }}.json: {{ $.Files.Get $path | toJson }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-%s" "grafana" $dashboardName | trunc 63 | trimSuffix "-" }}
+  namespace: {{ printf "%s" ($envAll.Values.grafanaDashboard.namespace | default $envAll.Release.Namespace) }}
+  labels:
+    {{- if $.Values.grafanaDashboard.sidecar.label }}
+    {{ $.Values.grafanaDashboard.sidecar.label }}: "1"
+    {{- end }}
+    app: grafana
+data:
+{{ ($envAll.Files.Glob $path ).AsConfig | indent 2 }}
+
 {{- end }}
+
 {{- end }}
 {{- end }}
