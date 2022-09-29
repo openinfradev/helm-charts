@@ -1,5 +1,5 @@
 {{- if and .Values.fluentbit.enabled }}
-apiVersion: logging.kubesphere.io/v1alpha2
+apiVersion: fluentbit.fluent.io/v1alpha2
 kind: FluentBit
 metadata:
   name: fluent-bit
