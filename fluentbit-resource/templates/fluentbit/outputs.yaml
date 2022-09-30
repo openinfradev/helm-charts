@@ -46,13 +46,13 @@ data:
 {{- if and $envAll.Values.fluentbit.outputs.http.enabled }}
 ---
 # regex-based log exporter
-apiVersion: logging.kubesphere.io/v1alpha2
-kind: Output
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterOutput
 metadata:
   name: {{ template "fluentbit-operator.fullname" $envAll }}-exporter
   namespace: {{ $.Release.Namespace }}
   labels:
-    logging.kubesphere.io/enabled: "true"
+    fluentbit.fluent.io/enabled: "true"
     app.kubernetes.io/version: v0.0.1
 spec:
   match: "m_*"
@@ -65,13 +65,13 @@ spec:
 {{- if $envAll.Values.fluentbit.outputs.kafka.enabled }}
 ---
 # kafka support
-apiVersion: logging.kubesphere.io/v1alpha2
-kind: Output
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterOutput
 metadata:
   name: {{ template "fluentbit-operator.fullname" $envAll  }}-kafka
   namespace: {{ $.Release.Namespace }}
   labels:
-    logging.kubesphere.io/enabled: "true"
+    fluentbit.fluent.io/enabled: "true"
     app.kubernetes.io/version: v0.0.1
 spec:
   match: "kube*"
