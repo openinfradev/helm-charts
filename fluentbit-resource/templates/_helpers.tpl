@@ -76,13 +76,13 @@ heritage: {{ $.Release.Service | quote }}
 {{- $tag := index . 4 }}
 ---
 # Elasticsearch index {{ $es.index }} in {{ $es.name }}
-apiVersion: logging.kubesphere.io/v1alpha2
-kind: Output
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterOutput
 metadata:
   name: {{ template "fluentbit-operator.fullname" $envAll  }}-{{ $es.name }}-{{ $index_name }}
   namespace: {{ $envAll.Release.Namespace }}
   labels:
-    logging.kubesphere.io/enabled: "true"
+    fluentbit.fluent.io/enabled: "true"
     app.kubernetes.io/version: v0.0.1
 spec:
   match: {{ $tag | quote }}
@@ -119,13 +119,13 @@ spec:
 {{- $tag := index . 4 -}}
 ---
 # Loki {{ $loki.name }}
-apiVersion: logging.kubesphere.io/v1alpha2
-kind: Output
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterOutput
 metadata:
   name: {{ template "fluentbit-operator.fullname" $envAll  }}-loki-{{ $loki.name  }}-{{ trimSuffix ".*" $tag  }}
   namespace: {{ $envAll.Release.Namespace }}
   labels:
-    logging.kubesphere.io/enabled: "true"
+    fluentbit.fluent.io/enabled: "true"
     app.kubernetes.io/version: v0.0.1
 spec:
   match: {{ $tag | quote }}
@@ -153,13 +153,13 @@ spec:
 {{- if and $input.index $input.throttle }}
 ---
 # throttle
-apiVersion: logging.kubesphere.io/v1alpha2
+apiVersion: fluentbit.fluent.io/v1alpha2
 kind: Filter
 metadata:
   name: {{ template "fluentbit-operator.fullname" $envAll  }}-throttle-{{ $input.index  }}
   namespace: {{ $envAll.Release.Namespace }}
   labels:
-    logging.kubesphere.io/enabled: "true"
+    fluentbit.fluent.io/enabled: "true"
     app.kubernetes.io/version: v0.0.1
 spec:
   match: seperate.{{ $input.index }}.*

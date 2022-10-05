@@ -1,13 +1,13 @@
 {{- if and .Values.fluentbit.enabled }}
 {{- $envAll := . }}
 
-apiVersion: logging.kubesphere.io/v1alpha2
-kind: Filter
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterFilter
 metadata:
   name: kubernetes
   namespace: {{ $.Release.Namespace }}
   labels:
-    logging.kubesphere.io/enabled: "true"
+    fluentbit.fluent.io/enabled: "true"
     app.kubernetes.io/version: v0.0.1
 spec:
   match: "kube.*"
@@ -56,13 +56,13 @@ spec:
   {{- end}}
 {{- end}}
 ---
-apiVersion: logging.kubesphere.io/v1alpha2
-kind: Filter
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterFilter
 metadata:
   name: simplify
   namespace: {{ $.Release.Namespace }}
   labels:
-    logging.kubesphere.io/enabled: "true"
+    fluentbit.fluent.io/enabled: "true"
     app.kubernetes.io/version: v0.0.1
 spec:
   match: "m_*"
@@ -71,13 +71,13 @@ spec:
       operation: lift
       nestedUnder: kubernetes
 ---
-apiVersion: logging.kubesphere.io/v1alpha2
-kind: Filter
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterFilter
 metadata:
   name: add-info
   namespace: {{ $.Release.Namespace }}
   labels:
-    logging.kubesphere.io/enabled: "true"
+    fluentbit.fluent.io/enabled: "true"
     app.kubernetes.io/version: v0.0.1
 spec:
   match: "kube*"
@@ -87,13 +87,13 @@ spec:
       - add:
           cluster: {{.Values.fluentbit.clusterName }}
 ---
-apiVersion: logging.kubesphere.io/v1alpha2
-kind: Filter
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterFilter
 metadata:
   name: add-hostname
   namespace: {{ $.Release.Namespace }}
   labels:
-    logging.kubesphere.io/enabled: "true"
+    fluentbit.fluent.io/enabled: "true"
     app.kubernetes.io/version: v0.0.1
 spec:
   match: "kubenode.*"
@@ -104,13 +104,13 @@ spec:
           hostname: ${HOSTNAME}
 {{- range .Values.fluentbit.alerts.rules }}
 ---
-apiVersion: logging.kubesphere.io/v1alpha2
-kind: Filter
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterFilter
 metadata:
   name: add-{{.severity}}
   namespace: {{ $.Release.Namespace }}
   labels:
-    logging.kubesphere.io/enabled: "true"
+    fluentbit.fluent.io/enabled: "true"
     app.kubernetes.io/version: v0.0.1
 spec:
   match: "m_{{.severity}}.*"
