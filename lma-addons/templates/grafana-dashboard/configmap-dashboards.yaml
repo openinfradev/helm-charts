@@ -9,7 +9,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ printf "%s-%s" "grafana" $dashboardName | trunc 63 | trimSuffix "-" }}
+  name: {{ printf "%s-%s" "grafana" $dashboardName | lower | trunc 63 | trimSuffix "-" }}
   namespace: {{ printf "%s" ($envAll.Values.grafanaDashboard.namespace | default $envAll.Release.Namespace) }}
   labels:
     {{- if $.Values.grafanaDashboard.sidecar.label }}
