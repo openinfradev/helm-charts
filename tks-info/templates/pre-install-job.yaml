@@ -82,6 +82,8 @@ spec:
                 min_size_per_az integer,
                 max_size_per_az integer,
                 kubeconfig character varying(1000) COLLATE pg_catalog."default",
+                creator uuid,
+                description character varying(100) COLLATE pg_catalog."default",
                 updated_at timestamp with time zone,
                 created_at timestamp with time zone
 
@@ -96,6 +98,8 @@ spec:
                 status_desc character varying(10000) COLLATE pg_catalog."default",
                 cluster_id character varying(10) COLLATE pg_catalog."default",
                 external_label character varying(50) COLLATE pg_catalog."default",
+                creator uuid,
+                description character varying(100) COLLATE pg_catalog."default",
                 updated_at timestamp with time zone,
                 created_at timestamp with time zone
               );
