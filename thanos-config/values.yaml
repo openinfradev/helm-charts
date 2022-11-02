@@ -2,7 +2,7 @@ objectStorage:
   enabled: true
   secretName: thanos-objstore-secret
   bucketName: thanos
-  endpoint: thanos-minio.fed.svc.cluster.local:9000
+  endpoint: minio.fed.svc.cluster.local:9000
   access_key: taco
   secret_key: password
   insecure: true
