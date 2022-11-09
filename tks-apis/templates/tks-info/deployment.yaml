@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tks-info.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "tks-info.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.tksinfo.autoscaling.enabled }}
+  replicas: {{ .Values.tksinfo.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "tks-info.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.tksinfo.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "tks-info.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.tksinfo.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "tks-info.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.tksinfo.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.tksinfo.securityContext | nindent 12 }}
+          image: "{{ .Values.tksinfo.image.repository }}:{{ .Values.tksinfo.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.tksinfo.image.pullPolicy }}
+          ports:
+            - name: tks-info
+              containerPort: {{ .Values.tksinfo.args.port }}
+              protocol: TCP
+          command:
+            - /app/server
+          args: [
+            "-contract-address", "{{ .Values.tksinfo.args.tksContractAddress }}",
+            "-contract-port", "{{ .Values.tksinfo.args.tksContractPort }}",
+            "-dbhost", "{{ .Values.tksinfo.args.dbUrl }}",
+            "-port", "{{ .Values.tksinfo.args.port }}",
+            "-dbhost", "{{ .Values.tksinfo.args.dbUrl }}",
+            "-dbport", "{{ .Values.tksinfo.args.dbPort }}",
+            "-dbuser", "{{ .Values.tksinfo.args.dbUser }}",
+            "-dbpassword", "{{ .Values.tksinfo.args.dbPassword }}"
+          ]
+          resources:
+            {{- toYaml .Values.tksinfo.resources | nindent 12 }}
+      {{- with .Values.tksinfo.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tksinfo.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tksinfo.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
