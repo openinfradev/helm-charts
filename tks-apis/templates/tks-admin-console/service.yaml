@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "tks-admin-console.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "tks-admin-console.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.tksadminconsole.service.type }}
+  ports:
+    - port: {{ .Values.tksadminconsole.service.port }}
+      targetPort: {{ .Values.tksadminconsole.args.port }}
+      protocol: TCP
+  selector:
+    {{- include "tks-admin-console.selectorLabels" . | nindent 4 }}

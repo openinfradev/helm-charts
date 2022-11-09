@@ -1,6 +1,19 @@
+## global
 namespace: tks
+revision: main
+gitBaseUrl: https://github.com
+gitAccount: demo-decapod10
 
+db:
+  adminUser: postgres
+  adminPassword: tacopassword
+  dbName: tks
+  dbUrl: postgresql.decapod-db.svc
+  dbPort: 5432
+  dbUser: tksuser
+  dbPassword: tkspassword
 
+## services
 tksinfo:
   nameOverride: "tks-info"
   fullnameOverride: "tks-info"
@@ -12,7 +25,7 @@ tksinfo:
   imagePullSecrets: []
 
   service:
-    type: LoadBalancer
+    type: NodePort
     port: 9110
 
   serviceAccount:
@@ -24,14 +37,6 @@ tksinfo:
     tksContractAddress: tks-contract.tks.svc
     tksContractPort: 9110
     port: 9110
-    dbUrl: postgresql.decapod-db.svc
-    dbPort: 5432
-    dbUser: tksuser
-    dbPassword: tkspassword
-  db:
-    adminUser: postgres
-    adminPassword: tacopassword
-    dbName: tks
 
   ingress:
     enabled: false
@@ -39,9 +44,174 @@ tksinfo:
   autoscaling:
     enabled: false
 
-  podAnnotations: {}
-  podSecurityContext: {}
-  securityContext: {}
-  tolerations: []
-  affinity: {}
-  resources: {}
+tkscontract:
+  nameOverride: "tks-contract"
+  fullnameOverride: "tks-contract"
+  replicaCount: 1
+  image:
+    repository: docker.io/sktcloud/tks-contract
+    pullPolicy: Always
+    tag: "latest"
+  imagePullSecrets: []
+
+  service:
+    type: NodePort
+    port: 9110
+
+  serviceAccount:
+    create: true
+    annotations: {}
+    name: "tks-contract"
+
+  args:
+    port: 9110
+    tksInfoAddress: tks-info.tks.svc
+    tksInfoPort: 9110
+    argoAddress: argo-workflows-operator-server.argo.svc
+    argoPort: 2746
+    revision: main
+
+  ingress:
+    enabled: false
+
+  autoscaling:
+    enabled: false
+
+tksclusterlcm:
+  nameOverride: "tks-cluster-lcm"
+  fullnameOverride: "tks-cluster-lcm"
+  replicaCount: 1
+  image:
+    repository: docker.io/sktcloud/tks-cluster-lcm
+    pullPolicy: Always
+    tag: "latest"
+  imagePullSecrets: []
+
+  service:
+    type: NodePort
+    port: 9110
+
+  serviceAccount:
+    create: true
+    annotations: {}
+    name: "tks-cluster-lcm"
+
+  args:
+    port: 9110
+    infoAddress: tks-info.tks.svc
+    infoPort: 9110
+    contractAddress: tks-contract.tks.svc
+    contractPort: 9110
+    argoAddress: argo-workflows-operator-server.argo.svc
+    argoPort: 2746
+
+  ingress:
+    enabled: false
+
+  autoscaling:
+    enabled: false
+
+tksbatch:
+  nameOverride: "tks-batch"
+  fullnameOverride: "tks-batch"
+  replicaCount: 1
+  image:
+    repository: docker.io/sktcloud/tks-batch
+    pullPolicy: Always
+    tag: "latest"
+  imagePullSecrets: []
+
+  service:
+    type: ClusterIP
+    port: 9110
+
+  serviceAccount:
+    create: true
+    annotations: {}
+    name: "tks-batch"
+
+  args:
+    port: 9110
+    dbUrl: postgresql.decapod-db.svc
+    dbPort: 5432
+    dbUser: tksuser
+    dbPassword: tkspassword
+    argoAddress: argo-workflows-operator-server.argo.svc
+    argoPort: 2746
+
+  ingress:
+    enabled: false
+
+  autoscaling:
+    enabled: false
+
+tksappservelcm:
+  nameOverride: "tks-app-serve-lcm"
+  fullnameOverride: "tks-app-serve-lcm"
+  replicaCount: 1
+  image:
+    repository: docker.io/sktcloud/tks-app-serve-lcm
+    pullPolicy: Always
+    tag: "latest"
+  imagePullSecrets: []
+
+  service:
+    type: NodePort
+    port: 9110
+
+  serviceAccount:
+    create: true
+    annotations: {}
+    name: "tks-app-serve-lcm"
+
+  args:
+    port: 9110
+    tksInfoAddress: tks-info.tks.svc
+    tksInfoPort: 9110
+    argoAddress: argo-workflows-operator-server.argo.svc
+    argoPort: 2746
+    imageRegistryUrl: harbor.taco-cat.xyz/appserving
+
+  ingress:
+    enabled: false
+
+  autoscaling:
+    enabled: false
+
+tksadminconsole:
+  nameOverride: "tks-admin-console"
+  fullnameOverride: "tks-admin-console"
+  replicaCount: 1
+  image:
+    repository: docker.io/sktcloud/tks-admin-console
+    pullPolicy: Always
+    tag: "latest"
+  imagePullSecrets: []
+
+  service:
+    type: NodePort
+    port: 8080
+
+  serviceAccount:
+    create: true
+    annotations: {}
+    name: "tks-admin-console"
+
+  args:
+    port: 8080
+    infoAddress: tks-info.tks.svc
+    infoPort: 9110
+    contractAddress: tks-contract.tks.svc
+    contractPort: 9110
+    lcmAddress: tks-cluster-lcm.tks.svc
+    lcmPort: 9110
+    argoAddress: argo-workflows-operator-server.argo.svc
+    argoPort: 2746
+    webRoot: ../../web
+    jwtSecret: tks-admin-console-secret
+
+  ingress:
+    enabled: false
+
+  autoscaling:
+    enabled: false

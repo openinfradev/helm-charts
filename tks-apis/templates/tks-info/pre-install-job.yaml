@@ -20,19 +20,19 @@ spec:
         image: "bitnami/postgresql:11.12.0-debian-10-r44"
         env:
         - name: DB_ADMIN_USER
-          value: {{ .Values.tksinfo.db.adminUser }}
+          value: {{ .Values.db.adminUser }}
         - name: PGPASSWORD
-          value: {{ .Values.tksinfo.db.adminPassword }}
+          value: {{ .Values.db.adminPassword }}
         - name: DB_NAME
-          value: {{ .Values.tksinfo.db.dbName }}
+          value: {{ .Values.db.dbName }}
         - name: DB_USER
-          value: {{ .Values.tksinfo.args.dbUser }}
+          value: {{ .Values.db.dbUser }}
         - name: DB_PASSWORD
-          value: {{ .Values.tksinfo.args.dbPassword }}
+          value: {{ .Values.db.dbPassword }}
         - name: DB_URL
-          value: {{ .Values.tksinfo.args.dbUrl }}
+          value: {{ .Values.db.dbUrl }}
         - name: DB_PORT
-          value: "{{ .Values.tksinfo.args.dbPort }}"
+          value: "{{ .Values.db.dbPort }}"
         command:
         - /bin/bash
         - -c

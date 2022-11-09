@@ -26,13 +26,13 @@ spec:
         - name: DB_NAME
           value: {{ .Values.db.dbName }}
         - name: DB_USER
-          value: {{ .Values.args.dbUser }}
+          value: {{ .Values.db.dbUser }}
         - name: DB_PASSWORD
-          value: {{ .Values.args.dbPassword }}
+          value: {{ .Values.db.dbPassword }}
         - name: DB_URL
-          value: {{ .Values.args.dbUrl }}
+          value: {{ .Values.db.dbUrl }}
         - name: DB_PORT
-          value: "{{ .Values.args.dbPort }}"
+          value: "{{ .Values.db.dbPort }}"
         command:
         - /bin/bash
         - -c
@@ -74,7 +74,7 @@ spec:
               CREATE TABLE resource_quota
               (
                   id uuid primary key,
-                  cpu bigint,
+                 cpu bigint,
                   memory bigint,
                   block bigint,
                   block_ssd bigint,
@@ -86,3 +86,4 @@ spec:
               );
             """ | psql -h ${DB_URL} -p ${DB_PORT} -U ${DB_ADMIN_USER}
           fi
+

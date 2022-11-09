@@ -41,14 +41,13 @@ spec:
           command:
             - /app/server
           args: [
+            "-port", "{{ .Values.tksinfo.args.port }}",
             "-contract-address", "{{ .Values.tksinfo.args.tksContractAddress }}",
             "-contract-port", "{{ .Values.tksinfo.args.tksContractPort }}",
-            "-dbhost", "{{ .Values.tksinfo.args.dbUrl }}",
-            "-port", "{{ .Values.tksinfo.args.port }}",
-            "-dbhost", "{{ .Values.tksinfo.args.dbUrl }}",
-            "-dbport", "{{ .Values.tksinfo.args.dbPort }}",
-            "-dbuser", "{{ .Values.tksinfo.args.dbUser }}",
-            "-dbpassword", "{{ .Values.tksinfo.args.dbPassword }}"
+            "-dbhost", "{{ .Values.db.dbUrl }}",
+            "-dbport", "{{ .Values.db.dbPort }}",
+            "-dbuser", "{{ .Values.db.dbUser }}",
+            "-dbpassword", "{{ .Values.db.dbPassword }}"
           ]
           resources:
             {{- toYaml .Values.tksinfo.resources | nindent 12 }}

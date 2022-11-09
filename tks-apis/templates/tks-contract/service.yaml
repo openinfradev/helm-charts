@@ -6,10 +6,10 @@ metadata:
   labels:
     {{- include "tks-contract.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.tkscontract.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.args.port }}
+    - port: {{ .Values.tkscontract.service.port }}
+      targetPort: {{ .Values.tkscontract.args.port }}
       protocol: TCP
   selector:
     {{- include "tks-contract.selectorLabels" . | nindent 4 }}

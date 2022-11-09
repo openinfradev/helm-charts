@@ -6,66 +6,63 @@ metadata:
   labels:
     {{- include "tks-contract.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  {{- if not .Values.tkscontract.autoscaling.enabled }}
+  replicas: {{ .Values.tkscontract.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
       {{- include "tks-contract.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
+      {{- with .Values.tkscontract.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
         {{- include "tks-contract.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.imagePullSecrets }}
+      {{- with .Values.tkscontract.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "tks-contract.serviceAccountName" . }}
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.tkscontract.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+            {{- toYaml .Values.tkscontract.securityContext | nindent 12 }}
+          image: "{{ .Values.tkscontract.image.repository }}:{{ .Values.tkscontract.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.tkscontract.image.pullPolicy }}
           ports:
             - name: tks-contract
-              containerPort: {{ .Values.args.port }}
+              containerPort: {{ .Values.tkscontract.args.port }}
               protocol: TCP
           command:
             - /app/server
-          env:
-          - name: LOG_LEVEL
-            value: DEBUG
           args: [
-            "-port", "{{ .Values.args.port }}",
-            "-dbhost", "{{ .Values.args.dbUrl }}",
-            "-dbport", "{{ .Values.args.dbPort }}",
-            "-dbuser", "{{ .Values.args.dbUser }}",
-            "-dbpassword", "{{ .Values.args.dbPassword }}",
-            "-info-address", "{{ .Values.args.tksInfoAddress }}",
-            "-info-port", "{{ .Values.args.tksInfoPort }}",
-            "-argo-address", "{{ .Values.args.argoAddress }}",
-            "-argo-port", "{{ .Values.args.argoPort }}",
-            "-revision", "{{ .Values.args.revision }}"
+            "-port", "{{ .Values.tkscontract.args.port }}",
+            "-info-address", "{{ .Values.tkscontract.args.tksInfoAddress }}",
+            "-info-port", "{{ .Values.tkscontract.args.tksInfoPort }}",
+            "-argo-address", "{{ .Values.tkscontract.args.argoAddress }}",
+            "-argo-port", "{{ .Values.tkscontract.args.argoPort }}",
+            "-revision", "{{ .Values.tkscontract.args.revision }}",
+            "-dbhost", "{{ .Values.db.dbUrl }}",
+            "-dbport", "{{ .Values.db.dbPort }}",
+            "-dbuser", "{{ .Values.db.dbUser }}",
+            "-dbpassword", "{{ .Values.db.dbPassword }}",
           ]
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
+            {{- toYaml .Values.tkscontract.resources | nindent 12 }}
+      {{- with .Values.tkscontract.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
+      {{- with .Values.tkscontract.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- with .Values.tkscontract.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}

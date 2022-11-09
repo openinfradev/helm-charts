@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tks-batch.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "tks-batch.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.tksbatch.autoscaling.enabled }}
+  replicas: {{ .Values.tksbatch.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "tks-batch.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.tksbatch.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "tks-batch.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.tksbatch.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "tks-batch.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.tksbatch.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.tksbatch.securityContext | nindent 12 }}
+          image: "{{ .Values.tksbatch.image.repository }}:{{ .Values.tksbatch.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.tksbatch.image.pullPolicy }}
+          ports:
+            - name: tks-batch
+              containerPort: {{ .Values.tksbatch.args.port }}
+              protocol: TCP
+          command:
+            - /app/server
+          args: [
+            "-port", "{{ .Values.tksbatch.args.port }}",
+            "-argo-address", "{{ .Values.tksbatch.args.argoAddress }}",
+            "-argo-port", "{{ .Values.tksbatch.args.argoPort }}",
+            "-dbhost", "{{ .Values.db.dbUrl }}",
+            "-dbport", "{{ .Values.db.dbPort }}",
+            "-dbuser", "{{ .Values.db.dbUser }}",
+            "-dbpassword", "{{ .Values.db.dbPassword }}"
+          ]
+          resources:
+            {{- toYaml .Values.tksbatch.resources | nindent 12 }}
+      {{- with .Values.tksbatch.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tksbatch.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tksbatch.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

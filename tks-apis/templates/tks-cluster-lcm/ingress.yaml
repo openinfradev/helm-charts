@@ -1,6 +1,6 @@
-{{- if .Values.tkscontract.ingress.enabled -}}
-{{- $fullName := include "tks-contract.fullname" . -}}
-{{- $svcPort := .Values.tkscontract.service.port -}}
+{{- if .Values.tksclusterlcm.ingress.enabled -}}
+{{- $fullName := include "tks-cluster-lcm.fullname" . -}}
+{{- $svcPort := .Values.tksclusterlcm.service.port -}}
 {{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1beta1
 {{- else -}}
@@ -10,15 +10,15 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    {{- include "tks-contract.labels" . | nindent 4 }}
-  {{- with .Values.tkscontract.ingress.annotations }}
+    {{- include "tks-cluster-lcm.labels" . | nindent 4 }}
+  {{- with .Values.tksclusterlcm.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if .Values.tkscontract.ingress.tls }}
+  {{- if .Values.tksclusterlcm.ingress.tls }}
   tls:
-    {{- range .Values.tkscontract.ingress.tls }}
+    {{- range .Values.tksclusterlcm.ingress.tls }}
     - hosts:
         {{- range .hosts }}
         - {{ . | quote }}
@@ -27,7 +27,7 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-    {{- range .Values.tkscontract.ingress.hosts }}
+    {{- range .Values.tksclusterlcm.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:
