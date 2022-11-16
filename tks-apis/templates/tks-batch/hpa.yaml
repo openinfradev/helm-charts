@@ -1,0 +1,28 @@
+{{- if .Values.tksbatch.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "tks-batch.fullname" . }}
+  labels:
+    {{- include "tks-batch.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "tks-batch.fullname" . }}
+  minReplicas: {{ .Values.tksbatch.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.tksbatch.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.tksbatch.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.tksbatch.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.tksbatch.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.tksbatch.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}

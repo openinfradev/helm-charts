@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tks-admin-console.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "tks-admin-console.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.tksadminconsole.autoscaling.enabled }}
+  replicas: {{ .Values.tksadminconsole.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "tks-admin-console.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.tksadminconsole.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "tks-admin-console.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.tksadminconsole.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "tks-admin-console.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.tksadminconsole.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.tksadminconsole.securityContext | nindent 12 }}
+          image: "{{ .Values.tksadminconsole.image.repository }}:{{ .Values.tksadminconsole.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.tksadminconsole.image.pullPolicy }}
+          ports:
+            - name: tksadminconsole
+              containerPort: {{ .Values.tksadminconsole.args.port }}
+              protocol: TCP
+          command:
+            - ./server
+          args: [
+            "-port", "{{ .Values.tksadminconsole.args.port }}",
+            "-info-address", "{{ .Values.tksadminconsole.args.infoAddress }}",
+            "-info-port", "{{ .Values.tksadminconsole.args.infoPort }}",
+            "-contract-address", "{{ .Values.tksadminconsole.args.contractAddress }}",
+            "-contract-port", "{{ .Values.tksadminconsole.args.contractPort }}",
+            "-argo-address", "{{ .Values.tksadminconsole.args.argoAddress }}",
+            "-argo-port", "{{ .Values.tksadminconsole.args.argoPort }}",
+            "-web-root", "{{ .Values.tksadminconsole.args.webRoot }}",
+            "-jwt-secret", "{{ .Values.tksadminconsole.args.jwtSecret }}",
+            "-dbhost", "{{ .Values.db.dbUrl }}",
+            "-dbport", "{{ .Values.db.dbPort }}",
+            "-dbuser", "{{ .Values.db.dbUser }}",
+            "-dbpassword", "{{ .Values.db.dbPassword }}"
+          ]
+          resources:
+            {{- toYaml .Values.tksadminconsole.resources | nindent 12 }}
+      {{- with .Values.tksadminconsole.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tksadminconsole.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tksadminconsole.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

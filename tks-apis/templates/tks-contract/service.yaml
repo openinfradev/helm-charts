@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "tks-contract.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "tks-contract.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.tkscontract.service.type }}
+  ports:
+    - port: {{ .Values.tkscontract.service.port }}
+      targetPort: {{ .Values.tkscontract.args.port }}
+      protocol: TCP
+  selector:
+    {{- include "tks-contract.selectorLabels" . | nindent 4 }}
