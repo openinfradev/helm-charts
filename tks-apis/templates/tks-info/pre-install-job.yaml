@@ -13,6 +13,8 @@ spec:
   template:
     metadata:
       name: {{ include "tks-info.fullname" . }}
+      labels:
+        sidecar.istio.io/inject: "false"
     spec:
       restartPolicy: Never
       containers:
