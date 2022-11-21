@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "tks-batch.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "tks-batch.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.tksbatch.service.type }}
+  ports:
+    - port: {{ .Values.tksbatch.service.port }}
+      targetPort: {{ .Values.tksbatch.args.port }}
+      protocol: TCP
+  selector:
+    {{- include "tks-batch.selectorLabels" . | nindent 4 }}

@@ -1,0 +1,28 @@
+{{- if .Values.tksclusterlcm.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "tks-cluster-lcm.fullname" . }}
+  labels:
+    {{- include "tks-cluster-lcm.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "tks-cluster-lcm.fullname" . }}
+  minReplicas: {{ .Values.tksclusterlcm.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.tksclusterlcm.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.tksclusterlcm.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.tksclusterlcm.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.tksclusterlcm.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.tksclusterlcm.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}

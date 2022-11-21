@@ -1,0 +1,28 @@
+{{- if .Values.tksinfo.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "tks-info.fullname" . }}
+  labels:
+    {{- include "tks-info.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "tks-info.fullname" . }}
+  minReplicas: {{ .Values.tksinfo.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.tksinfo.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.tksinfo.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.tksinfo.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.tksinfo.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.tksinfo.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}
