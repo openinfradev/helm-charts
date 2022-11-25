@@ -136,42 +136,14 @@ grafanaDatasource:
     enabled: true
     url: "loki.fed:3100" 
 
-grafanaDashboard:
-  enabled: true
-  # namespace where grafana is installed
-  namespace: fed
-  sidecar:
-    label: grafana_dashboard
-  istio:
-    enabled: false
-  jaeger:
-    enabled: false
-  tacoCustomDashboard:
-    enabled: false
-    f5: false
-  ceph:
-    enabled: false
-  felixDataplane:
-    enabled: false
-  kubernetes:
-    enabled: false
-  openstack:
-    enabled: false
-  node:
-    enabled: false
-  argocd:
-    enabled: false
-  argowf:
-    enabled: false
-
 kibanaInit:
   enabled: false
-  image:
-    repository: sktdev/kibana-init
-    tag: v4
-  url: "http://192.168.97.54:30001"
-  username: elastic
-  password: tacoword
+  # image:
+  #   repository: sktdev/kibana-init
+  #   tag: v4
+  # url: "http://192.168.97.54:30001"
+  # username: elastic
+  # password: tacoword
 
 prometheusRules:
   aggregation:
@@ -200,3 +172,11 @@ prometheusRules:
       enabled: true
       interval: "5s"
 
+
+grafanaDashboard:
+  include: 
+  - kubernetes
+  - node
+  namespace: fed
+  sidecar:
+    label: grafana_dashboard
