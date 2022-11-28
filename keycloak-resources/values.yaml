@@ -13,10 +13,13 @@ keycloak:
     superuserEnabled: true
   storageClassName: storage # Valid only if externalDatabase is false
   externalAccessEnabled: false
+  externalAccessHost: CHANGEME
 
 keycloakRealm: []
 # - name: myrealm
 #   displayName: "My Realm"
+#   #tpl function doesn't work. Just put keycloak.name directly.
+#   keycloakSelector: {{ tpl .Values.keycloak.name . }}
 
 keycloakUser: []
 # - name: "myuser"
