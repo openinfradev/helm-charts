@@ -8,6 +8,14 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+keycloakCrImage:
+  repository: quay.io/keycloak/keycloak
+  tag: 17.0.0-legacy
+
+keycloakCrInitImage:
+  repository: quay.io/keycloak/keycloak-init-container
+  tag: 17.0.0-legacy
+
 imagePullSecrets: []
 
 resources: {}
