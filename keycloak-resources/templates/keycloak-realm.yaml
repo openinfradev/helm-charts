@@ -12,5 +12,5 @@ spec:
     displayName: "{{ .displayName }}"
   instanceSelector:
     matchLabels:
-      app: "{{ .name }}"
+      app: "{{ .keycloakSelector }}"
 {{- end }}

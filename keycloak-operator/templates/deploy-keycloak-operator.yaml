@@ -34,6 +34,10 @@ spec:
                   fieldPath: metadata.name
             - name: OPERATOR_NAME
               value: "keycloak-operator"
+            - name: RELATED_IMAGE_KEYCLOAK
+              value: "{{ .Values.keycloakCrImage.repository }}:{{ .Values.keycloakCrImage.tag }}"
+            - name: RELATED_IMAGE_KEYCLOAK_INIT_CONTAINER
+              value: "{{ .Values.keycloakCrInitImage.repository }}:{{ .Values.keycloakCrInitImage.tag }}"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

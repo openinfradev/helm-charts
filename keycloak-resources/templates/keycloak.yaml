@@ -13,3 +13,4 @@ spec:
   {{- end }}
   externalAccess:
     enabled: {{ .Values.keycloak.externalAccessEnabled }}
+    host: {{ .Values.keycloak.externalAccessHost }}
