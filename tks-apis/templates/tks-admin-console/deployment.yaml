@@ -46,14 +46,18 @@ spec:
             "-info-port", "{{ .Values.tksadminconsole.args.infoPort }}",
             "-contract-address", "{{ .Values.tksadminconsole.args.contractAddress }}",
             "-contract-port", "{{ .Values.tksadminconsole.args.contractPort }}",
+            "-lcm-address", "{{ .Values.tksadminconsole.args.lcmAddress }}",
+            "-lcm-port", "{{ .Values.tksadminconsole.args.lcmPort }}",
             "-argo-address", "{{ .Values.tksadminconsole.args.argoAddress }}",
             "-argo-port", "{{ .Values.tksadminconsole.args.argoPort }}",
             "-web-root", "{{ .Values.tksadminconsole.args.webRoot }}",
             "-jwt-secret", "{{ .Values.tksadminconsole.args.jwtSecret }}",
+            "-kubeconfig-path", "{{ .Values.tksadminconsole.args.kubeconfigPath }}",
             "-dbhost", "{{ .Values.db.dbUrl }}",
             "-dbport", "{{ .Values.db.dbPort }}",
             "-dbuser", "{{ .Values.db.dbUser }}",
-            "-dbpassword", "{{ .Values.db.dbPassword }}"
+            "-dbpassword", "{{ .Values.db.dbPassword }}",
+            "-git-account", "{{ .Values.gitAccount }}"
           ]
           resources:
             {{- toYaml .Values.tksadminconsole.resources | nindent 12 }}

@@ -209,6 +209,7 @@ tksadminconsole:
     argoPort: 2746
     webRoot: ../../web
     jwtSecret: tks-admin-console-secret
+    kubeconfigPath: ""
 
   ingress:
     enabled: false

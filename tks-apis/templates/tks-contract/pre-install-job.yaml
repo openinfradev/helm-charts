@@ -13,6 +13,8 @@ spec:
   template:
     metadata:
       name: {{ include "tks-contract.fullname" . }}
+      labels:
+        sidecar.istio.io/inject: "false"
     spec:
       restartPolicy: Never
       containers:
@@ -67,9 +69,6 @@ spec:
               );
               CREATE UNIQUE INDEX idx_contractor_name ON contracts(contractor_name);
               ALTER TABLE contracts CLUSTER ON idx_contractor_name;
-              INSERT INTO contracts(
-                contractor_name, id, available_services, updated_at, created_at)
-                VALUES ('tester', 'Pedcaa975', ARRAY['lma'], '2021-05-01'::timestamp, '2021-05-01'::timestamp);
 
               CREATE TABLE resource_quota
               (
