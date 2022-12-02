@@ -131,10 +131,10 @@ grafanaDatasource:
     label: grafana_datasource
   prometheus:
     enabled: true
-    url: "lma-prometheus-fed-master-prometheus:9090" 
+    url: "lma-prometheus-fed-master-prometheus:9090"
   loki:
     enabled: true
-    url: "loki.fed:3100" 
+    url: "loki.fed:3100"
 
 kibanaInit:
   enabled: false
@@ -174,9 +174,9 @@ prometheusRules:
 
 
 grafanaDashboard:
-  include: 
+  include:
   - kubernetes
   - node
-  namespace: fed
+  namespace: lma
   sidecar:
     label: grafana_dashboard
