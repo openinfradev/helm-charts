@@ -3,5 +3,4 @@ name: servicemesh-jaeger-resource
 description: A chart for jaeger resource related to service mesh
 type: application
 appVersion: "1.29.1"
-version: 2.27.1
-
+version: 2.27.2

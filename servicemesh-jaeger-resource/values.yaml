@@ -13,6 +13,15 @@ collector:
     limits:
       cpu: 1
       memory: 2Gi
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: servicemesh
+            operator: In
+            values:
+            - enabled
 storage:
   esIndexCleaner:
     enabled: true
@@ -28,6 +37,15 @@ storage:
       secretName: eck-elasticsearch-es-http-certs-public
 query:
   basePath: /
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: servicemesh
+            operator: In
+            values:
+            - enabled
 
 elasticsearch:
   image:
