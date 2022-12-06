@@ -22,6 +22,10 @@ spec:
       limits:
         cpu: {{ .Values.collector.resources.limits.cpu }}
         memory: {{ .Values.collector.resources.limits.memory }}
+  {{- with .Values.collector.affinity }}
+    affinity:
+      {{- toYaml . | nindent 6 }}
+  {{- end }}
   storage:
     type: elasticsearch
     {{- if .Values.storage.esIndexCleaner.enabled }}
@@ -37,10 +41,14 @@ spec:
         password: {{ .Values.storage.options.es.password }}
         tls.ca: {{ .Values.storage.options.es.tlsCa }}
         server-urls: {{ .Values.storage.options.es.serverUrls }}
-  {{- if .Values.query.basePath }}
   query:
+  {{- if .Values.query.basePath }}
     options:
       query.base-path: {{ .Values.query.basePath }}
+  {{- end }}
+  {{- with .Values.query.affinity }}
+    affinity:
+      {{- toYaml . | nindent 6 }}
   {{- end }}
   volumeMounts:
   - mountPath: /etc/ssl/certs
