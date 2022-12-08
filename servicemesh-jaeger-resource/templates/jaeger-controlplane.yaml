@@ -14,6 +14,7 @@ spec:
   ingress:
     enabled: {{ .Values.ingress.enabled }}
   collector:
+    image: {{ .Values.collector.image }}
     maxReplicas: {{ .Values.collector.maxReplicas }}
     resources:
       requests:
@@ -31,6 +32,7 @@ spec:
     {{- if .Values.storage.esIndexCleaner.enabled }}
     esIndexCleaner:
       enabled: true
+      image: {{ .Values.storage.esIndexCleaner.image }}
       numberOfDays: {{ .Values.storage.esIndexCleaner.numberOfDays }}
       schedule: "{{ .Values.storage.esIndexCleaner.schedule }}"
     {{- end }}
@@ -42,6 +44,7 @@ spec:
         tls.ca: {{ .Values.storage.options.es.tlsCa }}
         server-urls: {{ .Values.storage.options.es.serverUrls }}
   query:
+    image: {{ .Values.query.image }}
   {{- if .Values.query.basePath }}
     options:
       query.base-path: {{ .Values.query.basePath }}
@@ -50,6 +53,8 @@ spec:
     affinity:
       {{- toYaml . | nindent 6 }}
   {{- end }}
+  agent:
+    image: {{ .Values.agent.image }}
   volumeMounts:
   - mountPath: /etc/ssl/certs
     name: es-tls

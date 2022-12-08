@@ -5,6 +5,7 @@ sampling:
 ingress:
   enabled: false
 collector:
+  image: jaegertracing/jaeger-collector:1.29.0
   maxReplicas: 5
   resources:
     requests:
@@ -25,6 +26,7 @@ collector:
 storage:
   esIndexCleaner:
     enabled: true
+    image: jaegertracing/jaeger-es-index-cleaner:1.29.0
     numberOfDays: 7
     schedule: "55 04 * * *"
   options:
@@ -36,6 +38,7 @@ storage:
       serverUrls: https://eck-elasticsearch-es-http.istio-system.svc:9200
       secretName: eck-elasticsearch-es-http-certs-public
 query:
+  image: jaegertracing/jaeger-query:1.29.0
   basePath: /
   affinity:
     nodeAffinity:
@@ -46,7 +49,8 @@ query:
             operator: In
             values:
             - enabled
-
+agent:
+  image: jaegertracing/jaeger-agent:1.29.0
 elasticsearch:
   image:
     repository: docker.io/openstackhelm/heat
