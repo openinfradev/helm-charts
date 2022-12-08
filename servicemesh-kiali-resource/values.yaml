@@ -4,6 +4,8 @@ deployment:
   ingress:
     enabled: false
   namespace: istio-system
+  image_name: quay.io/kiali/kiali
+  image_version: v1.45.1
   replicas: 1
   resources:
     requests:
