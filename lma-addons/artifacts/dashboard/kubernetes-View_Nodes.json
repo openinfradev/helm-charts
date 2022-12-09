@@ -18,12 +18,13 @@
       }
     ]
   },
-  "description": "node",
-  "editable": true,
+  "description": "This is a Node dashboard for your Kubernetes cluster(s). Made for prometheus and take advantage of the latest Grafana features.",
+  "editable": false,
   "fiscalYearStartMonth": 0,
   "gnetId": 11074,
-  "graphTooltip": 0,
-  "iteration": 1668127964128,
+  "graphTooltip": 1,
+  "id": 31,
+  "iteration": 1670547256159,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -137,7 +138,7 @@
       "description": "Partition utilization, disk read, disk write, download bandwidth, upload bandwidth, if there are multiple network cards or multiple partitions, it is the value of the network card or partition with the highest utilization rate collected.",
       "fontSize": "100%",
       "gridPos": {
-        "h": 17,
+        "h": 10,
         "w": 24,
         "x": 0,
         "y": 5
@@ -541,7 +542,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 22
+        "y": 15
       },
       "hiddenSeries": false,
       "id": 205,
@@ -630,7 +631,7 @@
         "h": 7,
         "w": 8,
         "x": 8,
-        "y": 22
+        "y": 15
       },
       "hiddenSeries": false,
       "id": 204,
@@ -717,7 +718,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 22
+        "y": 15
       },
       "hiddenSeries": false,
       "id": 207,
@@ -787,10 +788,6 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -803,7 +800,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 29
+        "y": 22
       },
       "hiddenSeries": false,
       "id": 203,
@@ -833,7 +830,13 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (instance) (irate(node_network_transmit_bytes_total{device=~\"ens\\\\w*\", taco_cluster=~\"$taco_cluster\"}[5m])) * 8 + on(instance) group_left(nodename) \nnode_uname_info{taco_cluster=~\"$taco_cluster\"}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "exemplar": true,
+          "expr": "sum by (instance) (irate(node_network_transmit_bytes_total{device=~\"eth0\", taco_cluster=~\"$taco_cluster\"}[5m])) * 8 + on(instance) group_left(nodename) \nnode_uname_info{taco_cluster=~\"$taco_cluster\"}",
+          "interval": "",
           "legendFormat": "{{nodename}}",
           "refId": "A"
         }
@@ -873,10 +876,6 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
       "fieldConfig": {
         "defaults": {
           "links": []
@@ -889,7 +888,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 29
+        "y": 22
       },
       "hiddenSeries": false,
       "id": 206,
@@ -919,7 +918,13 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (instance) (irate(node_network_receive_bytes_total{device=~\"ens\\\\w*\", taco_cluster=~\"$taco_cluster\"}[5m])) * 8 + on(instance) group_left(nodename) \nnode_uname_info{taco_cluster=~\"$taco_cluster\"}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "exemplar": true,
+          "expr": "sum by (instance) (irate(node_network_receive_bytes_total{device=~\"eth0\", taco_cluster=~\"$taco_cluster\"}[5m])) * 8 + on(instance) group_left(nodename) \nnode_uname_info{taco_cluster=~\"$taco_cluster\"}",
+          "interval": "",
           "legendFormat": "{{nodename}}",
           "refId": "A"
         }
@@ -966,7 +971,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 36
+        "y": 29
       },
       "id": 208,
       "links": [
@@ -1173,7 +1178,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 46
+        "y": 39
       },
       "id": 189,
       "panels": [],
@@ -1228,7 +1233,7 @@
         "h": 2,
         "w": 4,
         "x": 0,
-        "y": 47
+        "y": 40
       },
       "hideTimeOverride": true,
       "id": 15,
@@ -1315,7 +1320,7 @@
         "h": 6,
         "w": 5,
         "x": 4,
-        "y": 47
+        "y": 40
       },
       "id": 177,
       "options": {
@@ -1376,7 +1381,7 @@
         "h": 6,
         "w": 11,
         "x": 9,
-        "y": 47
+        "y": 40
       },
       "id": 181,
       "links": [
@@ -1605,7 +1610,7 @@
         "h": 2,
         "w": 4,
         "x": 20,
-        "y": 47
+        "y": 40
       },
       "id": 20,
       "links": [],
@@ -1688,7 +1693,7 @@
         "h": 2,
         "w": 4,
         "x": 0,
-        "y": 49
+        "y": 42
       },
       "id": 14,
       "links": [],
@@ -1770,7 +1775,7 @@
         "h": 2,
         "w": 4,
         "x": 20,
-        "y": 49
+        "y": 42
       },
       "id": 179,
       "links": [],
@@ -1853,7 +1858,7 @@
         "h": 2,
         "w": 4,
         "x": 0,
-        "y": 51
+        "y": 44
       },
       "id": 75,
       "links": [],
@@ -1935,7 +1940,7 @@
         "h": 2,
         "w": 4,
         "x": 20,
-        "y": 51
+        "y": 44
       },
       "id": 178,
       "links": [],
@@ -1999,7 +2004,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 53
+        "y": 46
       },
       "height": "300",
       "hiddenSeries": false,
@@ -2024,6 +2029,9 @@
       "links": [],
       "maxPerRow": 6,
       "nullPointMode": "null as zero",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
       "pluginVersion": "8.3.3",
       "pointradius": 5,
@@ -2151,7 +2159,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 53
+        "y": 46
       },
       "hiddenSeries": false,
       "id": 7,
@@ -2175,6 +2183,9 @@
       "links": [],
       "maxPerRow": 6,
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
       "pluginVersion": "8.3.3",
       "pointradius": 5,
@@ -2298,7 +2309,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 53
+        "y": 46
       },
       "height": "300",
       "hiddenSeries": false,
@@ -2322,6 +2333,9 @@
       "linewidth": 2,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
       "pluginVersion": "8.3.3",
       "pointradius": 5,
@@ -2444,7 +2458,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 61
+        "y": 54
       },
       "hiddenSeries": false,
       "id": 174,
@@ -2467,6 +2481,9 @@
       "linewidth": 2,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
       "pluginVersion": "8.3.3",
       "pointradius": 5,
@@ -2547,7 +2564,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 61
+        "y": 54
       },
       "height": "300",
       "hiddenSeries": false,
@@ -2570,6 +2587,9 @@
       "linewidth": 2,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
       "pluginVersion": "8.3.3",
       "pointradius": 5,
@@ -2661,7 +2681,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 61
+        "y": 54
       },
       "height": "300",
       "hiddenSeries": false,
@@ -2684,6 +2704,9 @@
       "linewidth": 2,
       "links": [],
       "nullPointMode": "null as zero",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
       "pluginVersion": "8.3.3",
       "pointradius": 5,
@@ -2776,7 +2799,7 @@
         "h": 9,
         "w": 8,
         "x": 0,
-        "y": 69
+        "y": 62
       },
       "height": "300",
       "hiddenSeries": false,
@@ -2799,6 +2822,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
       "pluginVersion": "8.3.3",
       "pointradius": 5,
@@ -2901,7 +2927,7 @@
         "h": 9,
         "w": 8,
         "x": 8,
-        "y": 69
+        "y": 62
       },
       "hiddenSeries": false,
       "id": 175,
@@ -2923,6 +2949,9 @@
       "links": [],
       "maxPerRow": 6,
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
       "pluginVersion": "8.3.3",
       "pointradius": 5,
@@ -3001,7 +3030,7 @@
         "h": 9,
         "w": 8,
         "x": 16,
-        "y": 69
+        "y": 62
       },
       "hiddenSeries": false,
       "hideTimeOverride": false,
@@ -3021,6 +3050,9 @@
       "linewidth": 2,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
       "pluginVersion": "8.3.3",
       "pointradius": 1,
@@ -3101,10 +3133,6 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
       "decimals": 2,
       "fieldConfig": {
         "defaults": {
@@ -3118,7 +3146,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 78
+        "y": 71
       },
       "height": "300",
       "hiddenSeries": false,
@@ -3142,6 +3170,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
       "pluginVersion": "8.3.3",
       "pointradius": 2,
@@ -3158,7 +3189,12 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "irate(node_network_transmit_bytes_total{instance=~'$node',device=~\"ens[0-9]*\"}[5m])*8",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "exemplar": true,
+          "expr": "irate(node_network_transmit_bytes_total{instance=~'$node',device=~\"eth[0-9]*\"}[5m])*8",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -3167,7 +3203,12 @@
           "step": 4
         },
         {
-          "expr": "irate(node_network_receive_bytes_total{instance=~'$node', device=~\"ens[0-9]*\"}[5m])*8*-1",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "exemplar": true,
+          "expr": "irate(node_network_receive_bytes_total{instance=~'$node', device=~\"eth[0-9]*\"}[5m])*8*-1",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -3215,10 +3256,6 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
       "decimals": 2,
       "fieldConfig": {
         "defaults": {
@@ -3232,7 +3269,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 78
+        "y": 71
       },
       "height": "300",
       "hiddenSeries": false,
@@ -3256,6 +3293,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
       "pluginVersion": "8.3.3",
       "pointradius": 2,
@@ -3272,7 +3312,12 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "irate(node_network_transmit_packets_total{instance=~'$node',device=~\"ens[0-9]*\"}[5m])",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "exemplar": true,
+          "expr": "irate(node_network_transmit_packets_total{instance=~'$node',device=~\"eth[0-9]*\"}[5m])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -3281,7 +3326,12 @@
           "step": 4
         },
         {
-          "expr": "irate(node_network_receive_packets_total{instance=~'$node',device=~\"ens[0-9]*\"}[5m]) * -1",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "exemplar": true,
+          "expr": "irate(node_network_receive_packets_total{instance=~'$node',device=~\"eth[0-9]*\"}[5m]) * -1",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -3329,10 +3379,6 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
       "decimals": 2,
       "fieldConfig": {
         "defaults": {
@@ -3346,7 +3392,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 78
+        "y": 71
       },
       "height": "300",
       "hiddenSeries": false,
@@ -3370,6 +3416,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
       "pluginVersion": "8.3.3",
       "pointradius": 2,
@@ -3386,7 +3435,12 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "irate(node_network_receive_drop_total{instance=~\"$node\", device=~\"ens[0-9]*\"}[5m])",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "exemplar": true,
+          "expr": "irate(node_network_receive_drop_total{instance=~\"$node\", device=~\"eth[0-9]*\"}[5m])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -3425,643 +3479,40 @@
       "yaxis": {
         "align": false
       }
-    },
-    {
-      "aliasColors": {
-        "192.168.200.241:9100_TCP_alloc": "semi-dark-blue",
-        "TCP": "#6ED0E0",
-        "TCP_alloc": "blue"
-      },
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "decimals": 2,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "links": []
-        },
-        "overrides": []
-      },
-      "fill": 0,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 11,
-        "w": 24,
-        "x": 0,
-        "y": 86
-      },
-      "height": "300",
-      "hiddenSeries": false,
-      "id": 213,
-      "interval": "",
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "hideEmpty": true,
-        "hideZero": true,
-        "max": true,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "sort": "current",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "percentage": false,
-      "pluginVersion": "8.3.3",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "{{ pod }}",
-          "fill": 1,
-          "fillGradient": 1
-        },
-        {
-          "alias": "suy-aw01",
-          "color": "#3274D9",
-          "lines": true
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "sort_desc (sum by (pod) (rate(container_cpu_usage_seconds_total{taco_cluster=~\"$taco_cluster\", node=\"$show_hostname\", image!=\"\"}[2m])))",
-          "legendFormat": "{{ pod }}",
-          "refId": "B"
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "CPU Usage of All Pods in $show_hostname (Rate of CPU Time)",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "transformations": [],
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": "",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
-    },
-    {
-      "aliasColors": {
-        "192.168.200.241:9100_TCP_alloc": "semi-dark-blue",
-        "TCP": "#6ED0E0",
-        "TCP_alloc": "blue"
-      },
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "decimals": 2,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "links": []
-        },
-        "overrides": []
-      },
-      "fill": 0,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 11,
-        "w": 24,
-        "x": 0,
-        "y": 97
-      },
-      "height": "300",
-      "hiddenSeries": false,
-      "id": 214,
-      "interval": "",
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "hideEmpty": true,
-        "hideZero": true,
-        "max": true,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "sort": "current",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "percentage": false,
-      "pluginVersion": "8.3.3",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "avg by(pod) (container_memory_working_set_bytes{taco_cluster=~\"$taco_cluster\", node=\"$show_hostname\",container!=\"POD\",container!=\"\",image!=\"\"})",
-          "legendFormat": "{{ pod }}",
-          "refId": "B"
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "Memory Usage of All Pods in $show_hostname (2min avg)",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "transformations": [],
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "decbytes",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "format": "decbytes",
-          "label": "",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
-    },
-    {
-      "aliasColors": {
-        "192.168.200.241:9100_TCP_alloc": "semi-dark-blue",
-        "TCP": "#6ED0E0",
-        "TCP_alloc": "blue"
-      },
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "decimals": 2,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "links": []
-        },
-        "overrides": []
-      },
-      "fill": 0,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 10,
-        "w": 24,
-        "x": 0,
-        "y": 108
-      },
-      "height": "300",
-      "hiddenSeries": false,
-      "id": 158,
-      "interval": "",
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "hideEmpty": true,
-        "hideZero": true,
-        "max": true,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "sort": "current",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "percentage": false,
-      "pluginVersion": "8.3.3",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "/.*Sockets_used/",
-          "color": "#E02F44",
-          "lines": false,
-          "pointradius": 1,
-          "points": true,
-          "yaxis": 2
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "sum by (pod) (rate(container_network_receive_bytes_total{taco_cluster=~\"$taco_cluster\", interface=~\"cali.*\", node=\"$show_hostname\"}[1m])) * 8",
-          "format": "time_series",
-          "hide": false,
-          "instant": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "{{pod}}",
-          "refId": "A",
-          "step": 20
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "RX of All Pods in $show_hostname (from calico device)",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "transformations": [],
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "bps",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": "Total_Sockets_used",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
-    },
-    {
-      "aliasColors": {
-        "192.168.200.241:9100_TCP_alloc": "semi-dark-blue",
-        "TCP": "#6ED0E0",
-        "TCP_alloc": "blue"
-      },
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "decimals": 2,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "links": []
-        },
-        "overrides": []
-      },
-      "fill": 0,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 11,
-        "w": 24,
-        "x": 0,
-        "y": 118
-      },
-      "height": "300",
-      "hiddenSeries": false,
-      "id": 212,
-      "interval": "",
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "hideEmpty": true,
-        "hideZero": true,
-        "max": true,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "sort": "current",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "percentage": false,
-      "pluginVersion": "8.3.3",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "/.*Sockets_used/",
-          "color": "#E02F44",
-          "lines": false,
-          "pointradius": 1,
-          "points": true,
-          "yaxis": 2
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "sum by (pod) (rate(container_network_transmit_bytes_total{taco_cluster=~\"$taco_cluster\", interface=~\"cali.*\", node=\"$show_hostname\"}[1m])) * 8",
-          "format": "time_series",
-          "hide": false,
-          "instant": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "{{pod}}",
-          "refId": "A",
-          "step": 20
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "TX of All Pods in $show_hostname (from calico device)",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "transformations": [],
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "bps",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": "Total_Sockets_used",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
-    },
-    {
-      "aliasColors": {
-        "192.168.200.241:9100_TCP_alloc": "semi-dark-blue",
-        "TCP": "#6ED0E0",
-        "TCP_alloc": "blue"
-      },
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "decimals": 2,
-      "description": "Sockets_used - Sockets currently in use\n\nCurrEstab - TCP connections for which the current state is either ESTABLISHED or CLOSE- WAIT\n\nTCP_alloc - Allocated sockets\n\nTCP_tw - Sockets wating close\n\nUDP_inuse - Udp sockets currently in use\n\nRetransSegs - TCP retransmission packets\n\nOutSegs - Number of packets sent by TCP\n\nInSegs - Number of packets received by TCP",
-      "fieldConfig": {
-        "defaults": {
-          "links": []
-        },
-        "overrides": []
-      },
-      "fill": 0,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 129
-      },
-      "height": "300",
-      "hiddenSeries": false,
-      "id": 211,
-      "interval": "",
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "hideEmpty": true,
-        "hideZero": true,
-        "max": true,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "sort": "current",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "percentage": false,
-      "pluginVersion": "8.3.3",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "/.*Sockets_used/",
-          "color": "#E02F44",
-          "lines": false,
-          "pointradius": 1,
-          "points": true,
-          "yaxis": 2
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "node_netstat_Tcp_CurrEstab{instance=~'$node'}",
-          "format": "time_series",
-          "hide": false,
-          "instant": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "CurrEstab",
-          "refId": "A",
-          "step": 20
-        },
-        {
-          "expr": "node_sockstat_TCP_tw{instance=~'$node'}",
-          "format": "time_series",
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "TCP_tw",
-          "refId": "D"
-        },
-        {
-          "expr": "node_sockstat_sockets_used{instance=~'$node'}",
-          "hide": false,
-          "interval": "30m",
-          "intervalFactor": 1,
-          "legendFormat": "Sockets_used",
-          "refId": "B"
-        },
-        {
-          "expr": "node_sockstat_UDP_inuse{instance=~'$node'}",
-          "interval": "",
-          "legendFormat": "UDP_inuse",
-          "refId": "C"
-        },
-        {
-          "expr": "node_sockstat_TCP_alloc{instance=~'$node'}",
-          "interval": "",
-          "legendFormat": "TCP_alloc",
-          "refId": "E"
-        },
-        {
-          "expr": "irate(node_netstat_Tcp_PassiveOpens{instance=~'$node'}[5m])",
-          "hide": true,
-          "interval": "",
-          "legendFormat": "{{instance}}_Tcp_PassiveOpens",
-          "refId": "G"
-        },
-        {
-          "expr": "irate(node_netstat_Tcp_ActiveOpens{instance=~'$node'}[5m])",
-          "hide": true,
-          "interval": "",
-          "legendFormat": "{{instance}}_Tcp_ActiveOpens",
-          "refId": "F"
-        },
-        {
-          "expr": "irate(node_netstat_Tcp_InSegs{instance=~'$node'}[5m])",
-          "interval": "",
-          "legendFormat": "Tcp_InSegs",
-          "refId": "H"
-        },
-        {
-          "expr": "irate(node_netstat_Tcp_OutSegs{instance=~'$node'}[5m])",
-          "interval": "",
-          "legendFormat": "Tcp_OutSegs",
-          "refId": "I"
-        },
-        {
-          "expr": "irate(node_netstat_Tcp_RetransSegs{instance=~'$node'}[5m])",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Tcp_RetransSegs",
-          "refId": "J"
-        },
-        {
-          "expr": "irate(node_netstat_TcpExt_ListenDrops{instance=~'$node'}[5m])",
-          "hide": true,
-          "interval": "",
-          "legendFormat": "",
-          "refId": "K"
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "Network Sockstat",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "transformations": [],
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": "Total_Sockets_used",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
     }
   ],
   "refresh": "30s",
   "schemaVersion": 34,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "Kubernetes",
+    "tks",
+    "linux"
+  ],
   "templating": {
     "list": [
       {
         "current": {
           "selected": false,
-          "text": "siim-dev",
-          "value": "siim-dev"
+          "text": "Prometheus",
+          "value": "Prometheus"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "cluster.local",
+          "value": "cluster.local"
         },
         "datasource": {
           "type": "prometheus",
@@ -4152,8 +3603,8 @@
         "allFormat": "glob",
         "current": {
           "selected": false,
-          "text": "10.233.27.116:9100",
-          "value": "10.233.27.116:9100"
+          "text": "192.168.138.154:9100",
+          "value": "192.168.138.154:9100"
         },
         "datasource": {
           "type": "prometheus",
@@ -4250,8 +3701,8 @@
       {
         "current": {
           "selected": false,
-          "text": "prometheus-node-exporter-7f6vr",
-          "value": "prometheus-node-exporter-7f6vr"
+          "text": "prometheus-node-exporter-hxtqp",
+          "value": "prometheus-node-exporter-hxtqp"
         },
         "datasource": {
           "type": "prometheus",
@@ -4307,8 +3758,8 @@
     ]
   },
   "timezone": "browser",
-  "title": "3. Node Status",
-  "uid": "taco-nodestatus",
-  "version": 1,
+  "title": "[TKS] Kubernetes / View / Nodes",
+  "uid": "tks-UXnoYXF4z",
+  "version": 2,
   "weekStart": ""
 }
