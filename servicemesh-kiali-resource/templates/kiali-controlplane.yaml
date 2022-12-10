@@ -11,8 +11,6 @@ spec:
   deployment:
     ingress_enabled: {{ .Values.deployment.ingress.enabled }}
     namespace: {{ .Values.deployment.namespace }}
-    image_name: {{ .Values.deployment.image_name }}
-    image_version: {{ .Values.deployment.image_version }}
     replicas: {{ .Values.deployment.replicas }}
     resources:
       requests:
