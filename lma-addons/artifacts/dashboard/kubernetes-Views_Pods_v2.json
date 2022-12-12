@@ -1758,14 +1758,14 @@
           "type": "prometheus",
           "uid": "${datasource}"
         },
-        "definition": "label_values(kube_pod_info, namespace)",
+        "definition": "label_values(kube_pod_info{taco_cluster=\"$taco_cluster\"}, namespace)",
         "hide": 0,
         "includeAll": false,
         "multi": false,
         "name": "namespace",
         "options": [],
         "query": {
-          "query": "label_values(kube_pod_info, namespace)",
+          "query": "label_values(kube_pod_info{taco_cluster=\"$taco_cluster\"}, namespace)",
           "refId": "Prometheus-namespace-Variable-Query"
         },
         "refresh": 1,
@@ -1787,14 +1787,14 @@
           "type": "prometheus",
           "uid": "${datasource}"
         },
-        "definition": "label_values(kube_pod_info{namespace=\"$namespace\"}, pod)",
+        "definition": "label_values(kube_pod_info{taco_cluster=\"$taco_cluster\", namespace=\"$namespace\"}, pod)",
         "hide": 0,
         "includeAll": false,
         "multi": false,
         "name": "pod",
         "options": [],
         "query": {
-          "query": "label_values(kube_pod_info{namespace=\"$namespace\"}, pod)",
+          "query": "label_values(kube_pod_info{taco_cluster=\"$taco_cluster\", namespace=\"$namespace\"}, pod)",
           "refId": "Prometheus-pod-Variable-Query"
         },
         "refresh": 2,

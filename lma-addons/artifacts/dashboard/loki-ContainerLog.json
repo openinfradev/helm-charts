@@ -822,8 +822,8 @@
     ]
   },
   "timezone": "",
-  "title": "[TACO] Container Log Dashboard",
-  "uid": "TACO_CONT_DASHBOARD",
+  "title": "[TKS] Container Log Dashboard",
+  "uid": "tks_cont_log_dashboard_e345d",
   "version": 1,
   "weekStart": ""
 }

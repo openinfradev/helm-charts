@@ -1491,7 +1491,7 @@
           "type": "prometheus",
           "uid": "${datasource}"
         },
-        "definition": "label_values(up{job=\"coredns\"}, instance)",
+        "definition": "label_values(up{taco_cluster=\"$taco_cluster\", job=\"coredns\"}, instance)",
         "hide": 0,
         "includeAll": true,
         "label": "",
@@ -1499,7 +1499,7 @@
         "name": "instance",
         "options": [],
         "query": {
-          "query": "label_values(up{job=\"coredns\"}, instance)",
+          "query": "label_values(up{taco_cluster=\"$taco_cluster\", job=\"coredns\"}, instance)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
@@ -1522,7 +1522,7 @@
           "type": "prometheus",
           "uid": "${datasource}"
         },
-        "definition": "label_values(coredns_dns_requests_total, proto)",
+        "definition": "label_values(coredns_dns_requests_total{taco_cluster=\"$taco_cluster\"}, proto)",
         "hide": 0,
         "includeAll": false,
         "label": "",
@@ -1530,7 +1530,7 @@
         "name": "protocol",
         "options": [],
         "query": {
-          "query": "label_values(coredns_dns_requests_total, proto)",
+          "query": "label_values(coredns_dns_requests_total{taco_cluster=\"$taco_cluster\"}, proto)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
