@@ -134,7 +134,7 @@ grafanaDatasource:
     url: "lma-prometheus-fed-master-prometheus:9090"
   loki:
     enabled: true
-    url: "loki.fed:3100"
+    url: "loki-loki-distributed-gateway:80"
 
 kibanaInit:
   enabled: false
