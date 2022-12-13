@@ -9,7 +9,7 @@ metadata:
 spec:
   istio_namespace: {{ .Values.istioNamespace }}
   deployment:
-    accessible_namespace: ["**"]
+    accessible_namespaces: ["**"]
     ingress_enabled: {{ .Values.deployment.ingress.enabled }}
     namespace: {{ .Values.deployment.namespace }}
     image_name: {{ .Values.deployment.image_name }}
