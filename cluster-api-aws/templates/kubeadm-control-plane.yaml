@@ -1,4 +1,4 @@
-{{- if .Values.kubeadmControlPlane.enabled }}
+{{- if not .Values.cluster.eksEnabled }}
 kind: KubeadmControlPlane
 apiVersion: {{ .Values.api.group.controlplane }}/{{ .Values.api.version }}
 metadata:

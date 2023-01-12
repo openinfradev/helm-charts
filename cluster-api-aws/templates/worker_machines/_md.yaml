@@ -16,7 +16,11 @@
     apiVersion: {{ $envAll.Values.api.group.cluster }}/{{ $envAll.Values.api.version }}
     kind: MachineDeployment
     metadata:
+      {{- if $envAll.Values.cluster.eksEnabled }}
+      name: {{ $envAll.Values.cluster.name }}-eks-md-{{ $mdName }}-{{ . }}
+      {{- else }}
       name: {{ $envAll.Values.cluster.name }}-md-{{ $mdName }}-{{ . }}
+      {{- end }}
       namespace: {{ $envAll.Release.Namespace }}
       annotations:
         cluster.x-k8s.io/cluster-api-autoscaler-node-group-min-size: "{{ $minSizePerAZ }}"
@@ -29,8 +33,13 @@
           bootstrap:
             configRef:
               apiVersion: {{ $envAll.Values.api.group.bootstrap }}/{{ $envAll.Values.api.version }}
+              {{- if $envAll.Values.cluster.eksEnabled }}
+              kind: EKSConfigTemplate
+              name: {{ $envAll.Values.cluster.name }}-eks-md-{{ $mdName }}-{{ . }}
+              {{- else }}
               kind: KubeadmConfigTemplate
               name: {{ $envAll.Values.cluster.name }}-md-{{ $mdName }}-{{ . }}
+              {{- end }}
           clusterName: {{ $envAll.Values.cluster.name }}
           infrastructureRef:
             apiVersion: {{ $envAll.Values.api.group.infrastructure }}/{{ $envAll.Values.api.version }}
@@ -64,6 +73,16 @@
           spotMarketOptions:
             maxPrice: {{ $spot.maxPrice}}
           {{- end }}
+  {{- if $envAll.Values.cluster.eksEnabled }}
+  EKSConfigTemplate:
+    apiVersion: {{ $envAll.Values.api.group.bootstrap }}/{{ $envAll.Values.api.version }}
+    kind: EKSConfigTemplate                                                                                                               
+    metadata:                                                                                                                             
+      name: {{ $envAll.Values.cluster.name }}-eks-md-{{ $mdName }}-{{ . }}
+      namespace: {{ $envAll.Release.Namespace }}
+    spec: 
+      template: {}
+  {{- else }}
   KubeadmConfigTemplate:
     apiVersion: {{ $envAll.Values.api.group.bootstrap }}/{{ $envAll.Values.api.version }}
     kind: KubeadmConfigTemplate
@@ -78,5 +97,6 @@
               kubeletExtraArgs:
                 cloud-provider: aws
               name: '{{`{{ ds.meta_data.local_hostname }}`}}'
+  {{- end }}
 {{- end }}
 {{- end }}

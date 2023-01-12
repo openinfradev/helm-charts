@@ -22,7 +22,15 @@ rules:
   - 'infrastructure.cluster.x-k8s.io'
   resources:
   - awsclusters
-  verbs: 
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - 'controlplane.cluster.x-k8s.io'
+  resources:
+  - awsmanagedcontrolplanes
+  verbs:
   - get
   - list
   - watch
@@ -84,7 +92,15 @@ rules:
   - list
   - create
   - patch
-
+- apiGroups:
+  - 'bootstrap.cluster.x-k8s.io'
+  resources:
+  - eksconfigtemplates
+  verbs:
+  - get
+  - list
+  - create
+  - patch
 - apiGroups:
   - ''
   resources:

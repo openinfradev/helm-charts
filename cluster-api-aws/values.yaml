@@ -5,6 +5,7 @@ sshKeyName: default
 cluster:
   name: capi-quickstart
   region: ap-northeast-2
+  eksEnabled: false
   # networkSpec:
     # vpc:
       # id: vpc-id
@@ -44,7 +45,6 @@ api:
   version: v1beta1
 
 kubeadmControlPlane:
-  enabled: true
   replicas: 3
   controlPlaneMachineType: t3.large
   rootVolume:

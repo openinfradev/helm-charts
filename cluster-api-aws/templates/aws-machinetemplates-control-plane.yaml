@@ -1,4 +1,4 @@
-{{- if .Values.kubeadmControlPlane.enabled }}
+{{- if not .Values.cluster.eksEnabled }}
 apiVersion: {{ .Values.api.group.infrastructure }}/{{ .Values.api.version }}
 kind: AWSMachineTemplate
 metadata:

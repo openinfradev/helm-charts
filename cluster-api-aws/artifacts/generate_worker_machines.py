@@ -31,7 +31,7 @@ def apply_resources(machine_resources, name):
         f.write(yaml.dump(machine_resources[machine][resource]))
 
     f.close()
-    os.system('kubectl apply -n {0} -f {1}'.format(sys.argv[2], yaml_filename))
+    os.system('kubectl apply -n {0} -f {1}'.format(sys.argv[3], yaml_filename))
 
 def gen_machinepool_resources(subnets):
   subnetd=[]
@@ -70,7 +70,8 @@ def gen_machinedeployment_resource(subnets):
   apply_resources(machinedeployments, "mds")
 
 def main(argv):
-  stream = os.popen('kubectl get awscluster -n {1} {0} -o yaml'.format(sys.argv[1],sys.argv[2]))
+  # awscluster/awsmanagedcontrolplanes RESOURCE_NAME NAMESPACE
+  stream = os.popen('kubectl get {0} {1} -n {2} -o yaml'.format(sys.argv[1], sys.argv[2], sys.argv[3]))
   subnets = get_subnets(stream)
 
   gen_machinepool_resources(subnets)
