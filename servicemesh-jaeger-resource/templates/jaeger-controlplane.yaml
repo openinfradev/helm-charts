@@ -29,13 +29,13 @@ spec:
   {{- end }}
   storage:
     type: elasticsearch
-    {{- if .Values.storage.esIndexCleaner.enabled }}
     esIndexCleaner:
-      enabled: true
+      enabled: {{ .Values.storage.esIndexCleaner.enabled }}
+      {{- if .Values.storage.esIndexCleaner.enabled }}
       image: {{ .Values.storage.esIndexCleaner.image }}
       numberOfDays: {{ .Values.storage.esIndexCleaner.numberOfDays }}
       schedule: "{{ .Values.storage.esIndexCleaner.schedule }}"
-    {{- end }}
+      {{- end }}
     options:
       es:
         index-prefix: {{ .Values.storage.options.es.indexPrefix }}
