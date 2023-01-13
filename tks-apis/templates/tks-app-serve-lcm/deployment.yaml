@@ -47,6 +47,7 @@ spec:
             "-argo-address", "{{ .Values.tksappservelcm.args.argoAddress }}",
             "-argo-port", "{{ .Values.tksappservelcm.args.argoPort }}",
             "-image-registry-url", "{{ .Values.tksappservelcm.args.imageRegistryUrl }}",
+            "-harbor-pw-secret", "{{ .Values.tksappservelcm.args.harborPwSecret }}",
           ]
           resources:
             {{- toYaml .Values.tksappservelcm.resources | nindent 12 }}
