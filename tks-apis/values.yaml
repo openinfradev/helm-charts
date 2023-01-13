@@ -171,6 +171,7 @@ tksappservelcm:
     argoAddress: argo-workflows-operator-server.argo.svc
     argoPort: 2746
     imageRegistryUrl: harbor.taco-cat.xyz/appserving
+    harborPwSecret: harbor-core
 
   ingress:
     enabled: false
