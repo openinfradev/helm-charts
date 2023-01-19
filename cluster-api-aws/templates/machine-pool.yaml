@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       {{- with .labels }}
-      labels: 
+      labels:
         {{- toYaml . | nindent 12 }}
       {{- end }}
     spec:
@@ -28,13 +28,13 @@ spec:
           namespace: {{ $envAll.Release.Namespace }}
       clusterName: {{ $envAll.Values.cluster.name }}
       infrastructureRef:
-        apiVersion: {{ $envAll.Values.api.group.infrastructure }}/{{ $envAll.Values.api.version }}
+        apiVersion: {{ $envAll.Values.api.group.infrastructure }}/v1beta2
         kind: AWSMachinePool
         name: {{ $envAll.Values.cluster.name }}-mp-{{ .name }}
         namespace: {{ $envAll.Release.Namespace }}
       version: {{ $envAll.Values.cluster.kubernetesVersion }}
 ---
-apiVersion: {{ $envAll.Values.api.group.infrastructure }}/{{ $envAll.Values.api.version }}
+apiVersion: {{ $envAll.Values.api.group.infrastructure }}/v1beta2
 kind: AWSMachinePool
 metadata:
   name: {{ $envAll.Values.cluster.name }}-mp-{{ .name }}

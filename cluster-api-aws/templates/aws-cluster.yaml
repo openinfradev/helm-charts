@@ -1,4 +1,4 @@
-apiVersion: {{ .Values.api.group.infrastructure }}/{{ .Values.api.version }}
+apiVersion: {{ .Values.api.group.infrastructure }}/v1beta2
 kind: AWSCluster
 metadata:
   name: {{ .Values.cluster.name }}
