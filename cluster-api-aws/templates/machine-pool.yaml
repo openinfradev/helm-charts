@@ -1,11 +1,7 @@
 {{- $azPostfixList := list "a" "b" "c" "d" "e" "f" }}
 {{- $envAll := . }}
 {{- range .Values.machinePool }}
-{{- if eq $envAll.Values.api.version "v1alpha3" }}
-apiVersion: exp.{{ $envAll.Values.api.group.cluster }}/{{ $envAll.Values.api.version }}
-{{- else }}
 apiVersion: {{ $envAll.Values.api.group.cluster }}/{{ $envAll.Values.api.version }}
-{{- end }}
 kind: MachinePool
 metadata:
   name: {{ $envAll.Values.cluster.name }}-mp-{{ .name }}

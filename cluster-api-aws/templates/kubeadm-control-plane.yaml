@@ -6,18 +6,11 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.kubeadmControlPlane.replicas }}
-  {{- if eq .Values.api.version "v1alpha3" }}
-  infrastructureTemplate:
-    kind: AWSMachineTemplate
-    apiVersion: {{ .Values.api.group.infrastructure }}/{{ .Values.api.version }}
-    name: "{{ .Values.cluster.name }}-control-plane"
-  {{- else }}
   machineTemplate:
     infrastructureRef:
       apiVersion: {{ .Values.api.group.infrastructure }}/v1beta2
       kind: AWSMachineTemplate
       name: "{{ .Values.cluster.name }}-control-plane"
-  {{- end }}
   kubeadmConfigSpec:
     initConfiguration:
       nodeRegistration:
