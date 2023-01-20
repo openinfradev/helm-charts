@@ -14,7 +14,11 @@
 apiVersion: {{ $envAll.Values.api.group.cluster }}/{{ $envAll.Values.api.version }}
 kind: MachineDeployment
 metadata:
+  {{- if $envAll.Values.cluster.eksEnabled }}
+  name: {{ $envAll.Values.cluster.name }}-eks-md-{{ $mdName }}-{{ . }}
+  {{- else }}
   name: {{ $envAll.Values.cluster.name }}-md-{{ $mdName }}-{{ . }}
+  {{- end }}
   namespace: {{ $envAll.Release.Namespace }}
   annotations:
     cluster.x-k8s.io/cluster-api-autoscaler-node-group-min-size: "{{ $minSizePerAZ }}"
@@ -27,8 +31,13 @@ spec:
       bootstrap:
         configRef:
           apiVersion: {{ $envAll.Values.api.group.bootstrap }}/{{ $envAll.Values.api.version }}
+          {{- if $envAll.Values.cluster.eksEnabled }}
+          kind: EKSConfigTemplate
+          name: {{ $envAll.Values.cluster.name }}-eks-md-{{ $mdName }}
+          {{- else }}
           kind: KubeadmConfigTemplate
           name: {{ $envAll.Values.cluster.name }}-md-{{ $mdName }}
+           {{- end }}
       clusterName: {{ $envAll.Values.cluster.name }}
       failureDomain: {{ $envAll.Values.cluster.region }}{{ index $azPostfixList . }}
       infrastructureRef:
@@ -70,6 +79,15 @@ spec:
           values:
           - "*{{ $envAll.Values.cluster.name }}*"
 ---
+{{- if $envAll.Values.cluster.eksEnabled }}
+apiVersion: {{ $envAll.Values.api.group.bootstrap }}/{{ $envAll.Values.api.version }}
+kind: EKSConfigTemplate
+metadata:
+  name: {{ $envAll.Values.cluster.name }}-eks-md-{{ $mdName }}
+  namespace: {{ $envAll.Release.Namespace }}
+spec:
+  template: {}
+{{- else }}
 apiVersion: {{ $envAll.Values.api.group.bootstrap }}/{{ $envAll.Values.api.version }}
 kind: KubeadmConfigTemplate
 metadata:
@@ -83,5 +101,5 @@ spec:
           kubeletExtraArgs:
             cloud-provider: aws
           name: '{{`{{ ds.meta_data.local_hostname }}`}}'
----
+{{- end }}
 {{- end }}

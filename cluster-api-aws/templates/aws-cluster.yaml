@@ -1,3 +1,4 @@
+{{- if not .Values.cluster.eksEnabled }}
 apiVersion: {{ .Values.api.group.infrastructure }}/v1beta2
 kind: AWSCluster
 metadata:
@@ -23,3 +24,4 @@ spec:
   {{- if .Values.cluster.baseOS }}
   imageLookupBaseOS: {{ .Values.cluster.baseOS }}
   {{- end }}
+{{- end }}
