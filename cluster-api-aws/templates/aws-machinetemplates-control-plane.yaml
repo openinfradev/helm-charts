@@ -1,5 +1,5 @@
 {{- if .Values.kubeadmControlPlane.enabled }}
-apiVersion: {{ .Values.api.group.infrastructure }}/{{ .Values.api.version }}
+apiVersion: {{ .Values.api.group.infrastructure }}/v1beta2
 kind: AWSMachineTemplate
 metadata:
   name: {{ .Values.cluster.name }}-control-plane

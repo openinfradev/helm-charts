@@ -14,7 +14,7 @@ spec:
   {{- else }}
   machineTemplate:
     infrastructureRef:
-      apiVersion: {{ .Values.api.group.infrastructure }}/{{ .Values.api.version }}
+      apiVersion: {{ .Values.api.group.infrastructure }}/v1beta2
       kind: AWSMachineTemplate
       name: "{{ .Values.cluster.name }}-control-plane"
   {{- end }}
