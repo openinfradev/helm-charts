@@ -1,0 +1,11 @@
+{{- if .Values.cluster.eksEnabled }}
+apiVersion: {{ .Values.api.group.controlplane }}/{{ .Values.api.version }}
+kind: AWSManagedControlPlane
+metadata:
+  name: "{{ .Values.cluster.name }}-eks-control-plane"
+  namespace: {{ .Release.Namespace }}
+spec:
+  region: {{ .Values.cluster.region }}
+  sshKeyName: {{ .Values.sshKeyName }}
+  version: {{ .Values.cluster.kubernetesVersion }}
+{{- end }}

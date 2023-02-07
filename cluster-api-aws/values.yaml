@@ -5,6 +5,7 @@ sshKeyName: default
 cluster:
   name: capi-quickstart
   region: ap-northeast-2
+  eksEnabled: false
   # networkSpec:
     # vpc:
       # id: vpc-id
@@ -44,7 +45,6 @@ api:
   version: v1beta1
 
 kubeadmControlPlane:
-  enabled: true
   replicas: 3
   controlPlaneMachineType: t3.large
   rootVolume:
@@ -66,7 +66,6 @@ machinePool: []
 #   maxSize: 10
 #   rootVolume:
 #     size: 200
-#     type: gp2
 #   subnets: []
 #   labels: []
 # **this version dosen't support the spot instance, because the aws cluster api provider doesn't support it in awsmachinpool**
@@ -81,7 +80,6 @@ machinePool: []
 #   maxSize: 10
 #   rootVolume:
 #     size: 8
-#     type: gp2
 #   subnets: []
 #   labels: []
 

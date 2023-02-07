@@ -1,11 +1,7 @@
 {{- $azPostfixList := list "a" "b" "c" "d" "e" "f" }}
 {{- $envAll := . }}
 {{- range .Values.machinePool }}
-{{- if eq $envAll.Values.api.version "v1alpha3" }}
-apiVersion: exp.{{ $envAll.Values.api.group.cluster }}/{{ $envAll.Values.api.version }}
-{{- else }}
 apiVersion: {{ $envAll.Values.api.group.cluster }}/{{ $envAll.Values.api.version }}
-{{- end }}
 kind: MachinePool
 metadata:
   name: {{ $envAll.Values.cluster.name }}-mp-{{ .name }}
@@ -21,20 +17,42 @@ spec:
       {{- end }}
     spec:
       bootstrap:
+        {{- if $envAll.Values.cluster.eksEnabled }}
+        dataSecretName: ""
+        {{- else }}
         configRef:
           apiVersion: {{ $envAll.Values.api.group.bootstrap }}/{{ $envAll.Values.api.version }}
           kind: KubeadmConfig
           name: {{ $envAll.Values.cluster.name }}-mp-{{ .name }}
           namespace: {{ $envAll.Release.Namespace }}
+        {{- end }}
       clusterName: {{ $envAll.Values.cluster.name }}
       infrastructureRef:
         apiVersion: {{ $envAll.Values.api.group.infrastructure }}/v1beta2
+        {{- if $envAll.Values.cluster.eksEnabled }}
+        kind: AWSManagedMachinePool
+        {{- else }}
         kind: AWSMachinePool
+        {{- end }}
         name: {{ $envAll.Values.cluster.name }}-mp-{{ .name }}
         namespace: {{ $envAll.Release.Namespace }}
       version: {{ $envAll.Values.cluster.kubernetesVersion }}
 ---
 apiVersion: {{ $envAll.Values.api.group.infrastructure }}/v1beta2
+{{- if $envAll.Values.cluster.eksEnabled }}
+kind: AWSManagedMachinePool
+metadata:
+  name: {{ $envAll.Values.cluster.name }}-mp-{{ .name }}
+  namespace: {{ $envAll.Release.Namespace }}
+spec:
+  instanceType: {{ .machineType }}
+  diskSize: {{ .rootVolume.size }}
+  scaling:
+    maxSize: {{ .maxSize }}
+    minSize: {{ .minSize }}
+  remoteAccess:
+    sshKeyName: {{ $envAll.Values.sshKeyName }}
+{{- else }}
 kind: AWSMachinePool
 metadata:
   name: {{ $envAll.Values.cluster.name }}-mp-{{ .name }}
@@ -73,4 +91,5 @@ spec:
       kubeletExtraArgs:
         cloud-provider: aws
       name: '{{`{{ ds.meta_data.local_hostname }}`}}'
+{{- end }}
 {{- end }}
