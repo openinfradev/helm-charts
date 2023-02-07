@@ -1,0 +1,30 @@
+expose:
+  tls:
+    certSource: secret
+    secret:
+      secretName: #must_be_defined, "taco-cat-tls"
+  ingress:
+    hosts:
+      core: #must_be_defined, harbor-cicd.taco-cat.xyz
+    className: "nginx"
+externalURL: #must_be_defined, https://harbor-cicd.taco-cat.xyz
+persistence:
+  persistentVolumeClaim:
+    registry:
+      storageClass: #must_be_defined, "taco-storage"
+      size: 20Gi #tunable
+    chartmuseum:
+      storageClass: #must_be_defined, "taco-storage"
+      size: 20Gi #tunable
+    jobservice:
+      storageClass: #must_be_defined, "taco-storage"
+    database:
+      storageClass: #must_be_defined, "taco-storage"
+    redis:
+      storageClass: #must_be_defined, "taco-storage"
+    trivy:
+      storageClass: #must_be_defined, "taco-storage"
+notary:
+  enabled: false
+cache:
+  enabled: true
