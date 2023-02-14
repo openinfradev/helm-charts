@@ -5,6 +5,7 @@ metadata:
   name: {{ .Values.cluster.name }}
   namespace: {{ .Release.Namespace }}
 spec:
+  eksClusterName: {{ .Values.cluster.name }}
   region: {{ .Values.cluster.region }}
   sshKeyName: {{ .Values.sshKeyName }}
   version: {{ .Values.cluster.kubernetesVersion }}
