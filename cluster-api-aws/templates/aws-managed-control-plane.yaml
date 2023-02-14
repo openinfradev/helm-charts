@@ -9,4 +9,6 @@ spec:
   region: {{ .Values.cluster.region }}
   sshKeyName: {{ .Values.sshKeyName }}
   version: {{ .Values.cluster.kubernetesVersion }}
+  addons:
+    {{- toYaml .Values.cluster.eksAddons | nindent 4 }}
 {{- end }}

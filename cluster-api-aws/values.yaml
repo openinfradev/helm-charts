@@ -6,6 +6,14 @@ cluster:
   name: capi-quickstart
   region: ap-northeast-2
   eksEnabled: false
+  eksAddons: []
+  #  - name: "aws-ebs-csi-driver"
+  #    version: "v1.15.0-eksbuild.1"
+  #    conflictResolution: "overwrite"
+  #    serviceAccountRoleARN: arn:aws:iam::XXXXXXXXXXXX:role/AmazonEKS_EBS_CSI_DriverRole_NAME
+  #  - name: "vpc-cni"
+  #    version: "v1.10.1-eksbuild.1"
+  #    conflictResolution: "overwrite"
   # networkSpec:
     # vpc:
       # id: vpc-id
