@@ -18,11 +18,11 @@ spec:
     {{- end }}
     name: {{ .Values.cluster.name }}
   controlPlaneRef:
-    apiVersion: {{ .Values.api.group.controlplane }}/{{ .Values.api.version }}
-    name: "{{ .Values.cluster.name }}-control-plane"
     {{- if .Values.cluster.eksEnabled }}
+    apiVersion: {{ .Values.api.group.controlplane }}/v1beta2
     kind: AWSManagedControlPlane
-    name: "{{ .Values.cluster.name }}-eks-control-plane"
     {{- else }}
+    apiVersion: {{ .Values.api.group.controlplane }}/{{ .Values.api.version }}
     kind: KubeadmControlPlane
     {{- end }}
+    name: {{ .Values.cluster.name }}

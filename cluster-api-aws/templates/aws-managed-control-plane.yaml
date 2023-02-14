@@ -1,8 +1,8 @@
 {{- if .Values.cluster.eksEnabled }}
-apiVersion: {{ .Values.api.group.controlplane }}/{{ .Values.api.version }}
+apiVersion: {{ .Values.api.group.controlplane }}/v1beta2
 kind: AWSManagedControlPlane
 metadata:
-  name: "{{ .Values.cluster.name }}-eks-control-plane"
+  name: {{ .Values.cluster.name }}
   namespace: {{ .Release.Namespace }}
 spec:
   region: {{ .Values.cluster.region }}
