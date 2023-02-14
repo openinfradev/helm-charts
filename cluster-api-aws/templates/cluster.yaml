@@ -10,15 +10,13 @@ spec:
       cidrBlocks: {{ .Values.cluster.podCidrBlocks }}
   {{- end }}
   infrastructureRef:
-    {{- if .Values.cluster.eksEnabled }}
-    apiVersion: {{ .Values.api.group.controlplane }}/{{ .Values.api.version }}
-    kind: AWSManagedControlPlane
-    name: "{{ .Values.cluster.name }}-eks-control-plane"
-    {{- else }}
     apiVersion: {{ .Values.api.group.infrastructure }}/v1beta2
+    {{- if .Values.cluster.eksEnabled }}
+    kind: AWSManagedCluster
+    {{- else }}
     kind: AWSCluster
-    name: {{ .Values.cluster.name }}
     {{- end }}
+    name: {{ .Values.cluster.name }}
   controlPlaneRef:
     apiVersion: {{ .Values.api.group.controlplane }}/{{ .Values.api.version }}
     name: "{{ .Values.cluster.name }}-control-plane"
