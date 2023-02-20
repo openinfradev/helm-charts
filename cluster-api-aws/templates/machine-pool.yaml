@@ -45,6 +45,7 @@ metadata:
   name: {{ $envAll.Values.cluster.name }}-mp-{{ .name }}
   namespace: {{ $envAll.Release.Namespace }}
 spec:
+  eksNodegroupName: {{ $envAll.Values.cluster.name }}-mp-{{ .name }}
   instanceType: {{ .machineType }}
   diskSize: {{ .rootVolume.size }}
   scaling:

@@ -10,21 +10,19 @@ spec:
       cidrBlocks: {{ .Values.cluster.podCidrBlocks }}
   {{- end }}
   infrastructureRef:
-    {{- if .Values.cluster.eksEnabled }}
-    apiVersion: {{ .Values.api.group.controlplane }}/{{ .Values.api.version }}
-    kind: AWSManagedControlPlane
-    name: "{{ .Values.cluster.name }}-eks-control-plane"
-    {{- else }}
     apiVersion: {{ .Values.api.group.infrastructure }}/v1beta2
-    kind: AWSCluster
-    name: {{ .Values.cluster.name }}
-    {{- end }}
-  controlPlaneRef:
-    apiVersion: {{ .Values.api.group.controlplane }}/{{ .Values.api.version }}
-    name: "{{ .Values.cluster.name }}-control-plane"
     {{- if .Values.cluster.eksEnabled }}
-    kind: AWSManagedControlPlane
-    name: "{{ .Values.cluster.name }}-eks-control-plane"
+    kind: AWSManagedCluster
     {{- else }}
+    kind: AWSCluster
+    {{- end }}
+    name: {{ .Values.cluster.name }}
+  controlPlaneRef:
+    {{- if .Values.cluster.eksEnabled }}
+    apiVersion: {{ .Values.api.group.controlplane }}/v1beta2
+    kind: AWSManagedControlPlane
+    {{- else }}
+    apiVersion: {{ .Values.api.group.controlplane }}/{{ .Values.api.version }}
     kind: KubeadmControlPlane
     {{- end }}
+    name: {{ .Values.cluster.name }}

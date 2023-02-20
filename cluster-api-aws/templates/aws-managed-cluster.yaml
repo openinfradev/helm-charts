@@ -1,0 +1,8 @@
+{{- if .Values.cluster.eksEnabled }}
+apiVersion: {{ .Values.api.group.infrastructure }}/v1beta2
+kind: AWSManagedCluster
+metadata:
+  name: {{ .Values.cluster.name }}
+  namespace: {{ .Release.Namespace }}
+spec: {}
+{{- end }}

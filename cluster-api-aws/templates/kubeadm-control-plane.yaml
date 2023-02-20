@@ -2,7 +2,7 @@
 kind: KubeadmControlPlane
 apiVersion: {{ .Values.api.group.controlplane }}/{{ .Values.api.version }}
 metadata:
-  name: "{{ .Values.cluster.name }}-control-plane"
+  name: {{ .Values.cluster.name }}
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.kubeadmControlPlane.replicas }}
