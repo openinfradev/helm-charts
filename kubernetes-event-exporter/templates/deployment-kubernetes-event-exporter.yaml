@@ -22,7 +22,7 @@ spec:
       - name: {{ include "kubernetes-event-exporter.name" . }}
         # The good practice would be to pin the version. This is just a reference so that we don't
         # have to update this file in each release.
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag  }}"
+        image: "{{ .Values.image.exporter.repository }}:{{ .Values.image.exporter.tag  }}"
         imagePullPolicy: IfNotPresent
         args:
           - -conf=/data/config.yaml
@@ -33,7 +33,7 @@ spec:
           name: cfg
 {{- if .Values.addons.loki.enabled }}
       - name: fluentbit
-        image: fluent/fluent-bit:1.9.7-debug
+        image: "{{ .Values.image.sidecar.repository }}:{{ .Values.image.sidecar.tag  }}"
         command: ['sh', '-c', '/fluent-bit/bin/fluent-bit -c /fluent-bit/config/fluent-bit.conf']
         env:
         - name: FLUENT_LOKI_HOST

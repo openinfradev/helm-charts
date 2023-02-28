@@ -3,9 +3,15 @@
 # Declare variables to be passed into your templates.
 nameOverride: event-exporter
 image:
-  repository: ghcr.io/resmoio/kubernetes-event-exporter
-  tag: v1.0
   PullPolicy: IfNotPresent
+  exporter:
+    repository: ghcr.io/resmoio/kubernetes-event-exporter
+    tag: v1.0
+  sidecar:
+    repository: fluent/fluent-bit
+    tag: 1.9.7-debug
+
+
 
 replicas: 1
 
@@ -69,8 +75,8 @@ conf:
 clustername: cluster.local
 
 addons:
-  loki: 
+  loki:
     enabled: false
     # host: loki
-    # port: 3100      
+    # port: 3100
     # target_file: "/tmp/kubernetes-event.log"
