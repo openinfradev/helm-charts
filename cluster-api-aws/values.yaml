@@ -14,7 +14,7 @@ cluster:
   #  - name: "vpc-cni"
   #    version: "v1.10.1-eksbuild.1"
   #    conflictResolution: "overwrite"
-  # networkSpec:
+  # network:
     # vpc:
       # id: vpc-id
       # tags:
