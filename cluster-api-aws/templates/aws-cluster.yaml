@@ -7,8 +7,8 @@ metadata:
 spec:
   region: {{ .Values.cluster.region }}
   sshKeyName: {{ .Values.sshKeyName }}
-  {{- with .Values.cluster.networkSpec }}
-  networkSpec:
+  {{- with .Values.cluster.network}}
+  network:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   bastion:
