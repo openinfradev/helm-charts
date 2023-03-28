@@ -1,0 +1,19 @@
+{{- if .Values.s3.enabled }}
+{{- $envAll := . }}
+{{- range .Values.s3.name }}
+---
+apiVersion: s3.services.k8s.aws/v1alpha1
+kind: Bucket
+metadata:
+  name: {{ . }}
+  namespace: {{ $envAll.Release.Namespace }}
+spec:
+  name: {{ . }}
+  tagging:
+    tagSet:
+    - key: services.tks/generator
+      value: tks.v2023.06.00
+  versioning:
+    status: Enabled
+{{- end }}
+{{- end }}

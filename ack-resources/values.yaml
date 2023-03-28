@@ -1,0 +1,8 @@
+s3: 
+  enabled: False
+  name: 
+  - loki
+  - thanos 
+  
+ec2:
+  enabled: False
