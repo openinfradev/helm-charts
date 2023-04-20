@@ -5,6 +5,9 @@ sshKeyName: default
 cluster:
   name: capi-quickstart
   region: ap-northeast-2
+  # multitenancyId:
+  #   kind: AWSClusterRoleIdentity or AWSClusterStaticIdentity
+  #   name: other-account-role
   eksEnabled: false
   eksAddons: []
   #  - name: "aws-ebs-csi-driver"
