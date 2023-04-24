@@ -84,7 +84,7 @@
             "type": "loki",
             "uid": "P8E80F9AEF21F6940"
           },
-          "expr": "sum(count_over_time({job=~\"$job\"}|~\"$search\"[$__interval]))",
+          "expr": "sum(count_over_time({cluster=~\"$cluster\", job=~\"$job\"}|~\"$search\"[$__interval]))",
           "refId": "A"
         }
       ],
@@ -148,7 +148,7 @@
             "type": "loki",
             "uid": "P8E80F9AEF21F6940"
           },
-          "expr": "{job=~\"$job\"}|~\"$search\"",
+          "expr": "{cluster=~\"$cluster\", job=~\"$job\"}|~\"$search\"",
           "refId": "A"
         }
       ],
