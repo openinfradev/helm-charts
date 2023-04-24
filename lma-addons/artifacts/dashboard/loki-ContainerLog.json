@@ -23,8 +23,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": 12611,
   "graphTooltip": 0,
-  "id": 31,
-  "iteration": 1664254848776,
+  "id": 14,
+  "iteration": 1682322826754,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -700,6 +700,31 @@
   "templating": {
     "list": [
       {
+        "allValue": ".+",
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "loki",
+          "uid": "P8E80F9AEF21F6940"
+        },
+        "definition": "label_values(cluster)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Cluster",
+        "multi": false,
+        "name": "cluster",
+        "options": [],
+        "query": "label_values(cluster)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
         "current": {
           "selected": false,
           "text": "kube-system",
@@ -709,14 +734,14 @@
           "type": "loki",
           "uid": "P8E80F9AEF21F6940"
         },
-        "definition": "label_values(kubernetes_namespace_name)",
+        "definition": "label_values({cluster=~\"$cluster\"}, kubernetes_namespace_name)",
         "hide": 0,
         "includeAll": false,
         "label": "Namespace",
         "multi": false,
         "name": "kubernetes_namespace_name",
         "options": [],
-        "query": "label_values(kubernetes_namespace_name)",
+        "query": "label_values({cluster=~\"$cluster\"}, kubernetes_namespace_name)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -737,14 +762,14 @@
           "type": "loki",
           "uid": "P8E80F9AEF21F6940"
         },
-        "definition": "label_values({kubernetes_namespace_name=\"$kubernetes_namespace_name\"}, kubernetes_pod_name)",
+        "definition": "label_values({cluster=~\"$cluster\", kubernetes_namespace_name=\"$kubernetes_namespace_name\"}, kubernetes_pod_name)",
         "hide": 0,
         "includeAll": true,
         "label": "Pod",
         "multi": false,
         "name": "kubernetes_pod_name",
         "options": [],
-        "query": "label_values({kubernetes_namespace_name=\"$kubernetes_namespace_name\"}, kubernetes_pod_name)",
+        "query": "label_values({cluster=~\"$cluster\", kubernetes_namespace_name=\"$kubernetes_namespace_name\"}, kubernetes_pod_name)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -765,14 +790,14 @@
           "type": "loki",
           "uid": "P8E80F9AEF21F6940"
         },
-        "definition": "label_values({kubernetes_namespace_name=\"$kubernetes_namespace_name\",kubernetes_pod_name=\"$kubernetes_pod_name\"}, kubernetes_container_name)",
+        "definition": "label_values({cluster=~\"$cluster\", kubernetes_namespace_name=\"$kubernetes_namespace_name\",kubernetes_pod_name=\"$kubernetes_pod_name\"}, kubernetes_container_name)",
         "hide": 0,
         "includeAll": true,
         "label": "Container",
         "multi": false,
         "name": "kubernetes_container_name",
         "options": [],
-        "query": "label_values({kubernetes_namespace_name=\"$kubernetes_namespace_name\",kubernetes_pod_name=\"$kubernetes_pod_name\"}, kubernetes_container_name)",
+        "query": "label_values({cluster=~\"$cluster\", kubernetes_namespace_name=\"$kubernetes_namespace_name\",kubernetes_pod_name=\"$kubernetes_pod_name\"}, kubernetes_container_name)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -823,7 +848,7 @@
   },
   "timezone": "",
   "title": "[TKS] Container Log Dashboard",
-  "uid": "tks_cont_log_dashboard_e345d",
+  "uid": "tks_container_log",
   "version": 1,
   "weekStart": ""
 }

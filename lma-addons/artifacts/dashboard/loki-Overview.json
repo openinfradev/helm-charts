@@ -172,6 +172,31 @@
           "type": "loki",
           "uid": "P8E80F9AEF21F6940"
         },
+        "definition": "label_values(cluster)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Cluster",
+        "multi": false,
+        "name": "cluster",
+        "options": [],
+        "query": "label_values(cluster)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "allValue": ".+",
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "loki",
+          "uid": "P8E80F9AEF21F6940"
+        },
         "definition": "label_values(job)",
         "hide": 0,
         "includeAll": true,
@@ -228,8 +253,8 @@
     ]
   },
   "timezone": "",
-  "title": "[TACO] Loki Dashboard Overview",
-  "uid": "TACO_LOKI_OVERVIEW",
+  "title": "[TKS] Loki Dashboard Overview",
+  "uid": "tks_loki_overview",
   "version": 1,
   "weekStart": ""
 }
