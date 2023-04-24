@@ -98,7 +98,7 @@
       "pluginVersion": "8.3.3",
       "targets": [
         {
-          "expr": "sum(count_over_time(({kubernetes_namespace_name=\"$kubernetes_namespace_name\", kubernetes_container_name=~\"$kubernetes_container_name\", kubernetes_pod_name=~\"$kubernetes_pod_name\"})[$__interval]))",
+          "expr": "sum(count_over_time(({cluster=~\"$cluster\", kubernetes_namespace_name=\"$kubernetes_namespace_name\", kubernetes_container_name=~\"$kubernetes_container_name\", kubernetes_pod_name=~\"$kubernetes_pod_name\"})[$__interval]))",
           "hide": false,
           "refId": "A"
         }
@@ -176,7 +176,7 @@
       "pluginVersion": "8.3.3",
       "targets": [
         {
-          "expr": "sum(count_over_time(({kubernetes_namespace_name=\"$kubernetes_namespace_name\", kubernetes_container_name=~\"$kubernetes_container_name\", kubernetes_pod_name=~\"$kubernetes_pod_name\"} |~ \"(?i)$searchable_pattern\")[$__interval]))",
+          "expr": "sum(count_over_time(({cluster=~\"$cluster\", kubernetes_namespace_name=\"$kubernetes_namespace_name\", kubernetes_container_name=~\"$kubernetes_container_name\", kubernetes_pod_name=~\"$kubernetes_pod_name\"} |~ \"(?i)$searchable_pattern\")[$__interval]))",
           "hide": false,
           "refId": "A"
         }
@@ -209,7 +209,7 @@
       },
       "targets": [
         {
-          "expr": "{kubernetes_namespace_name=\"$kubernetes_namespace_name\", kubernetes_pod_name=~\"$kubernetes_pod_name\", kubernetes_container_name=~\"$kubernetes_container_name\"} |~ \"(?i)$searchable_pattern\" ",
+          "expr": "{cluster=~\"$cluster\", kubernetes_namespace_name=\"$kubernetes_namespace_name\", kubernetes_pod_name=~\"$kubernetes_pod_name\", kubernetes_container_name=~\"$kubernetes_container_name\"} |~ \"(?i)$searchable_pattern\" ",
           "hide": false,
           "refId": "A"
         }
@@ -258,7 +258,7 @@
       "strokeWidth": "1.5",
       "targets": [
         {
-          "expr": "sum(count_over_time(({kubernetes_namespace_name=\"$kubernetes_namespace_name\", kubernetes_pod_name=~\"$kubernetes_pod_name\"})[$__interval])) by (kubernetes_container_name)",
+          "expr": "sum(count_over_time(({cluster=~\"$cluster\", kubernetes_namespace_name=\"$kubernetes_namespace_name\", kubernetes_pod_name=~\"$kubernetes_pod_name\"})[$__interval])) by (kubernetes_container_name)",
           "hide": false,
           "refId": "A"
         }
@@ -306,7 +306,7 @@
       "strokeWidth": "0.4",
       "targets": [
         {
-          "expr": "sum(count_over_time(({kubernetes_namespace_name=\"$kubernetes_namespace_name\", kubernetes_pod_name=~\"$kubernetes_pod_name\", kubernetes_container_name=~\"$kubernetes_container_name\"} |~ \"(?i)$searchable_pattern\")[$__interval])) by (kubernetes_pod_name)",
+          "expr": "sum(count_over_time(({cluster=~\"$cluster\", kubernetes_namespace_name=\"$kubernetes_namespace_name\", kubernetes_pod_name=~\"$kubernetes_pod_name\", kubernetes_container_name=~\"$kubernetes_container_name\"} |~ \"(?i)$searchable_pattern\")[$__interval])) by (kubernetes_pod_name)",
           "refId": "A"
         }
       ],
@@ -381,7 +381,7 @@
       "pluginVersion": "8.3.3",
       "targets": [
         {
-          "expr": "sum(count_over_time(({kubernetes_namespace_name=\"$kubernetes_namespace_name\", kubernetes_container_name=~\"$kubernetes_container_name\", kubernetes_pod_name=~\"$kubernetes_pod_name\"} |~ \"(?i)$searchable_pattern\")[$__interval])) * 100 / sum(count_over_time(({kubernetes_namespace_name=\"$kubernetes_namespace_name\", kubernetes_container_name=~\"$kubernetes_container_name\", kubernetes_pod_name=~\"$kubernetes_pod_name\"})[$__interval]))",
+          "expr": "sum(count_over_time(({cluster=~\"$cluster\", kubernetes_namespace_name=\"$kubernetes_namespace_name\", kubernetes_container_name=~\"$kubernetes_container_name\", kubernetes_pod_name=~\"$kubernetes_pod_name\"} |~ \"(?i)$searchable_pattern\")[$__interval])) * 100 / sum(count_over_time(({cluster=~\"$cluster\", kubernetes_namespace_name=\"$kubernetes_namespace_name\", kubernetes_container_name=~\"$kubernetes_container_name\", kubernetes_pod_name=~\"$kubernetes_pod_name\"})[$__interval]))",
           "hide": false,
           "refId": "A"
         }
@@ -450,7 +450,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(count_over_time(({kubernetes_namespace_name=\"$kubernetes_namespace_name\", kubernetes_pod_name=~\"$kubernetes_pod_name\", kubernetes_container_name=~\"$kubernetes_container_name\"} |~ \"(?i)$searchable_pattern\")[$__interval])) by (kubernetes_pod_name)",
+          "expr": "sum(count_over_time(({cluster=~\"$cluster\", kubernetes_namespace_name=\"$kubernetes_namespace_name\", kubernetes_pod_name=~\"$kubernetes_pod_name\", kubernetes_container_name=~\"$kubernetes_container_name\"} |~ \"(?i)$searchable_pattern\")[$__interval])) by (kubernetes_pod_name)",
           "refId": "A"
         }
       ],
@@ -543,7 +543,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(({kubernetes_namespace_name=\"$kubernetes_namespace_name\", kubernetes_container_name=~\"$kubernetes_container_name\", kubernetes_pod_name=~\"$kubernetes_pod_name\"} |~ \"(?i)$searchable_pattern\")[30s])) by (kubernetes_pod_name)",
+          "expr": "sum(rate(({cluster=~\"$cluster\", kubernetes_namespace_name=\"$kubernetes_namespace_name\", kubernetes_container_name=~\"$kubernetes_container_name\", kubernetes_pod_name=~\"$kubernetes_pod_name\"} |~ \"(?i)$searchable_pattern\")[30s])) by (kubernetes_pod_name)",
           "hide": false,
           "refId": "A"
         }
@@ -651,7 +651,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(count_over_time(({kubernetes_namespace_name=\"$kubernetes_namespace_name\", kubernetes_pod_name=~\"$kubernetes_pod_name\"})[$__interval])) by (kubernetes_container_name)",
+          "expr": "sum(count_over_time(({cluster=~\"$cluster\", kubernetes_namespace_name=\"$kubernetes_namespace_name\", kubernetes_pod_name=~\"$kubernetes_pod_name\"})[$__interval])) by (kubernetes_container_name)",
           "hide": false,
           "refId": "A"
         }
