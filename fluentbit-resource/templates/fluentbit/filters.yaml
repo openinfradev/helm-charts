@@ -80,7 +80,7 @@ metadata:
     fluentbit.fluent.io/enabled: "true"
     app.kubernetes.io/version: v0.0.1
 spec:
-  match: "kube*"
+  match: "*"
   filters:
   - modify:
       rules:
