@@ -11,4 +11,8 @@ spec:
   version: {{ .Values.cluster.kubernetesVersion }}
   addons:
     {{- toYaml .Values.cluster.eksAddons | nindent 4 }}
+  {{- with .Values.cluster.multitenancyId}}
+  identityRef:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 {{- end }}
