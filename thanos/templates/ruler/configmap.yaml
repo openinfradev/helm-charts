@@ -14,5 +14,9 @@ metadata:
   {{- end }}
 data:
   ruler.yml: |-
+    {{- if kindIs "string" .Values.ruler.config }}
     {{- include "common.tplvalues.render" (dict "value" .Values.ruler.config "context" $) | nindent 4 }}
+    {{- else }}
+    {{- toYaml .Values.ruler.config | nindent 4 }}
+    {{- end }}
 {{ end }}
