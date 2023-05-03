@@ -147,7 +147,7 @@ kibanaInit:
 
 prometheusRules:
   aggregation:
-    enabled: false
+    enabled: true
     rule:
       kubernetes: true
       kubeNodeResources: true
@@ -172,6 +172,11 @@ prometheusRules:
       enabled: true
       interval: "5s"
 
+thanosRules:
+  alert:
+    enabled: true
+    rule:
+      tks: true
 
 grafanaDashboard:
   include:

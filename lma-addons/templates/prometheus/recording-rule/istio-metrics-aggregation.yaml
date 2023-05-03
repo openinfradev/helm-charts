@@ -1,4 +1,4 @@
-{{- if .Values.prometheusRules.istio.aggregation.enabled }}
+{{- if and .Values.prometheusRules.aggregation.enabled .Values.prometheusRules.istio.aggregation.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
