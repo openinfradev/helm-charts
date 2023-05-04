@@ -1,0 +1,59 @@
+fullName: cassandra
+namespace: tks-msa
+cassandra:
+  serverVersion: 4.0.6
+  clusterName: cassandra
+  telemetry:
+    prometheus:
+      enabled: true
+  jmxInitContainerImage:
+    name: busybox
+    registry: harbor-cicd.taco-cat.xyz/tks
+    tag: 1.34.1
+  datacenters:
+    name: dc
+    size: 2
+    perNodeConfigInitContainerImage: harbor-cicd.taco-cat.xyz/tks/yq:4
+    initContainers:
+      serverConfigInitImage: harbor-cicd.taco-cat.xyz/tks/cass-config-builder:1.0-ubi7
+    jmxInitContainerImage:
+      name: busybox
+      registry: harbor-cicd.taco-cat.xyz/tks
+      tag: 1.34.1
+    containers:
+    - name: cassandra
+      image: harbor-cicd.taco-cat.xyz/tks/cass-management-api:4.0.6
+    - name: server-system-logger
+      image: harbor-cicd.taco-cat.xyz/tks/system-logger:v1.14.0
+    config:
+      heapSize: 2048M
+    storageConfig:
+      storageClassName: taco-storage
+      accessModes: ReadWriteOnce
+      size: 300Gi
+    racks:
+      name: tks
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: tks-msa
+                operator: In
+                values:
+                - enabled
+    stargate:
+      size: 1
+      heapSize: 384M
+      cassandraConfigMapRef:
+        name: cassandra-config
+      allowStargateOnDataNodes: true
+      telemetry:
+        prometheus:
+          enabled: true
+      containerImage:
+        registry: harbor-cicd.taco-cat.xyz
+        repository: tks
+        tag: v1.0.67
+      nodeSelector:
+        tks-msa: enabled
