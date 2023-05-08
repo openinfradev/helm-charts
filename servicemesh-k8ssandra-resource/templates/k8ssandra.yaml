@@ -53,8 +53,8 @@ spec:
       stargate:
         size: {{ .Values.cassandra.datacenters.stargate.size }}
         heapSize: {{ .Values.cassandra.datacenters.stargate.heapSize }}
-        cassandraConfigMapRef:
-          name: {{ .Values.cassandra.datacenters.stargate.cassandraConfigMapRef.name }}
+ #       cassandraConfigMapRef:
+ #         name: {{ .Values.cassandra.datacenters.stargate.cassandraConfigMapRef.name }}
         allowStargateOnDataNodes: {{ .Values.cassandra.datacenters.stargate.allowStargateOnDataNodes }}
         {{- with .Values.cassandra.datacenters.stargate.telemetry }}
         telemetry:

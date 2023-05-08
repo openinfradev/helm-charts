@@ -1,36 +1,48 @@
-namespace: istio-system
+namespace: tks-msa
 strategy: production
 sampling:
   param: 100
 ingress:
   enabled: false
 collector:
-  image: jaegertracing/jaeger-collector:1.29.0
+  image: harbor-cicd.taco-cat.xyz/tks/jaeger-collector:1.35.0
   maxReplicas: 5
   resources:
     requests:
       cpu: 500m
       memory: 1Gi
     limits:
-      cpu: 1
+      cpu: 1000m
       memory: 2Gi
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: servicemesh
+          - key: tks-msa
             operator: In
             values:
             - enabled
 storage:
-  esIndexCleaner:
-    enabled: true
-    image: jaegertracing/jaeger-es-index-cleaner:1.29.0
-    numberOfDays: 7
-    schedule: "55 04 * * *"
-  options:
-    es:
+  type: cassandra
+  cassandra:
+    options:
+      servers: cassandra-dc-service.tks-msa.svc
+      keyspace: jaeger_v1_datacenter
+    cassandraCreateSchema:
+      datacenter: "dc"
+      mode: "prod"
+      timeout: "3m"
+    dependencies:
+      enabled: true
+      image: harbor-cicd.taco-cat.xyz/tks/spark-dependencies:1.35.0
+  elastic:
+    esIndexCleaner:
+      enabled: true
+      image: jaegertracing/jaeger-es-index-cleaner:1.29.0
+      numberOfDays: 7
+      schedule: "55 04 * * *"
+    options:
       indexPrefix: jaeger
       username: elastic
       password: tacoword
@@ -38,19 +50,31 @@ storage:
       serverUrls: https://eck-elasticsearch-es-http.istio-system.svc:9200
       secretName: eck-elasticsearch-es-http-certs-public
 query:
-  image: jaegertracing/jaeger-query:1.29.0
+  image: harbor-cicd.taco-cat.xyz/tks/jaeger-query:1.35.0
   basePath: /
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: servicemesh
+          - key: tks-msa
             operator: In
             values:
             - enabled
 agent:
-  image: jaegertracing/jaeger-agent:1.29.0
+  image: harbor-cicd.taco-cat.xyz/tks/jaeger-agent:1.35.0
+
+cassandra:
+  user:
+    enabled: true
+    username: tks
+    password: tksword
+  image: harbor-cicd.taco-cat.xyz/tks/shyaml_jq_kubectl_python:3.11
+  imagePullPolicy: IfNotPresent
+  passwordSecret: cassandra-superuser
+  nodeSelector:
+    tks-msa: enabled
+
 elasticsearch:
   image:
     repository: docker.io/openstackhelm/heat
@@ -60,6 +84,8 @@ elasticsearch:
   port: 9200
   elasticPasswordSecret: eck-elasticsearch-es-elastic-user
   user:
-    enabled: true
+    enabled: false
     username: taco-jaeger
     password: tacoword
+  nodeSelector:
+    tks-msa: enabled
