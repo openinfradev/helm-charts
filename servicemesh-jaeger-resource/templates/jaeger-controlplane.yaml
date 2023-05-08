@@ -23,26 +23,43 @@ spec:
       limits:
         cpu: {{ .Values.collector.resources.limits.cpu }}
         memory: {{ .Values.collector.resources.limits.memory }}
-  {{- with .Values.collector.affinity }}
+    {{- with .Values.collector.affinity }}
     affinity:
       {{- toYaml . | nindent 6 }}
-  {{- end }}
+    {{- end }}
   storage:
-    type: elasticsearch
+    type: {{ .Values.storage.type }}
+  {{- if eq "elasticsearch" .Values.storage.type }}
     esIndexCleaner:
-      enabled: {{ .Values.storage.esIndexCleaner.enabled }}
-      {{- if .Values.storage.esIndexCleaner.enabled }}
-      image: {{ .Values.storage.esIndexCleaner.image }}
-      numberOfDays: {{ .Values.storage.esIndexCleaner.numberOfDays }}
-      schedule: "{{ .Values.storage.esIndexCleaner.schedule }}"
+      enabled: {{ .Values.storage.elastic.esIndexCleaner.enabled }}
+      {{- if .Values.storage.elastic.esIndexCleaner.enabled }}
+      image: {{ .Values.storage.elastic.esIndexCleaner.image }}
+      numberOfDays: {{ .Values.storage.elastic.esIndexCleaner.numberOfDays }}
+      schedule: "{{ .Values.storage.elastic.esIndexCleaner.schedule }}"
       {{- end }}
     options:
       es:
-        index-prefix: {{ .Values.storage.options.es.indexPrefix }}
-        username: {{ .Values.storage.options.es.username }}
-        password: {{ .Values.storage.options.es.password }}
-        tls.ca: {{ .Values.storage.options.es.tlsCa }}
-        server-urls: {{ .Values.storage.options.es.serverUrls }}
+        index-prefix: {{ .Values.storage.elastic.options.indexPrefix }}
+        username: {{ .Values.storage.elastic.options.username }}
+        password: {{ .Values.storage.elastic.options.password }}
+        tls.ca: {{ .Values.storage.elastic.options.tlsCa }}
+        server-urls: {{ .Values.storage.elastic.options.serverUrls }}
+  {{- end }}
+  {{- if eq "cassandra" .Values.storage.type }}
+    options:
+      cassandra:
+        servers: {{ .Values.storage.cassandra.options.servers }}
+        username: {{ .Values.cassandra.user.username }}
+        password: {{ .Values.cassandra.user.password }}
+        keyspace: {{ .Values.storage.cassandra.options.keyspace }}
+    cassandraCreateSchema:
+      datacenter: {{ .Values.storage.cassandra.cassandraCreateSchema.datacenter }}
+      mode: {{ .Values.storage.cassandra.cassandraCreateSchema.mode }}
+      timeout: {{ .Values.storage.cassandra.cassandraCreateSchema.timeout }}
+    dependencies:
+      enabled: {{ .Values.storage.cassandra.dependencies.enabled }}
+      image: {{ .Values.storage.cassandra.dependencies.image }}
+  {{- end }}
   query:
     image: {{ .Values.query.image }}
   {{- if .Values.query.basePath }}
@@ -55,6 +72,7 @@ spec:
   {{- end }}
   agent:
     image: {{ .Values.agent.image }}
+  {{- if eq "elasticsearch" .Values.storage.type }}
   volumeMounts:
   - mountPath: /etc/ssl/certs
     name: es-tls
@@ -62,3 +80,4 @@ spec:
   - name: es-tls
     secret:
       secretName: {{ .Values.storage.options.es.secretName }}
+  {{- end }}

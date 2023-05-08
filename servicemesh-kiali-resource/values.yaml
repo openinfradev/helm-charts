@@ -1,9 +1,9 @@
-namespace: istio-system
-istioNamespace: istio-system
+namespace: tks-msa
+istioNamespace: tks-msa
 deployment:
   ingress:
     enabled: false
-  namespace: istio-system
+  namespace: tks-msa
   image_name: quay.io/kiali/kiali
   image_version: v1.45.1
   replicas: 1
@@ -26,20 +26,21 @@ externalServices:
   customDashboards:
     enabled: true
   istio:
-    configMapName: "istio"
-    istioIdentityDomain: "svc.cluster.local"
+    configMapName: istio
+    istioIdentityDomain: svc.cluster.local
     componentStatus:
       enabled: true
       components:
         istiodLabel: istiod
-        ingressGatewayLabel: istio-ingress-gateway
-        egressGatewayLabel: istio-egress-gateway
+        ingressGatewayLabel: istio-ingressgateway
+        egressGatewayLabel: istio-egressgateway
+        gatewayNamespace: tks-gateway
   prometheus:
     url: http://lma-prometheus.lma.svc:9090
   tracing:
     enabled: true
     namespaceSelector: true
-    inClusterUrl: http://jaeger-operator-jaeger-query.istio-system:16686
+    inClusterUrl: http://jaeger-operator-jaeger-query.tks-msa:16686
     url: https://jaeger-v2.taco-cat.xyz
     useGrpc: false
   grafana:
@@ -55,4 +56,4 @@ server:
   metricsEnabled: true
   metricsPort: 9090
   port: 20001
-  webRoot: /kiali
+  webRoot: /

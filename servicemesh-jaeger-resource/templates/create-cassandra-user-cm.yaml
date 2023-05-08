@@ -1,0 +1,63 @@
+{{- if .Values.cassandra.user.enabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: create-cassandra-user-cm
+  namespace: {{ .Values.namespace }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "10"
+data:
+  create_user.sh: |-
+    #!/bin/sh
+    set -ex
+    kubectl exec -it -n {{ .Values.namespace }} cassandra-dc-tks-sts-0 -c cassandra \
+      -- cqlsh -u $CASS_USERNAME -p $CASS_PASSWORD \
+           -e "CREATE ROLE IF NOT EXISTS {{ .Values.cassandra.user.username }} WITH SUPERUSER = true AND LOGIN = true AND PASSWORD = '{{ .Values.cassandra.user.password }}';"
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+  namespace: {{ .Values.namespace }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "10"
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - secrets
+  verbs:
+  - get
+  - watch
+  - list
+- apiGroups:
+  - ""
+  resources:
+  - pods/exec
+  verbs:
+  - create
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pod-reader
+  namespace: {{ .Values.namespace }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "10"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: pod-reader
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: {{ .Values.namespace }}
+
+{{- end}}
