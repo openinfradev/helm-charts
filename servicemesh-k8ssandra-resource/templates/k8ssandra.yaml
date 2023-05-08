@@ -64,5 +64,7 @@ spec:
           registry: {{ .Values.cassandra.datacenters.stargate.containerImage.registry }}
           repository: {{ .Values.cassandra.datacenters.stargate.containerImage.repository }}
           tag: {{ .Values.cassandra.datacenters.stargate.containerImage.tag }}
+        {{- with .Values.cassandra.datacenters.stargate.nodeSelector }}
         nodeSelector:
-        {{ toYaml .Values.cassandra.datacenters.stargate.nodeSelector | indent 2 }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
