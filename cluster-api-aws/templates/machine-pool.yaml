@@ -1,6 +1,6 @@
-{{- $azPostfixList := list "a" "b" "c" "d" "e" "f" }}
 {{- $envAll := . }}
 {{- range .Values.machinePool }}
+---
 apiVersion: {{ $envAll.Values.api.group.cluster }}/{{ $envAll.Values.api.version }}
 kind: MachinePool
 metadata:
