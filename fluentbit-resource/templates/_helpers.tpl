@@ -135,6 +135,7 @@ spec:
     port: {{ $loki.port  }}
     labels:
     - job={{- $index_name }}
+    - $cluster
   {{- if (eq $type "kubernates" ) }}
     - $kubernetes['pod_name']
     - $kubernetes['namespace_name']

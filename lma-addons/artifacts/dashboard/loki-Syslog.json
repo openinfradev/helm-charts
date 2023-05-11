@@ -709,6 +709,31 @@
   "templating": {
     "list": [
       {
+        "allValue": ".+",
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "loki",
+          "uid": "P8E80F9AEF21F6940"
+        },
+        "definition": "label_values(cluster)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Cluster",
+        "multi": false,
+        "name": "cluster",
+        "options": [],
+        "query": "label_values(cluster)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
         "current": {
           "selected": false,
           "text": "m2",
@@ -718,14 +743,14 @@
           "type": "loki",
           "uid": "P8E80F9AEF21F6940"
         },
-        "definition": "label_values({host=~\".+\"}, host)",
+        "definition": "label_values({cluster=~\"$cluster\", host=~\".+\"}, host)",
         "hide": 0,
         "includeAll": false,
         "label": "NodeName",
         "multi": false,
         "name": "host",
         "options": [],
-        "query": "label_values({host=~\".+\"}, host)",
+        "query": "label_values({cluster=~\"$cluster\", host=~\".+\"}, host)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -746,14 +771,14 @@
           "type": "loki",
           "uid": "P8E80F9AEF21F6940"
         },
-        "definition": "label_values({host=\"$host\"}, ident)",
+        "definition": "label_values({cluster=~\"$cluster\", host=\"$host\"}, ident)",
         "hide": 0,
         "includeAll": true,
         "label": "Identifier",
         "multi": false,
         "name": "ident",
         "options": [],
-        "query": "label_values({host=\"$host\"}, ident)",
+        "query": "label_values({cluster=~\"$cluster\", host=\"$host\"}, ident)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -803,8 +828,8 @@
     ]
   },
   "timezone": "",
-  "title": "[TACO] Syslog Dashboard",
-  "uid": "TACO_SYSLOG_DASHBOARD",
+  "title": "[TKS] Syslog Dashboard",
+  "uid": "tks_syslog_dashboard",
   "version": 1,
   "weekStart": ""
 }
