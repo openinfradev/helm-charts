@@ -22,12 +22,14 @@ spec:
       limits:
         cpu: {{ .Values.deployment.resources.limits.cpu }}
         memory: {{ .Values.deployment.resources.limits.memory }}
+    {{- with .Values.deployment.nodeSelector }}
     node_selector:
-{{ toYaml .Values.deployment.nodeSelector | indent 6 }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
     service_type: {{ .Values.deployment.serviceType }}
     {{- if eq .Values.deployment.serviceType "NodePort" }}
     additional_service_yaml:
-{{ toYaml .Values.deployment.additionalServiceYaml | indent 6 }}
+      {{- toYaml .Values.deployment.additionalServiceYaml | nindent 6 }}
     {{- end }}
   auth:
     strategy: {{ .Values.auth.strategy }}
@@ -46,9 +48,11 @@ spec:
         - app_label: {{ .Values.externalServices.istio.componentStatus.components.ingressGatewayLabel }}
           is_core: true
           is_proxy: true
+          namespace: {{ .Values.externalServices.istio.componentStatus.components.gatewayNamespace }}
         - app_label: {{ .Values.externalServices.istio.componentStatus.components.egressGatewayLabel }}
           is_core: false
           is_proxy: true
+          namespace: {{ .Values.externalServices.istio.componentStatus.components.gatewayNamespace }}
     prometheus:
       url: {{ .Values.externalServices.prometheus.url }}
     tracing:
@@ -71,3 +75,8 @@ spec:
     metrics_port: {{ .Values.server.metricsPort }}
     port: {{ .Values.server.port }}
     web_root: {{ .Values.server.webRoot }}
+  istio_labels:
+    app_label_name: "app"
+    injection_label_name: "istio-injection"
+    injection_label_rev:  "istio.io/rev"
+    version_label_name: "version"

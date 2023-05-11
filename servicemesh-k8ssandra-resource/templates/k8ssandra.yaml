@@ -1,0 +1,70 @@
+---
+apiVersion: k8ssandra.io/v1alpha1
+kind: K8ssandraCluster
+metadata:
+  name: {{ .Values.fullName }}
+  namespace: {{ .Values.namespace }}
+spec:
+  cassandra:
+    serverVersion: {{ .Values.cassandra.serverVersion }}
+    clusterName: {{ .Values.cassandra.clusterName }}
+    {{- with .Values.cassandra.telemetry }}
+    telemetry:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    jmxInitContainerImage:
+      name: {{ .Values.cassandra.jmxInitContainerImage.name }}
+      registry: {{ .Values.cassandra.jmxInitContainerImage.registry }}
+      tag: {{ .Values.cassandra.jmxInitContainerImage.tag }}
+    datacenters:
+    - metadata:
+        name: {{ .Values.cassandra.datacenters.name }}
+      size: {{ .Values.cassandra.datacenters.size }}
+      perNodeConfigInitContainerImage: {{ .Values.cassandra.datacenters.perNodeConfigInitContainerImage }}
+      initContainers:
+      - name: server-config-init
+        image: {{ .Values.cassandra.datacenters.initContainers.serverConfigInitImage }}
+      jmxInitContainerImage:
+        name: {{ .Values.cassandra.datacenters.jmxInitContainerImage.name }}
+        registry: {{ .Values.cassandra.datacenters.jmxInitContainerImage.registry }}
+        tag: {{ .Values.cassandra.datacenters.jmxInitContainerImage.tag }}
+      {{- with .Values.cassandra.datacenters.containers }}
+      containers:
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      config:
+        jvmOptions:
+          heapSize: {{ .Values.cassandra.datacenters.config.heapSize }}
+      storageConfig:
+        cassandraDataVolumeClaimSpec:
+          storageClassName: {{ .Values.cassandra.datacenters.storageConfig.storageClassName }}
+          accessModes:
+          - {{ .Values.cassandra.datacenters.storageConfig.accessModes }}
+          resources:
+            requests:
+              storage: {{ .Values.cassandra.datacenters.storageConfig.size }}
+      racks:
+      - name: {{ .Values.cassandra.datacenters.racks.name }}
+        {{- with .Values.cassandra.datacenters.racks.affinity }}
+        affinity:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+      softPodAntiAffinity: false
+      stargate:
+        size: {{ .Values.cassandra.datacenters.stargate.size }}
+        heapSize: {{ .Values.cassandra.datacenters.stargate.heapSize }}
+ #       cassandraConfigMapRef:
+ #         name: {{ .Values.cassandra.datacenters.stargate.cassandraConfigMapRef.name }}
+        allowStargateOnDataNodes: {{ .Values.cassandra.datacenters.stargate.allowStargateOnDataNodes }}
+        {{- with .Values.cassandra.datacenters.stargate.telemetry }}
+        telemetry:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        containerImage:
+          registry: {{ .Values.cassandra.datacenters.stargate.containerImage.registry }}
+          repository: {{ .Values.cassandra.datacenters.stargate.containerImage.repository }}
+          tag: {{ .Values.cassandra.datacenters.stargate.containerImage.tag }}
+        {{- with .Values.cassandra.datacenters.stargate.nodeSelector }}
+        nodeSelector:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}

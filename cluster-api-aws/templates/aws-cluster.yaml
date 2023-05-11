@@ -7,6 +7,10 @@ metadata:
 spec:
   region: {{ .Values.cluster.region }}
   sshKeyName: {{ .Values.sshKeyName }}
+  {{- with .Values.cluster.multitenancyId}}
+  identityRef:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- with .Values.cluster.network}}
   network:
     {{- toYaml . | nindent 4 }}
