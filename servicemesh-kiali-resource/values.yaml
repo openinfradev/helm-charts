@@ -16,7 +16,7 @@ deployment:
       memory: 1024Mi
   replicas: 1
   nodeSelector:
-    servicemesh: enabled
+    tks-msa: enabled
   serviceType: ClusterIP
   additionalServiceYaml:
     nodePort: 30010
