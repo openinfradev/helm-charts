@@ -8,6 +8,15 @@ data:
   config.yaml: |
     logLevel: {{ .Values.conf.logLevel }}
     logFormat: {{ .Values.conf.logFormat }}
+    {{- with .Values.conf.kubeQPS }}
+    kubeQPS: {{- . }}
+    {{- end }}
+    {{- with .Values.conf.kubeBurst }}
+    kubeBurst: {{- . }}
+    {{- end }}
+    {{- with .Values.conf.maxEventAgeSeconds }}
+    maxEventAgeSeconds: {{- . }}
+    {{- end }}
     route:
       routes:
       - match:
