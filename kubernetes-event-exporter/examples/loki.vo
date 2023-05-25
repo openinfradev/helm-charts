@@ -1,7 +1,7 @@
 conf:
   logLevel: debug
   logFormat: json
-  recievers:
+  receivers:
   # chek https://github.com/resmoio/kubernetes-event-exporter#note
   - name: loki
     type: file

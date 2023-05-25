@@ -11,11 +11,11 @@ data:
     route:
       routes:
       - match:
-{{- range .Values.conf.recievers }}
+{{- range .Values.conf.receivers }}
         - receiver: {{ .name }}
 {{- end }}
     receivers:
-{{- range .Values.conf.recievers }}
+{{- range .Values.conf.receivers }}
     - name:  {{ .name }}
       {{ .type }}: 
       {{- toYaml .config| nindent 8}}
