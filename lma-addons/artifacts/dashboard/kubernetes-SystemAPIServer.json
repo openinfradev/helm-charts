@@ -1305,7 +1305,7 @@
   "timepicker": {},
   "timezone": "",
   "title": "[TKS] Kubernetes / System / API Server",
-  "uid": "tks-dCTfLXKVz",
+  "uid": "tks_kubeapi_dashboard",
   "version": 1,
   "weekStart": ""
 }

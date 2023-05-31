@@ -3759,7 +3759,7 @@
   },
   "timezone": "browser",
   "title": "[TKS] Kubernetes / View / Nodes",
-  "uid": "tks-UXnoYXF4z",
-  "version": 2,
+  "uid": "tks_node_dashboard",
+  "version": 1,
   "weekStart": ""
 }

@@ -1598,7 +1598,7 @@
   "timepicker": {},
   "timezone": "",
   "title": "[TKS] Kubernetes / System / CoreDNS",
-  "uid": "tks-eIbpLXK4k",
+  "uid": "tks_coredns_dashboard",
   "version": 1,
   "weekStart": ""
 }
