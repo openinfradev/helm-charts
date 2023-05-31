@@ -21855,7 +21855,7 @@
   },
   "timezone": "browser",
   "title": "[TKS] Kubernetes / Reference / Nodes",
-  "uid": "tks-HBUxLuKVz",
-  "version": 2,
+  "uid": "tks_refnode_dashboard",
+  "version": 1,
   "weekStart": ""
 }
