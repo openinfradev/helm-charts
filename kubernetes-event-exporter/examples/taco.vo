@@ -3,7 +3,7 @@ nameOverride: event-exporter
 conf:
   logLevel: debug
   logFormat: json
-  recievers:
+  receivers:
   # chek https://github.com/resmoio/kubernetes-event-exporter#note
   - name: default
     type: elasticsearch

@@ -8,14 +8,23 @@ data:
   config.yaml: |
     logLevel: {{ .Values.conf.logLevel }}
     logFormat: {{ .Values.conf.logFormat }}
+    {{- with .Values.conf.kubeQPS }}
+    kubeQPS: {{- . }}
+    {{- end }}
+    {{- with .Values.conf.kubeBurst }}
+    kubeBurst: {{- . }}
+    {{- end }}
+    {{- with .Values.conf.maxEventAgeSeconds }}
+    maxEventAgeSeconds: {{- . }}
+    {{- end }}
     route:
       routes:
       - match:
-{{- range .Values.conf.recievers }}
+{{- range .Values.conf.receivers }}
         - receiver: {{ .name }}
 {{- end }}
     receivers:
-{{- range .Values.conf.recievers }}
+{{- range .Values.conf.receivers }}
     - name:  {{ .name }}
       {{ .type }}: 
       {{- toYaml .config| nindent 8}}
