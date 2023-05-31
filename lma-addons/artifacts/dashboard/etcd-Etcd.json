@@ -1433,7 +1433,7 @@
   },
   "timezone": "browser",
   "title": "[TKS] Kubernetes / System / Etcd",
-  "uid": "tks-Cu828uKVz",
+  "uid": "tks_etcd_dashboard",
   "version": 1,
   "weekStart": ""
 }

@@ -2520,7 +2520,7 @@
   "timepicker": {},
   "timezone": "",
   "title": "[TKS] Kubernetes / View / Cluster Global",
-  "uid": "tks-6LLuFVz",
+  "uid": "tks_cluster_dashboard",
   "version": 1,
   "weekStart": ""
 }
