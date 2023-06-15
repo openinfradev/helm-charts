@@ -19,9 +19,9 @@ mgmtKubeconfigSecretName: mgmt-kubeconfig
 replicaCount: 1
 
 image:
-  repository: k8s.gcr.io/autoscaling/cluster-autoscaler
+  repository: harbor-cicd.taco-cat.xyz/tks/cluster-autoscaler
   pullPolicy: IfNotPresent
-  tag: v1.22.2
+  tag: v1.25.2
 
 imagePullSecrets: []
 nameOverride: ""
