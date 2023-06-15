@@ -6,6 +6,10 @@ kind: MachinePool
 metadata:
   name: {{ $envAll.Values.cluster.name }}-mp-{{ .name }}
   namespace: {{ $envAll.Release.Namespace }}
+{{- if $envAll.Values.cluster.eksEnabled }}
+  annotations:
+    cluster.x-k8s.io/replicas-managed-by: "external-autoscaler"
+{{- end }}
 spec:
   clusterName: {{ $envAll.Values.cluster.name }}
   replicas: {{ .replicas }}
