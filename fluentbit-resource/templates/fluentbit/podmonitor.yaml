@@ -1,0 +1,46 @@
+{{- if .Values.podMonitor.enabled }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: fluent-bit
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/version: {{ .Values.image.fluentbit.tag }}
+    {{- with .Values.podMonitor.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  podMetricsEndpoints:
+  - port: {{ .Values.podMonitor.port }}
+    {{- with .Values.podMonitor.interval }}
+    interval: {{ . }}
+    {{- end }}
+    {{- with .Values.podMonitor.scrapeTimeout }}
+    scrapeTimeout: {{ . }}
+    {{- end }}
+    honorLabels: true
+    path: {{ .Values.podMonitor.path }}
+    scheme: {{ .Values.podMonitor.scheme }}
+    {{- with .Values.podMonitor.tlsConfig }}
+    tlsConfig:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.podMonitor.relabelings }}
+    relabelings:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+  jobLabel: "{{ .Release.Name }}"
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: fluent-bit
+  {{- with .Values.podMonitor.namespaceSelector }}
+  namespaceSelector:
+    {{- toYaml . | nindent 6 }}
+  {{- end }}
+  {{- with .Values.podMonitor.podTargetLabels }}
+  podTargetLabels:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}

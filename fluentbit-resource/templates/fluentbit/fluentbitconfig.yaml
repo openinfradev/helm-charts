@@ -11,6 +11,11 @@ spec:
   service:
     parsersFile: parsers.conf
     logLevel: warning
+{{- if podMonitor.enabled }}
+    httpListen: 0.0.0.0
+    httpPort: 2020
+    httpServer: true
+{{- end }}
   inputSelector:
     matchLabels:
       fluentbit.fluent.io/enabled: "true"
