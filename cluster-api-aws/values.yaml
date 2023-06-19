@@ -79,6 +79,8 @@ machinePool: []
 #     size: 200
 #   subnets: []
 #   labels: []
+#   roleAdditionalPolicies:
+#   - "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 # **this version dosen't support the spot instance, because the aws cluster api provider doesn't support it in awsmachinpool**
 # useSpotInstance:  #spotMarketOptions:
 #   enabled: false

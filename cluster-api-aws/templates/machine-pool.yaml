@@ -53,6 +53,10 @@ spec:
     minSize: {{ .minSize }}
   remoteAccess:
     sshKeyName: {{ $envAll.Values.sshKeyName }}
+  {{- with .roleAdditionalPolicies }}
+  roleAdditionalPolicies:
+    {{- toYaml . | nindent 2 }}
+  {{- end }}
 {{- else }}
 kind: AWSMachinePool
 metadata:
