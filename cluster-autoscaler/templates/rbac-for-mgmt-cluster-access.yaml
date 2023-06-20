@@ -26,6 +26,9 @@ rules:
     - machinedeployments/scale
     - machines
     - machinesets
+    - machinepools
+    - machinepools/scale
+    - awsmanagedmachinepools
     verbs:
     - get
     - list
