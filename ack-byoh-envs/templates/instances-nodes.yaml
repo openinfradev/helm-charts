@@ -1,0 +1,34 @@
+{{- if .Values.instances.enabled }}
+{{- $envAll := . }}
+{{- range .Values.instances.nodes }}
+{{- $envNode := . }}
+{{- range .subnetIDs }}
+---
+apiVersion: ec2.services.k8s.aws/v1alpha1
+kind: Instance
+metadata:
+  name: {{ $envAll.Values.name }}-{{ $envNode.name }}-{{ . }}
+spec:
+  imageID: {{ $envAll.Values.imageID }}
+  instanceType: {{ $envNode.instanceType }}
+  subnetID: {{ . }}
+  {{- with $envNode.securityGroupIDs }}
+  securityGroupIDs:
+    {{- toYaml . | nindent 2 }}
+  {{- end }}
+  monitoring: 
+    enabled: false
+  blockDeviceMappings:
+  - deviceName: /dev/sda1
+    ebs: 
+      deleteOnTermination: true
+      encrypted: false
+      volumeSize: {{ $envNode.volumeSize }}
+      volumeType: gp2
+  keyName: {{ $envAll.Values.instances.keyName }}
+  tags:
+    - key: name
+      value: {{ $envAll.Values.name }}
+{{- end }}
+{{- end }}
+{{- end }}

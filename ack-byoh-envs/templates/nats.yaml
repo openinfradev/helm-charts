@@ -1,0 +1,23 @@
+{{- if .Values.vpc.enabled }}
+{{- $envAll := . }}
+{{- range .Values.subnets }}
+{{- if eq .isPrivate false }}
+---
+apiVersion: ec2.services.k8s.aws/v1alpha1
+kind: NATGateway
+metadata:
+  name: {{ $envAll.Values.name }}-{{ .az }}
+spec:
+  subnetRef:
+    from:
+      name: {{ $envAll.Values.name }}-{{ $envAll.Values.region }}{{ .az }}-public
+  allocationRef:
+    from:
+      name: {{ $envAll.Values.name }}-nat-{{ .az }}
+  connectivityType: "public"
+  tags:
+    - key: name
+      value: {{ $envAll.Values.name }}
+{{- end }}
+{{- end }}
+{{- end }}

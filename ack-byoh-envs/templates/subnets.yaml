@@ -1,0 +1,25 @@
+{{- if .Values.vpc.enabled }}
+{{- $envAll := . }}
+{{- range .Values.subnets }}
+---
+apiVersion: ec2.services.k8s.aws/v1alpha1
+kind: Subnet
+metadata:
+  name: {{ $envAll.Values.name }}-{{ $envAll.Values.region }}{{ .az }}-{{ if eq .isPrivate true }}private{{ else }}public{{ end }}
+spec:
+  availabilityZone: {{ $envAll.Values.region }}{{ .az }}
+  cidrBlock: {{ .cidrBlock }}
+  {{- if eq .isPrivate false }}
+  mapPublicIPOnLaunch: true
+  {{- end }}
+  vpcRef:
+    from:
+      name: {{ $envAll.Values.name }}
+  routeTableRefs:
+  - from:
+      name: {{ $envAll.Values.name }}-{{ if eq .isPrivate true }}private{{ else }}public{{ end }}-{{ .az }}
+  tags:
+    - key: name
+      value: {{ $envAll.Values.name }}
+{{- end }}
+{{- end }}
