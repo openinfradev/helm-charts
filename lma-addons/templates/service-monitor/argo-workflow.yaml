@@ -4,7 +4,7 @@ apiVersion: {{ printf "%s/v1" (.Values.prometheus.crdApiGroup | default "monitor
 kind: ServiceMonitor
 metadata:
   name: argo-workflows-server
-  namespace: lma
+  namespace: {{ $.Release.Namespace }}
   labels:
     release: prometheus-operator
 spec:
@@ -33,7 +33,7 @@ apiVersion: {{ printf "%s/v1" (.Values.prometheus.crdApiGroup | default "monitor
 kind: ServiceMonitor
 metadata:
   name: argo-workflows-controller
-  namespace: lma
+  namespace: {{ $.Release.Namespace }}
   labels:
     release: prometheus-operator
 spec:
