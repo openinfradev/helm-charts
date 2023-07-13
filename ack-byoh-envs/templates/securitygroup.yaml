@@ -1,0 +1,60 @@
+{{- if .Values.vpc.enabled }}
+---
+apiVersion: ec2.services.k8s.aws/v1alpha1
+kind: SecurityGroup
+metadata:
+  name: {{ .Values.name }}-bastion
+spec:
+  description: {{ .Values.name }}-bastion
+  name: {{ .Values.name }}-bastion
+  vpcRef:
+    from:
+      name: {{ .Values.name }}
+  ingressRules:
+    - ipProtocol: tcp
+      fromPort: 22
+      toPort: 22
+      ipRanges:
+        - cidrIP: "203.236.8.219/32"
+          description: "pangyo office"
+        - cidrIP: "218.39.67.238/32"
+          description: "pangyo dc"
+  egressRules:
+    - ipProtocol: "-1"
+      fromPort: 0
+      toPort: 0
+      ipRanges:
+        - cidrIP: "0.0.0.0/0"
+          description: "outbound"
+  tags:
+    - key: name
+      value: {{ .Values.name }}
+---
+apiVersion: ec2.services.k8s.aws/v1alpha1
+kind: SecurityGroup
+metadata:
+  name: {{ .Values.name }}-in-vpc
+spec:
+  description: {{ .Values.name }}-in-vpc
+  name: {{ .Values.name }}-in-vpc
+  vpcRef:
+    from:
+      name: {{ .Values.name }}
+  ingressRules:
+    - ipProtocol: "-1"
+      fromPort: 0
+      toPort: 0
+      ipRanges:
+        - cidrIP: "10.0.0.0/16"
+          description: "in VPC"
+  egressRules:
+    - ipProtocol: "-1"
+      fromPort: 0
+      toPort: 0
+      ipRanges:
+        - cidrIP: "0.0.0.0/0"
+          description: "outbound"
+  tags:
+    - key: name
+      value: {{ .Values.name }}
+{{- end }}
