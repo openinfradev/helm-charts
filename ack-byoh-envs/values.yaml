@@ -1,0 +1,75 @@
+# Default values for ack-byoh-envs.
+
+name: byoh-dev
+region: ap-northeast-2
+
+# ami-01b1e81dca9091b25: Rocky Linux 8.8
+imageID: ami-01b1e81dca9091b25
+
+instances:
+  enabled: false
+  keyName: keypair-name
+  bastion:
+    instanceType: t3.medium
+    securityGroupIDs:
+      # ID of {{ .Values.name }}-bastion
+      - SG-BASTION
+    subnetID: SUBNET-PUBLIC
+    volumeSize: 100
+    allowedCIDRBlocks: []
+  nodes:
+  - name: "adm-cp"
+    instanceType: t3.large
+    securityGroupIDs:
+      # ID of {{ .Values.name }}-in-vpc
+      - SG-IN-VPC
+    subnetIDs:
+      - SUBNET-PRIVATE-AZ1
+      - SUBNET-PRIVATE-AZ2
+      - SUBNET-PRIVATE-AZ3
+    volumeSize: 20
+  - name: "adm-tks"
+    instanceType: t3.2xlarge
+    securityGroupIDs:
+      # ID of {{ .Values.name }}-in-vpc
+      - SG-IN-VPC
+    subnetIDs:
+      - SUBNET-PRIVATE-AZ1
+      - SUBNET-PRIVATE-AZ2
+      - SUBNET-PRIVATE-AZ3
+    volumeSize: 100
+  - name: "adm-normal"
+    instanceType: t3.xlarge
+    securityGroupIDs:
+      # ID of {{ .Values.name }}-in-vpc
+      - SG-IN-VPC
+    subnetIDs:
+      - SUBNET-PRIVATE-AZ1
+      - SUBNET-PRIVATE-AZ2
+      - SUBNET-PRIVATE-AZ3
+    volumeSize: 40
+
+vpc:
+  enabled: true
+  cidrBlocks:
+   - 10.0.0.0/16
+
+subnets:
+  - cidrBlock: 10.0.0.0/20
+    isPrivate: false
+    az: a
+  - cidrBlock: 10.0.64.0/18
+    isPrivate: true
+    az: a
+  - cidrBlock: 10.0.16.0/20
+    isPrivate: false
+    az: b
+  - cidrBlock: 10.0.128.0/18
+    isPrivate: true
+    az: b
+  - cidrBlock: 10.0.32.0/20
+    isPrivate: false
+    az: c
+  - cidrBlock: 10.0.192.0/18
+    isPrivate: true
+    az: c

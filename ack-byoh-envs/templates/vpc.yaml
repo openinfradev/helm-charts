@@ -1,0 +1,17 @@
+{{- if .Values.vpc.enabled }}
+---
+apiVersion: ec2.services.k8s.aws/v1alpha1
+kind: VPC
+metadata:
+  name: {{ .Values.name }}
+spec:
+  {{- with .Values.vpc.cidrBlocks }}
+  cidrBlocks:
+    {{- toYaml . | nindent 2 }}
+  {{- end }}
+  enableDNSSupport: true
+  enableDNSHostnames: true
+  tags:
+    - key: name
+      value: {{ .Values.name }}
+{{- end }}
