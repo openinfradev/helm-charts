@@ -1,8 +1,16 @@
+# tks contains infomation for tks cloud service. 
+# tks:
+#   iamRoles:
+
 s3: 
-  enabled: False
-  name: 
-  - loki
-  - thanos 
+  enabled: false
+  buckets: []
+  # buckets can be defined with a field name, and optionally define a specific policies with a field policy.
+  # if policy is not defined, the default policy with Values.tks.iamRoles for tks will be inserted or no policy is defined when Values.tks.iamRoles is not defined.
+  # - name: loki
+  #   policy: |
+  # - name: thanos
+  #   policy: |
   
 ec2:
-  enabled: False
+  enabled: false
