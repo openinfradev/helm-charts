@@ -35,9 +35,9 @@ cluster:
   bastion:
     enabled: false
     instanceType: t3.micro
-    disableIngressRules: false
-    allowedCIDRBlocks:
-    - 0.0.0.0/0
+    # disableIngressRules: false
+    # allowedCIDRBlocks:
+    # - 0.0.0.0/0
     useSpotInstance:  #spotMarketOptions:
       enabled: true
       maxPrice: ''
