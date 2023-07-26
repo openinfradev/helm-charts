@@ -1,11 +1,12 @@
 objectStorage:
   enabled: true
   secretName: thanos-objstore-secret
-  bucketName: thanos
-  endpoint: minio.fed.svc.cluster.local:9000
-  access_key: taco
-  secret_key: password
-  insecure: true
+  config:
+    bucketName: thanos
+    endpoint: minio.fed.svc.cluster.local:9000
+    access_key: taco
+    secret_key: password
+    insecure: true
 
 sidecarsService:
   enabled: true
@@ -15,4 +16,3 @@ sidecarsService:
   endpoints:
   - 10.0.0.1
   - 10.0.0.2
-  

@@ -1,0 +1,55 @@
+{{- if .Values.s3.enabled }}
+{{- $envAll := . }}
+{{- $iamRoles := false }}
+{{- if $envAll.Values.tks}}
+{{- $iamRoles = .Values.tks.iamRoles }}
+{{- end}}
+
+{{- range .Values.s3.buckets }}
+---
+apiVersion: s3.services.k8s.aws/v1alpha1
+kind: Bucket
+metadata:
+  name: {{ .name }}
+  namespace: {{ $envAll.Release.Namespace }}
+spec:
+  name: {{ .name }}
+  tagging:
+    tagSet:
+    - key: services.tks/generator
+      value: tks.v2023.06.00
+  versioning:
+    status: Enabled
+{{- if .policy }}
+  policy: |
+  {{- .policy | nindent 4}}
+
+{{- else if $iamRoles }}
+  policy: |
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "LokiStorage",
+          "Effect": "Allow",
+          "Principal": {
+            "AWS":
+              {{- toJson $iamRoles | nindent 14 }}
+          },
+          "Action": [
+            "s3:ListBucket",
+            "s3:PutObject",
+            "s3:GetObject",
+            "s3:DeleteObject"
+          ],
+          "Resource": [
+            "arn:aws:s3:::{{ .name }}",
+            "arn:aws:s3:::{{ .name }}/*"
+          ]
+        }
+      ]
+    }
+{{- end }}
+
+{{- end }}
+{{- end }}
