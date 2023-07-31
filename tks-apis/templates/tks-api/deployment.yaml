@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tks-api.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "tks-api.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.tksapi.autoscaling.enabled }}
+  replicas: {{ .Values.tksapi.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "tks-api.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.tksapi.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "tks-api.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.tksapi.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "tks-api.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.tksapi.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.tksapi.securityContext | nindent 12 }}
+          image: "{{ .Values.tksapi.image.repository }}:{{ .Values.tksapi.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.tksapi.image.pullPolicy }}
+          ports:
+            - name: tks-api
+              containerPort: {{ .Values.tksapi.args.port }}
+              protocol: TCP
+          command:
+            - /app/backend/bin/server
+          args: [
+            "-port", "{{ .Values.tksapi.args.port }}",
+            "-revision", "{{ .Values.revision }}",
+            "-git-account", "{{ .Values.gitAccount }}",
+            "-dbname", "{{ .Values.db.dbName }}",
+            "-dbhost", "{{ .Values.db.dbHost }}",
+            "-dbport", "{{ .Values.db.dbPort }}",
+            "-dbuser", "{{ .Values.db.dbUser }}",
+            "-dbpassword", "{{ .Values.db.dbPassword }}",
+            "-argo-address", "{{ .Values.tksapi.args.argoAddress }}",
+            "-argo-port", "{{ .Values.tksapi.args.argoPort }}",
+            "-image-registry-url", "{{ .Values.tksapi.args.imageRegistryUrl }}",
+            "-harbor-pw-secret", "{{ .Values.tksapi.args.harborPwSecret }}",
+            "-git-repository-url", "{{ .Values.tksapi.args.gitRepositoryUrl }}",
+            "-keycloak-address", "{{ .Values.tksapi.args.keycloakAddress }}",
+          ]
+          resources:
+            {{- toYaml .Values.tksapi.resources | nindent 12 }}
+      {{- with .Values.tksapi.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tksapi.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tksapi.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

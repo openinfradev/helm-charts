@@ -1,6 +1,6 @@
-{{- if .Values.tksclusterlcm.ingress.enabled -}}
-{{- $fullName := include "tks-cluster-lcm.fullname" . -}}
-{{- $svcPort := .Values.tksclusterlcm.service.port -}}
+{{- if .Values.tksapi.ingress.enabled -}}
+{{- $fullName := include "tks-api.fullname" . -}}
+{{- $svcPort := .Values.tksapi.service.port -}}
 {{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1beta1
 {{- else -}}
@@ -10,15 +10,15 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    {{- include "tks-cluster-lcm.labels" . | nindent 4 }}
-  {{- with .Values.tksclusterlcm.ingress.annotations }}
+    {{- include "tks-api.labels" . | nindent 4 }}
+  {{- with .Values.tksapi.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if .Values.tksclusterlcm.ingress.tls }}
+  {{- if .Values.tksapi.ingress.tls }}
   tls:
-    {{- range .Values.tksclusterlcm.ingress.tls }}
+    {{- range .Values.tksapi.ingress.tls }}
     - hosts:
         {{- range .hosts }}
         - {{ . | quote }}
@@ -27,7 +27,7 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-    {{- range .Values.tksclusterlcm.ingress.hosts }}
+    {{- range .Values.tksapi.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:
