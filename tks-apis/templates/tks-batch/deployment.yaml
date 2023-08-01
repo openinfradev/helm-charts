@@ -44,7 +44,7 @@ spec:
             "-port", "{{ .Values.tksbatch.args.port }}",
             "-argo-address", "{{ .Values.tksbatch.args.argoAddress }}",
             "-argo-port", "{{ .Values.tksbatch.args.argoPort }}",
-            "-dbhost", "{{ .Values.db.dbUrl }}",
+            "-dbhost", "{{ .Values.db.dbHost }}",
             "-dbport", "{{ .Values.db.dbPort }}",
             "-dbuser", "{{ .Values.db.dbUser }}",
             "-dbpassword", "{{ .Values.db.dbPassword }}"
