@@ -8,8 +8,11 @@ s3:
   # buckets can be defined with a field name, and optionally define a specific policies with a field policy.
   # if policy is not defined, the default policy with Values.tks.iamRoles for tks will be inserted or no policy is defined when Values.tks.iamRoles is not defined.
   # - name: loki
+  #   versioning: Disabled
   #   policy: |
+  #
   # - name: thanos
+  #   versioning: Disabled
   #   policy: |
   
 ec2:
