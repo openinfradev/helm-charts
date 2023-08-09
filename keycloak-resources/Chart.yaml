@@ -1,9 +1,0 @@
-apiVersion: v2
-name: keycloak-resources
-description: A Helm chart for keycloak-operator CRs deployment
-
-type: application
-
-version: 0.1.0
-
-appVersion: "17.0.0"
