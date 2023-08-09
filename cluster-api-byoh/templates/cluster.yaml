@@ -13,7 +13,7 @@ spec:
   controlPlaneRef:
     apiVersion: {{ .Values.api.group.controlplane }}/{{ .Values.api.version }}
     kind: KubeadmControlPlane
-    name: {{ .Values.cluster.name }}-control-plane
+    name: {{ .Values.cluster.name }}
   infrastructureRef:
     apiVersion: {{ .Values.api.group.infrastructure }}/{{ .Values.api.version }}
     kind: ByoCluster
