@@ -1,552 +1,498 @@
-# Keycloak
+<!--- app-name: Keycloak -->
 
-[Keycloak](http://www.keycloak.org/) is an open source identity and access management for modern applications and services.
+# Keycloak packaged by Bitnami
 
-## TL;DR;
+Keycloak is a high performance Java-based identity and access management solution. It lets developers add an authentication layer to their applications with minimum effort.
+
+[Overview of Keycloak](https://www.keycloak.org/)
+
+Trademarks: This software listing is packaged by Bitnami. The respective trademarks mentioned in the offering are owned by the respective companies, and use of them does not imply any affiliation or endorsement.
+
+## TL;DR
 
 ```console
-$ helm install codecentric/keycloak
+helm install my-release oci://registry-1.docker.io/bitnamicharts/keycloak
 ```
 
 ## Introduction
 
-This chart bootstraps a [Keycloak](http://www.keycloak.org/) StatefulSet on a [Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
-It provisions a fully featured Keycloak installation.
-For more information on Keycloak and its capabilities, see its [documentation](http://www.keycloak.org/documentation.html).
+Bitnami charts for Helm are carefully engineered, actively maintained and are the quickest and easiest way to deploy containers on a Kubernetes cluster that are ready to handle production workloads.
 
-## Prerequisites Details
+This chart bootstraps a [Keycloak](https://github.com/bitnami/containers/tree/main/bitnami/keycloak) deployment on a [Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-The chart has an optional dependency on the [PostgreSQL](https://github.com/bitnami/charts/tree/master/bitnami/postgresql) chart.
-By default, the PostgreSQL chart requires PV support on underlying infrastructure (may be disabled).
+Bitnami charts can be used with [Kubeapps](https://kubeapps.dev/) for deployment and management of Helm Charts in clusters.
+
+Looking to use Keycloak in production? Try [VMware Application Catalog](https://bitnami.com/enterprise), the enterprise edition of Bitnami Application Catalog.
+
+## Prerequisites
+
+- Kubernetes 1.19+
+- Helm 3.2.0+
 
 ## Installing the Chart
 
-To install the chart with the release name `keycloak`:
+To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name keycloak codecentric/keycloak
+helm install my-release oci://registry-1.docker.io/bitnamicharts/keycloak
 ```
+
+These commands deploy a Keycloak application on the Kubernetes cluster in the default configuration.
+
+> **Tip**: List all releases using `helm list`
 
 ## Uninstalling the Chart
 
-To uninstall/delete the `keycloak` deployment:
+To uninstall/delete the `my-release` deployment:
 
 ```console
-$ helm delete keycloak
+helm delete my-release
 ```
 
-## Configuration
+The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-The following table lists the configurable parameters of the Keycloak chart and their default values.
+## Parameters
 
-Parameter | Description | Default
---- | --- | ---
-`init.image.repository` | Init image repository | `docker.io/busybox`
-`init.image.tag` | Init image tag | `1.31`
-`init.image.pullPolicy` | Init image pull policy | `IfNotPresent`
-`init.resources` | Pod resource requests and limits for the init container | `{}`
-`clusterDomain` | The internal Kubernetes cluster domain | `cluster.local`
-`keycloak.replicas` | The number of Keycloak replicas | `1`
-`keycloak.image.repository` | The Keycloak image repository | `docker.io/jboss/keycloak`
-`keycloak.image.tag` | The Keycloak image tag | `""` (default empty so `.Chart.AppVersion` is used)
-`keycloak.image.pullPolicy` | The Keycloak image pull policy | `IfNotPresent`
-`keycloak.image.pullSecrets` | Image pull secrets | `[]`
-`keycloak.basepath` | Path keycloak is hosted at | `auth`
-`keycloak.username` | Username for the initial Keycloak admin user | `keycloak`
-`keycloak.password` | Password for the initial Keycloak admin user (if `keycloak.existingSecret=""`). If not set, a random 10 characters password is created | `""`
-`keycloak.existingSecret` | Specifies an existing secret to be used for the admin password | `""`
-`keycloak.existingSecretKey` |  The key in `keycloak.existingSecret` that stores the admin password | `password`
-`keycloak.jgroups.discoveryProtocol` | The protocol for JGroups discovery | `dns.DNS_PING`
-`keycloak.jgroups.discoveryProperties` | Properties for JGroups discovery. Passed through the `tpl` function | `"dns_query={{ template "keycloak.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}"`
-`keycloak.jgroups.exposePort` | Specifies whether to expose the JGroups port in container and service | `true`
-`keycloak.javaToolOptions` | Java tool options | `"-XX:+UseContainerSupport -XX:MaxRAMPercentage=50.0"`
-`keycloak.extraInitContainers` | Additional init containers, e. g. for providing themes, etc. Passed through the `tpl` function and thus to be configured a string | `""`
-`keycloak.extraContainers` | Additional sidecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy. Passed through the `tpl` function and thus to be configured a string | `""`
-`keycloak.extraEnv` | Allows the specification of additional environment variables for Keycloak. Passed through the `tpl` function and thus to be configured a string. | `""`
-`keycloak.extraVolumeMounts` | Add additional volumes mounts, e. g. for custom themes. Passed through the `tpl` function and thus to be configured a string | `""`
-`keycloak.extraVolumes` | Add additional volumes, e. g. for custom themes. Passed through the `tpl` function and thus to be configured a string | `""`
-`keycloak.extraPorts` | Add additional ports, e. g. for custom admin console port. Passed through the `tpl` function and thus to be configured a string | `""`
-`keycloak.podDisruptionBudget` | Pod disruption budget | `{}`
-`keycloak.priorityClassName` | Pod priority classname | `{}`
-`keycloak.resources` | Pod resource requests and limits | `{}`
-`keycloak.affinity` | Pod affinity. Passed through the `tpl` function and thus to be configured a string | `Hard node and soft zone anti-affinity`
-`keycloak.nodeSelector` | Node labels for pod assignment | `{}`
-`keycloak.tolerations` | Node taints to tolerate | `[]`
-`keycloak.podLabels` | Extra labels to add to pod | `{}`
-`keycloak.podAnnotations` | Extra annotations to add to pod. Values are passed through the `tpl` function | `{}`
-`keycloak.statefulsetAnnotations` | Extra annotations to add to statefulset. Values are passed through the `tpl` function | `{}`
-`keycloak.hostAliases` | Mapping between IP and hostnames that will be injected as entries in the pod's hosts files | `[]`
-`keycloak.enableServiceLinks` | Indicates whether information about services should be injected into pod's environment variables, matching the syntax of Docker links | `false`
-`keycloak.proxyAddressForwarding` | Enables proxy address forwarding if your instance is running behind a reverse proxy | `true`
-`keycloak.podManagementPolicy` | Pod management policy. One of `Parallel` or `OrderedReady` | `Parallel`
-`keycloak.restartPolicy` | Pod restart policy. One of `Always`, `OnFailure`, or `Never` | `Always`
-`keycloak.serviceAccount.create` | If `true`, a new service account is created | `false`
-`keycloak.serviceAccount.name` | Name of service account to use. If `serviceAccount.create=true`, a new service account is created with this name. | `"default" OR (if serviceAccount.create=true) keycloak.fullname`
-`keycloak.securityContext` | Security context for the entire pod. Every container running in the pod will inherit this security context. This might be relevant when other components of the environment inject additional containers into running pods (service meshs are the most prominent example for this) | `{fsGroup: 1000}`
-`keycloak.containerSecurityContext` | Security context for containers running in the pod. Will not be inherited by additionally injected containers | `{runAsUser: 1000, runAsNonRoot: true}`
-`keycloak.startupScripts` | Custom startup scripts to run before Keycloak starts up | `[]`
-`keycloak.lifecycleHooks` | Container lifecycle hooks. Passed through the `tpl` function and thus to be configured a string | ``
-`keycloak.terminationGracePeriodSeconds` | Termination grace period in seconds for Keycloak shutdown. Clusters with a large cache might need to extend this to give Infinispan more time to rebalance | `60`
-`keycloak.extraArgs` | Additional arguments to the start command | ``
-`keycloak.livenessProbe` | Liveness probe configuration. Passed through the `tpl` function and thus to be configured as string | See `values.yaml`
-`keycloak.readinessProbe` | Readiness probe configuration. Passed through the `tpl` function and thus to be configured as string | See `values.yaml`
-`keycloak.cli.enabled` | Set to `false` if no CLI changes should be performed by the chart | `true`
-`keycloak.cli.nodeIdentifier` | WildFly CLI script for setting the node identifier | See `values.yaml`
-`keycloak.cli.logging` | WildFly CLI script for logging configuration | See `values.yaml`
-`keycloak.cli.ha` | Settings for HA setups | See `values.yaml`
-`keycloak.cli.custom` | Additional custom WildFly CLI script | `""`
-`keycloak.service.annotations` | Annotations for the Keycloak service. Values are passed through the `tpl` function | `{}`
-`keycloak.service.labels` | Additional labels for the Keycloak service | `{}`
-`keycloak.service.type` | The service type | `ClusterIP`
-`keycloak.service.httpPort` | The http service port | `80`
-`keycloak.service.httpsPort` | The https service port | `8443`
-`keycloak.service.httpNodePort` | The http node port used if the service is of type `NodePort` | `""`
-`keycloak.service.httpsNodePort` | The https node port used if the service is of type `NodePort` | `""`
-`keycloak.service.extraPorts` | Add additional ports, e. g. for custom admin console port. Passed through the `tpl` function and thus to be configured a string | `""`
-`keycloak.ingress.enabled` | if `true`, an ingress is created | `false`
-`keycloak.ingress.annotations` | annotations for the ingress | `{}`
-`keycloak.ingress.labels` | Additional labels for the Keycloak ingress | `{}`
-`keycloak.ingress.path` | Path for the ingress | `/`
-`keycloak.ingress.servicePort` | The port of the service referenced by the ingress | `http`
-`keycloak.ingress.hosts` | a list of ingress hosts | `[keycloak.example.com]`
-`keycloak.ingress.tls` | a list of [IngressTLS](https://v1-9.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#ingresstls-v1beta1-extensions) items | `[]`
-`keycloak.route.enabled` | If `true`, an OpenShift route is created | `false`
-`keycloak.route.annotations` | Annotations for the route | `{}`
-`keycloak.route.labels` | Additional labels for the Keycloak route | `{}`
-`keycloak.route.path` | Path for the route | `/`
-`keycloak.route.host` | The host name of the route. If left empty, a name will be generated by OpenShift | `""`
-`keycloak.route.tls.enabled` | If `true`, TLS is enabled for the route | `true`
-`keycloak.route.tls.insecureEdgeTerminationPolicy` | Insecure edge termination policy of the route. Can be `None`, `Redirect` or `Allow` | `Redirect`
-`keycloak.route.tls.termination` | TLS termination of the route. Can be `edge`, `passthrough` or `reencrypt` | `edge`
-`keycloak.persistence.deployPostgres` | If true, the PostgreSQL chart is installed | `false`
-`keycloak.persistence.existingSecret` | Name of an existing secret to be used for the database password (if `keycloak.persistence.deployPostgres=false`). Otherwise a new secret is created | `""`
-`keycloak.persistence.existingSecretPasswordKey` | The key for the database password in the existing secret (if `keycloak.persistence.deployPostgres=false` and `keycloak.persistence.existingSecret != ""`) | `""`
-`keycloak.persistence.existingSecretUsernameKey` | The key for the database username in the existing secret (if `keycloak.persistence.deployPostgres=false` and `keycloak.persistence.existingSecret != ""`). Will default to the value of `.keycloak.persistence.dbUser` if left unset. | `""`
-`keycloak.persistence.dbVendor` | One of `h2`, `postgres`, `mysql`, or `mariadb` (if `deployPostgres=false`) | `h2`
-`keycloak.persistence.dbName` | The name of the database to connect to (if `deployPostgres=false`) | `keycloak`
-`keycloak.persistence.dbHost` | The database host name (if `deployPostgres=false`) | `mykeycloak`
-`keycloak.persistence.dbPort` | The database host port (if `deployPostgres=false`) | `5432`
-`keycloak.persistence.dbUser` |The database user (if `deployPostgres=false`) | `keycloak`
-`keycloak.persistence.dbPassword` |The database password (if `deployPostgres=false`) | `""`
-`postgresql.postgresqlUser` | The PostgreSQL user (if `keycloak.persistence.deployPostgres=true`) | `keycloak`
-`postgresql.postgresqlPassword` | The PostgreSQL password (if `keycloak.persistence.deployPostgres=true`) | `""`
-`postgresql.postgresqlDatabase` | The PostgreSQL database (if `keycloak.persistence.deployPostgres=true`) | `keycloak`
-`postgresql.persistence.enabled` | If `true`, a PersistentVolumeClaim is created for PostgreSQL (if `keycloak.persistence.deployPostgres=true`) | `false`
-`test.enabled` | If `true`, test pods get scheduled | `true`
-`test.image.repository` | Test image repository | `docker.io/unguiculus/docker-python3-phantomjs-selenium`
-`test.image.tag` | Test image tag | `v1`
-`test.image.pullPolicy` | Test image pull policy | `IfNotPresent`
-`test.securityContext` | Security context for the test pod. Every container running in the pod will inherit this security context. This might be relevant when other components of the environment inject additional containers into the running pod (service meshs are the most prominent example for this) | `{fsGroup: 1000}`
-`test.containerSecurityContext` | Security context for containers running in the test pod. Will not be inherited by additionally injected containers | `{runAsUser: 1000, runAsNonRoot: true}`
-`prometheus.operator.enabled` | Enable the Prometheus Operator features of the chart | `false`
-`prometheus.operator.serviceMonitor.namespace` | Namespace in which to deploy Prometheus Operator ServiceMonitor | `{{ .Release.Namespace }}`
-`prometheus.operator.serviceMonitor.selector` | Labels to add to the Prometheus Operator ServiceMonitor depending on your Operator configuration | `release: prometheus`
-`prometheus.operator.serviceMonitor.interval` | How often Prometheus should poll the metrics endpoint | `10s`
-`prometheus.operator.serviceMonitor.scrapeTimeout` | How long the Prometheus metrics endpoint timeout should be | `10s`
-`prometheus.operator.serviceMonitor.path` | The path of the Prometheus metrics endpoint on Keycloak | `/auth/realms/master/metrics`
-`prometheus.operator.prometheusRules.enabled` | Whether to create Prometheus Operator PrometheusRules object | `false`
-`prometheus.operator.prometheusRules.selector` | Labels to add to the Prometheus Operator PrometheusRules object depending on your Operator configuration | `{app: prometheus-operator", release: prometheus}`
-`prometheus.operator.prometheusRules.rules` | The Prometheus Operator rules to configure | `{}`
-`backup.enabled` | If `true`, backup cronjob get scheduled | `false`
-`backup.scheduler` | cron schedule | `5 5 * * *`
-`backup.successfulJobsHistoryLimit` | specify how many completed jobs should be kept | `3`
-`backup.failedJobsHistoryLimit` | specify how many failed jobs should be kept | `3`
-`backup.databases` | specify database should be backup | `clair registry keycloak postgres`
-`backup.user` | The username of archive machine | `centos`
-`backup.host` | The hostname of archive machine | `localhost`
-`backup.destination` | The destination for archiving | `/data`
-`backup.sshKey` | The ssh key for connecting to archive machine | `""`
-`backup.image.repository` | Backup image repository | `sktdev/backup-postgresql`
-`backup.image.tag` | Backup image tag | `0.1.0`
-`backup.init.image.repository` | Backup init image repository | `busybox`
-`backup.init.image.tag` | Backup init image tag | `1.31`
+### Global parameters
 
-Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
+| Name                      | Description                                     | Value |
+| ------------------------- | ----------------------------------------------- | ----- |
+| `global.imageRegistry`    | Global Docker image registry                    | `""`  |
+| `global.imagePullSecrets` | Global Docker registry secret names as an array | `[]`  |
+| `global.storageClass`     | Global StorageClass for Persistent Volume(s)    | `""`  |
+
+### Common parameters
+
+| Name                     | Description                                                                             | Value           |
+| ------------------------ | --------------------------------------------------------------------------------------- | --------------- |
+| `kubeVersion`            | Force target Kubernetes version (using Helm capabilities if not set)                    | `""`            |
+| `nameOverride`           | String to partially override common.names.fullname                                      | `""`            |
+| `fullnameOverride`       | String to fully override common.names.fullname                                          | `""`            |
+| `namespaceOverride`      | String to fully override common.names.namespace                                         | `""`            |
+| `commonLabels`           | Labels to add to all deployed objects                                                   | `{}`            |
+| `enableServiceLinks`     | If set to false, disable Kubernetes service links in the pod spec                       | `true`          |
+| `commonAnnotations`      | Annotations to add to all deployed objects                                              | `{}`            |
+| `dnsPolicy`              | DNS Policy for pod                                                                      | `""`            |
+| `dnsConfig`              | DNS Configuration pod                                                                   | `{}`            |
+| `clusterDomain`          | Default Kubernetes cluster domain                                                       | `cluster.local` |
+| `extraDeploy`            | Array of extra objects to deploy with the release                                       | `[]`            |
+| `diagnosticMode.enabled` | Enable diagnostic mode (all probes will be disabled and the command will be overridden) | `false`         |
+| `diagnosticMode.command` | Command to override all containers in the the statefulset                               | `["sleep"]`     |
+| `diagnosticMode.args`    | Args to override all containers in the the statefulset                                  | `["infinity"]`  |
+
+### Keycloak parameters
+
+| Name                             | Description                                                                                                                  | Value                         |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| `image.registry`                 | Keycloak image registry                                                                                                      | `docker.io`                   |
+| `image.repository`               | Keycloak image repository                                                                                                    | `bitnami/keycloak`            |
+| `image.tag`                      | Keycloak image tag (immutable tags are recommended)                                                                          | `21.1.2-debian-11-r0`         |
+| `image.digest`                   | Keycloak image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag                     | `""`                          |
+| `image.pullPolicy`               | Keycloak image pull policy                                                                                                   | `IfNotPresent`                |
+| `image.pullSecrets`              | Specify docker-registry secret names as an array                                                                             | `[]`                          |
+| `image.debug`                    | Specify if debug logs should be enabled                                                                                      | `false`                       |
+| `auth.adminUser`                 | Keycloak administrator user                                                                                                  | `user`                        |
+| `auth.adminPassword`             | Keycloak administrator password for the new user                                                                             | `""`                          |
+| `auth.existingSecret`            | Existing secret containing Keycloak admin password                                                                           | `""`                          |
+| `auth.passwordSecretKey`         | Key where the Keycloak admin password is being stored inside the existing secret.                                            | `""`                          |
+| `tls.enabled`                    | Enable TLS encryption. Required for HTTPs traffic.                                                                           | `false`                       |
+| `tls.autoGenerated`              | Generate automatically self-signed TLS certificates. Currently only supports PEM certificates                                | `false`                       |
+| `tls.existingSecret`             | Existing secret containing the TLS certificates per Keycloak replica                                                         | `""`                          |
+| `tls.usePem`                     | Use PEM certificates as input instead of PKS12/JKS stores                                                                    | `false`                       |
+| `tls.truststoreFilename`         | Truststore filename inside the existing secret                                                                               | `keycloak.truststore.jks`     |
+| `tls.keystoreFilename`           | Keystore filename inside the existing secret                                                                                 | `keycloak.keystore.jks`       |
+| `tls.keystorePassword`           | Password to access the keystore when it's password-protected                                                                 | `""`                          |
+| `tls.truststorePassword`         | Password to access the truststore when it's password-protected                                                               | `""`                          |
+| `tls.passwordsSecret`            | Secret containing the Keystore and Truststore passwords.                                                                     | `""`                          |
+| `spi.existingSecret`             | Existing secret containing the Keycloak truststore for SPI connection over HTTPS/TLS                                         | `""`                          |
+| `spi.truststorePassword`         | Password to access the truststore when it's password-protected                                                               | `""`                          |
+| `spi.truststoreFilename`         | Truststore filename inside the existing secret                                                                               | `keycloak-spi.truststore.jks` |
+| `spi.passwordsSecret`            | Secret containing the SPI Truststore passwords.                                                                              | `""`                          |
+| `spi.hostnameVerificationPolicy` | Verify the hostname of the server’s certificate. Allowed values: "ANY", "WILDCARD", "STRICT".                                | `""`                          |
+| `production`                     | Run Keycloak in production mode. TLS configuration is required except when using proxy=edge.                                 | `false`                       |
+| `proxy`                          | reverse Proxy mode edge, reencrypt, passthrough or none                                                                      | `passthrough`                 |
+| `httpRelativePath`               | Set the path relative to '/' for serving resources. Useful if you are migrating from older version which were using '/auth/' | `/`                           |
+| `configuration`                  | Keycloak Configuration. Auto-generated based on other parameters when not specified                                          | `""`                          |
+| `existingConfigmap`              | Name of existing ConfigMap with Keycloak configuration                                                                       | `""`                          |
+| `extraStartupArgs`               | Extra default startup args                                                                                                   | `""`                          |
+| `initdbScripts`                  | Dictionary of initdb scripts                                                                                                 | `{}`                          |
+| `initdbScriptsConfigMap`         | ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`)                                                          | `""`                          |
+| `command`                        | Override default container command (useful when using custom images)                                                         | `[]`                          |
+| `args`                           | Override default container args (useful when using custom images)                                                            | `[]`                          |
+| `extraEnvVars`                   | Extra environment variables to be set on Keycloak container                                                                  | `[]`                          |
+| `extraEnvVarsCM`                 | Name of existing ConfigMap containing extra env vars                                                                         | `""`                          |
+| `extraEnvVarsSecret`             | Name of existing Secret containing extra env vars                                                                            | `""`                          |
+
+### Keycloak statefulset parameters
+
+| Name                                    | Description                                                                                                              | Value           |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | --------------- |
+| `replicaCount`                          | Number of Keycloak replicas to deploy                                                                                    | `1`             |
+| `containerPorts.http`                   | Keycloak HTTP container port                                                                                             | `8080`          |
+| `containerPorts.https`                  | Keycloak HTTPS container port                                                                                            | `8443`          |
+| `containerPorts.infinispan`             | Keycloak infinispan container port                                                                                       | `7800`          |
+| `extraContainerPorts`                   | Optionally specify extra list of additional port-mappings for Keycloak container                                         | `[]`            |
+| `podSecurityContext.enabled`            | Enabled Keycloak pods' Security Context                                                                                  | `true`          |
+| `podSecurityContext.fsGroup`            | Set Keycloak pod's Security Context fsGroup                                                                              | `1001`          |
+| `containerSecurityContext.enabled`      | Enabled Keycloak containers' Security Context                                                                            | `true`          |
+| `containerSecurityContext.runAsUser`    | Set Keycloak container's Security Context runAsUser                                                                      | `1001`          |
+| `containerSecurityContext.runAsNonRoot` | Set Keycloak container's Security Context runAsNonRoot                                                                   | `true`          |
+| `resources.limits`                      | The resources limits for the Keycloak containers                                                                         | `{}`            |
+| `resources.requests`                    | The requested resources for the Keycloak containers                                                                      | `{}`            |
+| `livenessProbe.enabled`                 | Enable livenessProbe on Keycloak containers                                                                              | `true`          |
+| `livenessProbe.initialDelaySeconds`     | Initial delay seconds for livenessProbe                                                                                  | `300`           |
+| `livenessProbe.periodSeconds`           | Period seconds for livenessProbe                                                                                         | `1`             |
+| `livenessProbe.timeoutSeconds`          | Timeout seconds for livenessProbe                                                                                        | `5`             |
+| `livenessProbe.failureThreshold`        | Failure threshold for livenessProbe                                                                                      | `3`             |
+| `livenessProbe.successThreshold`        | Success threshold for livenessProbe                                                                                      | `1`             |
+| `readinessProbe.enabled`                | Enable readinessProbe on Keycloak containers                                                                             | `true`          |
+| `readinessProbe.initialDelaySeconds`    | Initial delay seconds for readinessProbe                                                                                 | `30`            |
+| `readinessProbe.periodSeconds`          | Period seconds for readinessProbe                                                                                        | `10`            |
+| `readinessProbe.timeoutSeconds`         | Timeout seconds for readinessProbe                                                                                       | `1`             |
+| `readinessProbe.failureThreshold`       | Failure threshold for readinessProbe                                                                                     | `3`             |
+| `readinessProbe.successThreshold`       | Success threshold for readinessProbe                                                                                     | `1`             |
+| `startupProbe.enabled`                  | Enable startupProbe on Keycloak containers                                                                               | `false`         |
+| `startupProbe.initialDelaySeconds`      | Initial delay seconds for startupProbe                                                                                   | `30`            |
+| `startupProbe.periodSeconds`            | Period seconds for startupProbe                                                                                          | `5`             |
+| `startupProbe.timeoutSeconds`           | Timeout seconds for startupProbe                                                                                         | `1`             |
+| `startupProbe.failureThreshold`         | Failure threshold for startupProbe                                                                                       | `60`            |
+| `startupProbe.successThreshold`         | Success threshold for startupProbe                                                                                       | `1`             |
+| `customLivenessProbe`                   | Custom Liveness probes for Keycloak                                                                                      | `{}`            |
+| `customReadinessProbe`                  | Custom Rediness probes Keycloak                                                                                          | `{}`            |
+| `customStartupProbe`                    | Custom Startup probes for Keycloak                                                                                       | `{}`            |
+| `lifecycleHooks`                        | LifecycleHooks to set additional configuration at startup                                                                | `{}`            |
+| `hostAliases`                           | Deployment pod host aliases                                                                                              | `[]`            |
+| `podLabels`                             | Extra labels for Keycloak pods                                                                                           | `{}`            |
+| `podAnnotations`                        | Annotations for Keycloak pods                                                                                            | `{}`            |
+| `podAffinityPreset`                     | Pod affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`                                      | `""`            |
+| `podAntiAffinityPreset`                 | Pod anti-affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`                                 | `soft`          |
+| `nodeAffinityPreset.type`               | Node affinity preset type. Ignored if `affinity` is set. Allowed values: `soft` or `hard`                                | `""`            |
+| `nodeAffinityPreset.key`                | Node label key to match. Ignored if `affinity` is set.                                                                   | `""`            |
+| `nodeAffinityPreset.values`             | Node label values to match. Ignored if `affinity` is set.                                                                | `[]`            |
+| `affinity`                              | Affinity for pod assignment                                                                                              | `{}`            |
+| `nodeSelector`                          | Node labels for pod assignment                                                                                           | `{}`            |
+| `tolerations`                           | Tolerations for pod assignment                                                                                           | `[]`            |
+| `topologySpreadConstraints`             | Topology Spread Constraints for pod assignment spread across your cluster among failure-domains. Evaluated as a template | `[]`            |
+| `podManagementPolicy`                   | Pod management policy for the Keycloak statefulset                                                                       | `Parallel`      |
+| `priorityClassName`                     | Keycloak pods' Priority Class Name                                                                                       | `""`            |
+| `schedulerName`                         | Use an alternate scheduler, e.g. "stork".                                                                                | `""`            |
+| `terminationGracePeriodSeconds`         | Seconds Keycloak pod needs to terminate gracefully                                                                       | `""`            |
+| `updateStrategy.type`                   | Keycloak statefulset strategy type                                                                                       | `RollingUpdate` |
+| `updateStrategy.rollingUpdate`          | Keycloak statefulset rolling update configuration parameters                                                             | `{}`            |
+| `extraVolumes`                          | Optionally specify extra list of additional volumes for Keycloak pods                                                    | `[]`            |
+| `extraVolumeMounts`                     | Optionally specify extra list of additional volumeMounts for Keycloak container(s)                                       | `[]`            |
+| `initContainers`                        | Add additional init containers to the Keycloak pods                                                                      | `[]`            |
+| `sidecars`                              | Add additional sidecar containers to the Keycloak pods                                                                   | `[]`            |
+
+### Exposure parameters
+
+| Name                               | Description                                                                                                                      | Value                    |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| `service.type`                     | Kubernetes service type                                                                                                          | `ClusterIP`              |
+| `service.http.enabled`             | Enable http port on service                                                                                                      | `true`                   |
+| `service.ports.http`               | Keycloak service HTTP port                                                                                                       | `80`                     |
+| `service.ports.https`              | Keycloak service HTTPS port                                                                                                      | `443`                    |
+| `service.nodePorts`                | Specify the nodePort values for the LoadBalancer and NodePort service types.                                                     | `{}`                     |
+| `service.sessionAffinity`          | Control where client requests go, to the same pod or round-robin                                                                 | `None`                   |
+| `service.sessionAffinityConfig`    | Additional settings for the sessionAffinity                                                                                      | `{}`                     |
+| `service.clusterIP`                | Keycloak service clusterIP IP                                                                                                    | `""`                     |
+| `service.loadBalancerIP`           | loadBalancerIP for the SuiteCRM Service (optional, cloud specific)                                                               | `""`                     |
+| `service.loadBalancerSourceRanges` | Address that are allowed when service is LoadBalancer                                                                            | `[]`                     |
+| `service.externalTrafficPolicy`    | Enable client source IP preservation                                                                                             | `Cluster`                |
+| `service.annotations`              | Additional custom annotations for Keycloak service                                                                               | `{}`                     |
+| `service.extraPorts`               | Extra port to expose on Keycloak service                                                                                         | `[]`                     |
+| `service.extraHeadlessPorts`       | Extra ports to expose on Keycloak headless service                                                                               | `[]`                     |
+| `service.headless.annotations`     | Annotations for the headless service.                                                                                            | `{}`                     |
+| `service.headless.extraPorts`      | Extra ports to expose on Keycloak headless service                                                                               | `[]`                     |
+| `ingress.enabled`                  | Enable ingress record generation for Keycloak                                                                                    | `false`                  |
+| `ingress.ingressClassName`         | IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+)                                                    | `""`                     |
+| `ingress.pathType`                 | Ingress path type                                                                                                                | `ImplementationSpecific` |
+| `ingress.apiVersion`               | Force Ingress API version (automatically detected if not set)                                                                    | `""`                     |
+| `ingress.hostname`                 | Default host for the ingress record (evaluated as template)                                                                      | `keycloak.local`         |
+| `ingress.path`                     | Default path for the ingress record (evaluated as template)                                                                      | `""`                     |
+| `ingress.servicePort`              | Backend service port to use                                                                                                      | `http`                   |
+| `ingress.annotations`              | Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations. | `{}`                     |
+| `ingress.labels`                   | Additional labels for the Ingress resource.                                                                                      | `{}`                     |
+| `ingress.tls`                      | Enable TLS configuration for the host defined at `ingress.hostname` parameter                                                    | `false`                  |
+| `ingress.selfSigned`               | Create a TLS secret for this ingress record using self-signed certificates generated by Helm                                     | `false`                  |
+| `ingress.extraHosts`               | An array with additional hostname(s) to be covered with the ingress record                                                       | `[]`                     |
+| `ingress.extraPaths`               | Any additional arbitrary paths that may need to be added to the ingress under the main host.                                     | `[]`                     |
+| `ingress.extraTls`                 | The tls configuration for additional hostnames to be covered with this ingress record.                                           | `[]`                     |
+| `ingress.secrets`                  | If you're providing your own certificates, please use this to add the certificates as secrets                                    | `[]`                     |
+| `ingress.extraRules`               | Additional rules to be covered with this ingress record                                                                          | `[]`                     |
+| `networkPolicy.enabled`            | Enable the default NetworkPolicy policy                                                                                          | `false`                  |
+| `networkPolicy.allowExternal`      | Don't require client label for connections                                                                                       | `true`                   |
+| `networkPolicy.additionalRules`    | Additional NetworkPolicy rules                                                                                                   | `{}`                     |
+
+### RBAC parameter
+
+| Name                                          | Description                                               | Value   |
+| --------------------------------------------- | --------------------------------------------------------- | ------- |
+| `serviceAccount.create`                       | Enable the creation of a ServiceAccount for Keycloak pods | `true`  |
+| `serviceAccount.name`                         | Name of the created ServiceAccount                        | `""`    |
+| `serviceAccount.automountServiceAccountToken` | Auto-mount the service account token in the pod           | `true`  |
+| `serviceAccount.annotations`                  | Additional custom annotations for the ServiceAccount      | `{}`    |
+| `serviceAccount.extraLabels`                  | Additional labels for the ServiceAccount                  | `{}`    |
+| `rbac.create`                                 | Whether to create and use RBAC resources or not           | `false` |
+| `rbac.rules`                                  | Custom RBAC rules                                         | `[]`    |
+
+### Other parameters
+
+| Name                       | Description                                                    | Value   |
+| -------------------------- | -------------------------------------------------------------- | ------- |
+| `pdb.create`               | Enable/disable a Pod Disruption Budget creation                | `false` |
+| `pdb.minAvailable`         | Minimum number/percentage of pods that should remain scheduled | `1`     |
+| `pdb.maxUnavailable`       | Maximum number/percentage of pods that may be made unavailable | `""`    |
+| `autoscaling.enabled`      | Enable autoscaling for Keycloak                                | `false` |
+| `autoscaling.minReplicas`  | Minimum number of Keycloak replicas                            | `1`     |
+| `autoscaling.maxReplicas`  | Maximum number of Keycloak replicas                            | `11`    |
+| `autoscaling.targetCPU`    | Target CPU utilization percentage                              | `""`    |
+| `autoscaling.targetMemory` | Target Memory utilization percentage                           | `""`    |
+
+### Metrics parameters
+
+| Name                                       | Description                                                                                                               | Value   |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `metrics.enabled`                          | Enable exposing Keycloak statistics                                                                                       | `false` |
+| `metrics.service.ports.http`               | Metrics service HTTP port                                                                                                 | `8080`  |
+| `metrics.service.annotations`              | Annotations for enabling prometheus to access the metrics endpoints                                                       | `{}`    |
+| `metrics.serviceMonitor.enabled`           | Create ServiceMonitor Resource for scraping metrics using PrometheusOperator                                              | `false` |
+| `metrics.serviceMonitor.port`              | Metrics service HTTP port                                                                                                 | `http`  |
+| `metrics.serviceMonitor.endpoints`         | The endpoint configuration of the ServiceMonitor. Path is mandatory. Interval, timeout and labellings can be overwritten. | `[]`    |
+| `metrics.serviceMonitor.path`              | Metrics service HTTP path. Deprecated: Use @param metrics.serviceMonitor.endpoints instead                                | `""`    |
+| `metrics.serviceMonitor.namespace`         | Namespace which Prometheus is running in                                                                                  | `""`    |
+| `metrics.serviceMonitor.interval`          | Interval at which metrics should be scraped                                                                               | `30s`   |
+| `metrics.serviceMonitor.scrapeTimeout`     | Specify the timeout after which the scrape is ended                                                                       | `""`    |
+| `metrics.serviceMonitor.labels`            | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus                                     | `{}`    |
+| `metrics.serviceMonitor.selector`          | Prometheus instance selector labels                                                                                       | `{}`    |
+| `metrics.serviceMonitor.relabelings`       | RelabelConfigs to apply to samples before scraping                                                                        | `[]`    |
+| `metrics.serviceMonitor.metricRelabelings` | MetricRelabelConfigs to apply to samples before ingestion                                                                 | `[]`    |
+| `metrics.serviceMonitor.honorLabels`       | honorLabels chooses the metric's labels on collisions with target labels                                                  | `false` |
+| `metrics.serviceMonitor.jobLabel`          | The name of the label on the target service to use as the job name in prometheus.                                         | `""`    |
+| `metrics.prometheusRule.enabled`           | Create PrometheusRule Resource for scraping metrics using PrometheusOperator                                              | `false` |
+| `metrics.prometheusRule.namespace`         | Namespace which Prometheus is running in                                                                                  | `""`    |
+| `metrics.prometheusRule.labels`            | Additional labels that can be used so PrometheusRule will be discovered by Prometheus                                     | `{}`    |
+| `metrics.prometheusRule.groups`            | Groups, containing the alert rules.                                                                                       | `[]`    |
+
+### keycloak-config-cli parameters
+
+| Name                                                      | Description                                                                                                                   | Value                         |
+| --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| `keycloakConfigCli.enabled`                               | Whether to enable keycloak-config-cli job                                                                                     | `false`                       |
+| `keycloakConfigCli.image.registry`                        | keycloak-config-cli container image registry                                                                                  | `docker.io`                   |
+| `keycloakConfigCli.image.repository`                      | keycloak-config-cli container image repository                                                                                | `bitnami/keycloak-config-cli` |
+| `keycloakConfigCli.image.tag`                             | keycloak-config-cli container image tag                                                                                       | `5.6.1-debian-11-r34`         |
+| `keycloakConfigCli.image.digest`                          | keycloak-config-cli container image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag | `""`                          |
+| `keycloakConfigCli.image.pullPolicy`                      | keycloak-config-cli container image pull policy                                                                               | `IfNotPresent`                |
+| `keycloakConfigCli.image.pullSecrets`                     | keycloak-config-cli container image pull secrets                                                                              | `[]`                          |
+| `keycloakConfigCli.annotations`                           | Annotations for keycloak-config-cli job                                                                                       | `{}`                          |
+| `keycloakConfigCli.command`                               | Command for running the container (set to default if not set). Use array form                                                 | `[]`                          |
+| `keycloakConfigCli.args`                                  | Args for running the container (set to default if not set). Use array form                                                    | `[]`                          |
+| `keycloakConfigCli.hostAliases`                           | Job pod host aliases                                                                                                          | `[]`                          |
+| `keycloakConfigCli.resources.limits`                      | The resources limits for the keycloak-config-cli container                                                                    | `{}`                          |
+| `keycloakConfigCli.resources.requests`                    | The requested resources for the keycloak-config-cli container                                                                 | `{}`                          |
+| `keycloakConfigCli.containerSecurityContext.enabled`      | Enabled keycloak-config-cli containers' Security Context                                                                      | `true`                        |
+| `keycloakConfigCli.containerSecurityContext.runAsUser`    | Set keycloak-config-cli container's Security Context runAsUser                                                                | `1001`                        |
+| `keycloakConfigCli.containerSecurityContext.runAsNonRoot` | Set keycloak-config-cli container's Security Context runAsNonRoot                                                             | `true`                        |
+| `keycloakConfigCli.podSecurityContext.enabled`            | Enabled keycloak-config-cli pods' Security Context                                                                            | `true`                        |
+| `keycloakConfigCli.podSecurityContext.fsGroup`            | Set keycloak-config-cli pod's Security Context fsGroup                                                                        | `1001`                        |
+| `keycloakConfigCli.backoffLimit`                          | Number of retries before considering a Job as failed                                                                          | `1`                           |
+| `keycloakConfigCli.podLabels`                             | Pod extra labels                                                                                                              | `{}`                          |
+| `keycloakConfigCli.podAnnotations`                        | Annotations for job pod                                                                                                       | `{}`                          |
+| `keycloakConfigCli.extraEnvVars`                          | Additional environment variables to set                                                                                       | `[]`                          |
+| `keycloakConfigCli.nodeSelector`                          | Node labels for pod assignment                                                                                                | `{}`                          |
+| `keycloakConfigCli.podTolerations`                        | Tolerations for job pod assignment                                                                                            | `[]`                          |
+| `keycloakConfigCli.extraEnvVarsCM`                        | ConfigMap with extra environment variables                                                                                    | `""`                          |
+| `keycloakConfigCli.extraEnvVarsSecret`                    | Secret with extra environment variables                                                                                       | `""`                          |
+| `keycloakConfigCli.extraVolumes`                          | Extra volumes to add to the job                                                                                               | `[]`                          |
+| `keycloakConfigCli.extraVolumeMounts`                     | Extra volume mounts to add to the container                                                                                   | `[]`                          |
+| `keycloakConfigCli.initContainers`                        | Add additional init containers to the Keycloak config cli pod                                                                 | `[]`                          |
+| `keycloakConfigCli.sidecars`                              | Add additional sidecar containers to the Keycloak config cli pod                                                              | `[]`                          |
+| `keycloakConfigCli.configuration`                         | keycloak-config-cli realms configuration                                                                                      | `{}`                          |
+| `keycloakConfigCli.existingConfigmap`                     | ConfigMap with keycloak-config-cli configuration. This will override `keycloakConfigCli.config`                               | `""`                          |
+| `keycloakConfigCli.cleanupAfterFinished.enabled`          | Enables Cleanup for Finished Jobs                                                                                             | `false`                       |
+| `keycloakConfigCli.cleanupAfterFinished.seconds`          | Sets the value of ttlSecondsAfterFinished                                                                                     | `600`                         |
+
+### Database parameters
+
+| Name                                         | Description                                                                                                       | Value              |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------ |
+| `postgresql.enabled`                         | Switch to enable or disable the PostgreSQL helm chart                                                             | `true`             |
+| `postgresql.auth.postgresPassword`           | Password for the "postgres" admin user. Ignored if `auth.existingSecret` with key `postgres-password` is provided | `""`               |
+| `postgresql.auth.username`                   | Name for a custom user to create                                                                                  | `bn_keycloak`      |
+| `postgresql.auth.password`                   | Password for the custom user to create                                                                            | `""`               |
+| `postgresql.auth.database`                   | Name for a custom database to create                                                                              | `bitnami_keycloak` |
+| `postgresql.auth.existingSecret`             | Name of existing secret to use for PostgreSQL credentials                                                         | `""`               |
+| `postgresql.architecture`                    | PostgreSQL architecture (`standalone` or `replication`)                                                           | `standalone`       |
+| `externalDatabase.host`                      | Database host                                                                                                     | `""`               |
+| `externalDatabase.port`                      | Database port number                                                                                              | `5432`             |
+| `externalDatabase.user`                      | Non-root username for Keycloak                                                                                    | `bn_keycloak`      |
+| `externalDatabase.password`                  | Password for the non-root username for Keycloak                                                                   | `""`               |
+| `externalDatabase.database`                  | Keycloak database name                                                                                            | `bitnami_keycloak` |
+| `externalDatabase.existingSecret`            | Name of an existing secret resource containing the database credentials                                           | `""`               |
+| `externalDatabase.existingSecretHostKey`     | Name of an existing secret key containing the database host name                                                  | `""`               |
+| `externalDatabase.existingSecretPortKey`     | Name of an existing secret key containing the database port                                                       | `""`               |
+| `externalDatabase.existingSecretUserKey`     | Name of an existing secret key containing the database user                                                       | `""`               |
+| `externalDatabase.existingSecretDatabaseKey` | Name of an existing secret key containing the database name                                                       | `""`               |
+| `externalDatabase.existingSecretPasswordKey` | Name of an existing secret key containing the database credentials                                                | `""`               |
+
+### Keycloak Cache parameters
+
+| Name              | Description                                                                | Value        |
+| ----------------- | -------------------------------------------------------------------------- | ------------ |
+| `cache.enabled`   | Switch to enable or disable the keycloak distributed cache for kubernetes. | `true`       |
+| `cache.stackName` | Set infinispan cache stack to use                                          | `kubernetes` |
+| `cache.stackFile` | Set infinispan cache stack filename to use                                 | `""`         |
+
+### Keycloak Logging parameters
+
+| Name             | Description                                                                    | Value     |
+| ---------------- | ------------------------------------------------------------------------------ | --------- |
+| `logging.output` | Alternates between the default log output format or json format                | `default` |
+| `logging.level`  | Allowed values as documented: FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL, OFF | `INFO`    |
+
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
+
+```console
+helm install my-release --set auth.adminPassword=secretpassword oci://registry-1.docker.io/bitnamicharts/keycloak
+```
+
+The above command sets the Keycloak administrator password to `secretpassword`.
+
+> NOTE: Once this chart is deployed, it is not possible to change the application's access credentials, such as usernames or passwords, using Helm. To change these application credentials after deployment, delete any persistent volumes (PVs) used by the chart and re-deploy it, or use the application's built-in administrative tools if available.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
-```bash
-$ helm install --name keycloak -f values.yaml codecentric/keycloak
+```console
+helm install my-release -f values.yaml oci://registry-1.docker.io/bitnamicharts/keycloak
 ```
 
-### Usage of the `tpl` Function
+> **Tip**: You can use the default [values.yaml](values.yaml)
 
-The `tpl` function allows us to pass string values from `values.yaml` through the templating engine.
-It is used for the following values:
+Keycloak realms, users and clients can be created from the Keycloak administration panel. Refer to the [tutorial on adding user authentication to applications with Keycloak](https://docs.bitnami.com/tutorials/integrate-keycloak-authentication-kubernetes) for more details on these operations.
 
-* `keycloak.extraInitContainers`
-* `keycloak.extraContainers`
-* `keycloak.extraEnv`
-* `keycloak.affinity`
-* `keycloak.extraVolumeMounts`
-* `keycloak.extraVolumes`
-* `keycloak.livenessProbe`
-* `keycloak.readinessProbe`
+## Configuration and installation details
 
-It is important that these values be configured as strings.
-Otherwise, installation will fail. See example for Google Cloud Proxy or default affinity configuration in `values.yaml`.
+### [Rolling vs Immutable tags](https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/)
 
-### Database Setup
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
 
-By default, Keycloak uses an embedded H2 database.
-This is only suitable for testing purposes.
-All data is lost when Keycloak is shut down.
-Optionally, the [PostgreSQL](https://github.com/kubernetes/charts/tree/master/stable/postgresql) chart is deployed and used as database.
-Please refer to this chart for additional PostgreSQL configuration options.
+Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
 
-#### Using an External Database
+### Use an external database
 
-The Keycloak Docker image supports PostgreSQL, MySQL, MariaDB, and H2.
-The password for the database user is read from a Kubernetes secret.
-It is possible to specify an existing secret that is not managed with this chart.
-The key in the secret the password is read from may be specified as well (defaults to `password`).
+Sometimes, you may want to have Keycloak connect to an external PostgreSQL database rather than a database within your cluster - for example, when using a managed database service, or when running a single database server for all your applications. To do this, set the `postgresql.enabled` parameter to `false` and specify the credentials for the external database using the `externalDatabase.*` parameters.
+
+Refer to the [chart documentation on using an external database](https://docs.bitnami.com/kubernetes/apps/keycloak/configuration/use-external-database) for more details and an example.
+
+> NOTE: Only PostgreSQL database server is supported as external database
+
+It is not supported but possible to run Keycloak with an external MSSQL database with the following settings:
 
 ```yaml
-keycloak:
-  persistence:
-
-    # Disable deployment of the PostgreSQL chart
-    deployPostgres: false
-
-    # The database vendor. Can be either "postgres", "mysql", "mariadb", or "h2"
-    dbVendor: postgres
-
-    ## The following values only apply if "deployPostgres" is set to "false"
-
-    # Optionally specify an existing secret
-    existingSecret: "my-database-password-secret"
-    existingSecretPasswordKey: "password-key-in-my-database-secret"
-    existingSecretUsernameKey: "username-key-in-my-database-secret"
-
-    dbName: keycloak
-    dbHost: mykeycloak
-    dbPort: 5432 # 5432 is PostgreSQL's default port. For MySQL it would be 3306
-    dbUser: keycloak
-
-    # Only used if no existing secret is specified. In this case a new secret is created
-    dbPassword: keycloak
+externalDatabase:
+  host: "mssql.example.com"
+  port: 1433
+  user: keycloak
+  database: keycloak
+  existingSecret: passwords
+extraEnvVars:
+  - name: KC_DB # override values from the conf file
+    value: 'mssql'
+  - name: KC_DB_URL
+    value: 'jdbc:sqlserver://mssql.example.com:1433;databaseName=keycloak;'
 ```
 
-See also:
-* https://github.com/jboss-dockerfiles/keycloak/blob/master/server/tools/cli/databases/postgres/change-database.cli
-* https://github.com/jboss-dockerfiles/keycloak/blob/master/server/tools/cli/databases/mysql/change-database.cli
+### Add extra environment variables
 
-### Configuring Additional Environment Variables
+In case you want to add extra environment variables (useful for advanced operations like custom init scripts), you can use the `extraEnvVars` property.
 
 ```yaml
-keycloak:
-  extraEnv: |
-    - name: KEYCLOAK_LOGLEVEL
-      value: DEBUG
-    - name: WILDFLY_LOGLEVEL
-      value: DEBUG
-    - name: CACHE_OWNERS
-      value: "3"
-    - name: DB_QUERY_TIMEOUT
-      value: "60"
-    - name: DB_VALIDATE_ON_MATCH
-      value: true
-    - name: DB_USE_CAST_FAIL
-      value: false
+extraEnvVars:
+  - name: KEYCLOAK_LOG_LEVEL
+    value: DEBUG
 ```
 
-### Providing a Custom Theme
+Alternatively, you can use a ConfigMap or a Secret with the environment variables. To do so, use the `extraEnvVarsCM` or the `extraEnvVarsSecret` values.
 
-One option is certainly to provide a custom Keycloak image that includes the theme.
-However, if you prefer to stick with the official Keycloak image, you can use an init container as theme provider.
+### Use Sidecars and Init Containers
 
-Create your own theme and package it up into a Docker image.
+If additional containers are needed in the same pod (such as additional metrics or logging exporters), they can be defined using the `sidecars` config parameter. Similarly, extra init containers can be added using the `initContainers` parameter.
 
-```docker
-FROM busybox
-COPY mytheme /mytheme
-```
+Refer to the chart documentation for more information on, and examples of, configuring and using [sidecars and init containers](https://docs.bitnami.com/kubernetes/apps/keycloak/configuration/configure-sidecar-init-containers/).
 
-In combination with an `emptyDir` that is shared with the Keycloak container, configure an init container that runs your theme image and copies the theme over to the right place where Keycloak will pick it up automatically.
+### Initialize a fresh instance
 
-```yaml
-keycloak:
-  extraInitContainers: |
-    - name: theme-provider
-      image: myuser/mytheme:1
-      imagePullPolicy: IfNotPresent
-      command:
-        - sh
-      args:
-        - -c
-        - |
-          echo "Copying theme..."
-          cp -R /mytheme/* /theme
-      volumeMounts:
-        - name: theme
-          mountPath: /theme
+The [Bitnami Keycloak](https://github.com/bitnami/containers/tree/main/bitnami/keycloak) image allows you to use your custom scripts to initialize a fresh instance. In order to execute the scripts, you can specify custom scripts using the `initdbScripts` parameter as dict.
 
-  extraVolumeMounts: |
-    - name: theme
-      mountPath: /opt/jboss/keycloak/themes/mytheme
+In addition to this option, you can also set an external ConfigMap with all the initialization scripts. This is done by setting the `initdbScriptsConfigMap` parameter. Note that this will override the previous option.
 
-  extraVolumes: |
-    - name: theme
-      emptyDir: {}
-```
+The allowed extensions is `.sh`.
 
-### Setting a Custom Realm
+### Deploy extra resources
 
-A realm can be added by creating a secret or configmap for the realm json file and then supplying this into the chart.
-It could be mounted using `extraVolumeMounts` and then specified in `extraArgs` using `-Dkeycloak.import`.
-First we could create a Secret from a json file using `kubectl create secret generic realm-secret --from-file=realm.json` which we need to reference in `values.yaml`:
+There are cases where you may want to deploy extra objects, such a ConfigMap containing your app's configuration or some extra deployment with a micro service used by your app. For covering this case, the chart allows adding the full specification of other objects using the `extraDeploy` parameter.
 
-```yaml
-keycloak:
-  extraVolumes: |
-    - name: realm-secret
-      secret:
-        secretName: realm-secret
+### Set Pod affinity
 
-  extraVolumeMounts: |
-    - name: realm-secret
-      mountPath: "/realm/"
-      readOnly: true
+This chart allows you to set your custom affinity using the `affinity` parameter. Find more information about Pod's affinity in the [kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity).
 
-  extraArgs: -Dkeycloak.import=/realm/realm.json
-```
+As an alternative, you can use of the preset configurations for pod affinity, pod anti-affinity, and node affinity available at the [bitnami/common](https://github.com/bitnami/charts/tree/main/bitnami/common#affinities) chart. To do so, set the `podAffinityPreset`, `podAntiAffinityPreset`, or `nodeAffinityPreset` parameters.
 
-Alternatively, the file could be added to a custom image (set in `keycloak.image`) and then referenced by `-Dkeycloak.import`.
+### Configure Ingress
 
-After startup the web admin console for the realm should be available on the path /auth/admin/\<realm name>/console/.
+This chart provides support for Ingress resources. If you have an ingress controller installed on your cluster, such as [nginx-ingress-controller](https://github.com/bitnami/charts/tree/main/bitnami/nginx-ingress-controller) or [contour](https://github.com/bitnami/charts/tree/main/bitnami/contour) you can utilize the ingress controller to serve your application.
 
-### Using Google Cloud SQL Proxy
+To enable Ingress integration, set `ingress.enabled` to `true`. The `ingress.hostname` property can be used to set the host name. The `ingress.tls` parameter can be used to add the TLS configuration for this host. It is also possible to have more than one host, with a separate TLS configuration for each host. [Learn more about configuring and using Ingress](https://docs.bitnami.com/kubernetes/apps/keycloak/configuration/configure-ingress/).
 
-Depending on your environment you may need a local proxy to connect to the database.
-This is, e. g., the case for Google Kubernetes Engine when using Google Cloud SQL.
-Create the secret for the credentials as documented [here](https://cloud.google.com/sql/docs/postgres/connect-kubernetes-engine) and configure the proxy as a sidecar.
+### Configure TLS Secrets for use with Ingress
 
-Because `keycloak.extraContainers` is a string that is passed through the `tpl` function, it is possible to create custom values and use them in the string.
+The chart also facilitates the creation of TLS secrets for use with the Ingress controller, with different options for certificate management. [Learn more about TLS secrets](https://docs.bitnami.com/kubernetes/apps/keycloak/administration/enable-tls-ingress/).
 
-```yaml
+### Use with ingress offloading SSL
 
-# Custom values for Google Cloud SQL
-cloudsql:
-  project: my-project
-  region: europe-west1
-  instance: my-instance
+If your ingress controller has the SSL Termination, you should set `proxy` to `edge`.
 
-keycloak:
-  extraContainers: |
-    - name: cloudsql-proxy
-      image: gcr.io/cloudsql-docker/gce-proxy:1.11
-      command:
-        - /cloud_sql_proxy
-      args:
-        - -instances={{ .Values.cloudsql.project }}:{{ .Values.cloudsql.region }}:{{ .Values.cloudsql.instance }}=tcp:5432
-        - -credential_file=/secrets/cloudsql/credentials.json
-      volumeMounts:
-        - name: cloudsql-creds
-          mountPath: /secrets/cloudsql
-          readOnly: true
+### Manage secrets and passwords
 
-  extraVolumes: |
-    - name: cloudsql-creds
-      secret:
-        secretName: cloudsql-instance-credentials
+This chart provides several ways to manage passwords:
 
-  persistence:
-    deployPostgres: false
-    dbVendor: postgres
-    dbName: postgres
-    dbHost: 127.0.0.1
-    dbPort: 5432
-    dbUser: myuser
-    dbPassword: mypassword
-```
+- Values passed to the chart
+- An existing secret with all the passwords (via the `existingSecret` parameter)
+- Multiple existing secrets with all the passwords (via the `existingSecretPerPassword` parameter)
 
-### WildFly Configuration
+Refer to the [chart documentation on managing passwords](https://docs.bitnami.com/kubernetes/apps/keycloak/configuration/manage-passwords/) for examples of each method.
 
-WildFly can be configured via its [command line interface (CLI)](https://docs.jboss.org/author/display/WFLY/Command+Line+Interface).
-This chart uses the official Keycloak Docker image and customizes the installation running CLI scripts at server startup.
+## Troubleshooting
 
-#### Customizing CLI Scripts
-
-In order to make further customization easier, the CLI commands are separated by their concerns into smaller scripts.
-Everything is in `values.yaml` and can be overridden.
-Additional CLI commands may be added via `keycloak.cli.custom`, which is empty by default.
-
-#### Disabling CLI Changes
-
-The CLI changes the chart makes may not be desirable in all cases, especially when a custom Keycloak image is used that already incorporates a complete configuration that doesn't need any adjustments.
-In this case, the CLI scripts the chart runs by default can either be disabled en bloc or on and individual basis.
-
-##### Disabling all CLI Changes en Bloc
-
-```yaml
-keycloak:
-  cli:
-    enabled: false
-```
-
-##### Disabling an Individual Script
-
-```yaml
-keycloak:
-  cli:
-    logging: ""
-```
-
-### High Availability and Clustering
-
-For high availability, Keycloak should be run with multiple replicas (`keycloak.replicas > 1`).
-WildFly uses Infinispan for caching.
-These caches can be replicated across all instances forming a cluster.
-If `keycloak.replicas > 1`, JGroups' DNS_PING is configured for cluster discovery and Keycloak is started with `--server-config standalone-ha.xml`.
-
-### Prometheus Operator Support
-
-It is possible to monitor Keycloak with Prometheus through the use of plugins such as [keycloak-metrics-spi](https://github.com/aerogear/keycloak-metrics-spi). The plugin can be added with configuration like this:
-```
-  extraInitContainers: |
-    - name: extensions
-      image: busybox
-      imagePullPolicy: IfNotPresent
-      command:
-        - sh
-      args:
-        - -c
-        - |
-          echo "Copying extensions..."
-          wget -O /deployments/keycloak-metrics-spi.jar https://github.com/aerogear/keycloak-metrics-spi/releases/download/1.0.1/keycloak-metrics-spi-1.0.1.jar
-      volumeMounts:
-        - name: deployments
-          mountPath: /deployments
-
-  extraVolumeMounts: |
-    - name: deployments
-      mountPath: /opt/jboss/keycloak/standalone/deployments
-
-  extraVolumes: |
-    - name: deployments
-      emptyDir: {}
-```
-
-You can then either configure Prometheus to scrape the `/auth/realms/master/metrics` path on the normal HTTP port of JBoss, or if you use the [Prometheus Operator](https://github.com/helm/charts/tree/master/stable/prometheus-operator) you can enable `prometheus.operator.enabled` in `values.yaml` and use the example configuration.
-If you are using Prometheus Operator for configuring Prometheus Rules, the chart also supports this; see `prometheus.operator.prometheusRules` in `values.yaml` for more details.
-## Why StatefulSet?
-
-The chart sets node identifiers to the system property `jboss.node.name` which is in fact the pod name.
-Node identifiers must not be longer than 23 characters.
-This can be problematic because pod names are quite long.
-We would have to truncate the chart's fullname to six characters because pods get a 17-character suffix (e. g. `-697f8b7655-mf5ht`).
-Using a StatefulSet allows us to truncate to 20 characters leaving room for up to 99 replicas, which is much better.
-Additionally, we get stable values for `jboss.node.name` which can be advantageous for cluster discovery.
-The headless service that governs the StatefulSet is used for DNS discovery.
+Find more information about how to deal with common errors related to Bitnami's Helm charts in [this troubleshooting guide](https://docs.bitnami.com/general/how-to/troubleshoot-helm-chart-issues).
 
 ## Upgrading
 
-### From chart versions < 8.0.0
+### To 15.0.0
 
-* Keycloak is updated to 10.0.0
-* PostgreSQL chart dependency is updated to 8.9.5
+This major updates the default serviceType from `LoadBalancer` to `ClusterIP` to avoid inadvertently exposing Keycloak directly to the internet without an Ingress.
 
-The upgrade should be seemless.
-No special care has to be taken.
+### To 12.0.0
 
-### From chart versions < 7.0.0
+This major updates the PostgreSQL subchart to its newest major, 12.0.0. [Here](https://github.com/bitnami/charts/tree/master/bitnami/postgresql#to-1200) you can find more information about the changes introduced in that version.
 
-Version 7.0.0 update breaks backwards-compatibility with the existing `keycloak.persistence.existingSecret` scheme.
+### To any previous version
 
-#### Changes in Configuring Database Credentials from an Existing Secret
+Refer to the [chart documentation for more information about how to upgrade from previous releases](https://docs.bitnami.com/kubernetes/apps/keycloak/administration/upgrade/).
 
-Both `DB_USER` and `DB_PASS` are always read from a Kubernetes Secret.
-This is a requirement if you are provisioning database credentials dynamically - either via an Operator or some secret-management engine.
+## License
 
-The variable referencing the password key name has been renamed from `keycloak.persistence.existingSecretKey` to `keycloak.persistence.existingSecretPasswordKey`
+Copyright &copy; 2023 VMware, Inc.
 
-A new, optional variable for referencing the username key name for populating the `DB_USER` env has been added:
-`keycloak.persistence.existingSecretUsernameKey`.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-If `keycloak.persistence.existingSecret` is left unset, a new Secret will be provisioned populated with the `dbUser` and `dbPassword` Helm variables.
+<http://www.apache.org/licenses/LICENSE-2.0>
 
-###### Example configuration:
-```yaml
-keycloak:
-  persistence:
-    existingSecret: keycloak-provisioned-db-credentials
-    existingSecretPasswordKey: PGPASSWORD
-    existingSecretUsernameKey: PGUSER
-    ...
-```
-### From chart versions < 6.0.0
-
-#### Changes in Probe Configuration
-
-Now both readiness and liveness probes are configured as strings that are then passed through the `tpl` function.
-This allows for greater customizability of the readiness and liveness probes.
-
-The defaults are unchanged, but since 6.0.0 configured as follows:
-
-```yaml
-  livenessProbe: |
-    httpGet:
-      path: {{ if ne .Values.keycloak.basepath "" }}/{{ .Values.keycloak.basepath }}{{ end }}/
-      port: http
-    initialDelaySeconds: 300
-    timeoutSeconds: 5
-  readinessProbe: |
-    httpGet:
-      path: {{ if ne .Values.keycloak.basepath "" }}/{{ .Values.keycloak.basepath }}{{ end }}/realms/master
-      port: http
-    initialDelaySeconds: 30
-    timeoutSeconds: 1
-```
-
-#### Changes in Existing Secret Configuration
-
-This can be useful if you create a secret in a parent chart and want to reference that secret.
-Applies to `keycloak.existingSecret` and `keycloak.persistence.existingSecret`.
-
-_`values.yaml` of parent chart:_
-```yaml
-keycloak:
-  keycloak:
-    existingSecret: '{{ .Release.Name }}-keycloak-secret'
-```
-
-#### HTTPS Port Added
-
-The HTTPS port was added to the pod and to the services.
-As a result, service ports are now configured differently.
-
-
-### From chart versions < 5.0.0
-
-Version 5.0.0 is a major update.
-
-* The chart now follows the new Kubernetes label recommendations:
-https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/
-* Several changes to the StatefulSet render an out-of-the-box upgrade impossible because StatefulSets only allow updates to a limited set of fields
-* The chart uses the new support for running scripts at startup that has been added to Keycloak's Docker image.
-If you use this feature, you will have to adjust your configuration
-
-However, with the following manual steps an automatic upgrade is still possible:
-
-1. Adjust chart configuration as necessary (e. g. startup scripts)
-1. Perform a non-cascading deletion of the StatefulSet which keeps the pods running
-1. Add the new labels to the pods
-1. Run `helm upgrade`
-
-Use a script like the following to add labels and to delete the StatefulSet:
-
-```console
-#!/bin/sh
-
-release=<release>
-namespace=<release_namespace>
-
-kubectl delete statefulset -n "$namespace" -l app=keycloak -l release="$release" --cascade=false
-
-kubectl label pod -n "$namespace" -l app=keycloak -l release="$release" app.kubernetes.io/name=keycloak
-kubectl label pod -n "$namespace" -l app=keycloak -l release="$release" app.kubernetes.io/instance="$release"
-```
-
-**NOTE:** Version 5.0.0 also updates the Postgresql dependency which has received a major upgrade as well.
-In case you use this dependency, the database must be upgraded first.
-Please refer to the Postgresql chart's upgrading section in its README for instructions.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
