@@ -19,7 +19,7 @@ spec:
     - key: services.tks/generator
       value: tks.v2023.06.00
   versioning:
-    status:  {{ .versioning | default Disabled }}
+    status:  {{ .versioning | default "Disabled" }}
 
 {{- if .policy }}
   policy: |
