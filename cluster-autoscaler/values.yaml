@@ -19,7 +19,7 @@ mgmtKubeconfigSecretName: mgmt-kubeconfig
 replicaCount: 1
 
 image:
-  repository: harbor-cicd.taco-cat.xyz/tks/cluster-autoscaler
+  repository: harbor.taco-cat.xyz/tks/cluster-autoscaler
   pullPolicy: IfNotPresent
   tag: v1.25.2
 
