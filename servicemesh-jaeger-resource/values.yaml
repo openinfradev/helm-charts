@@ -5,7 +5,7 @@ sampling:
 ingress:
   enabled: false
 collector:
-  image: harbor-cicd.taco-cat.xyz/tks/jaeger-collector:1.35.0
+  image: harbor.taco-cat.xyz/tks/jaeger-collector:1.35.0
   maxReplicas: 5
   resources:
     requests:
@@ -35,7 +35,7 @@ storage:
       timeout: "3m"
     dependencies:
       enabled: true
-      image: harbor-cicd.taco-cat.xyz/tks/spark-dependencies:1.35.0
+      image: harbor.taco-cat.xyz/tks/spark-dependencies:1.35.0
   elastic:
     esIndexCleaner:
       enabled: true
@@ -50,7 +50,7 @@ storage:
       serverUrls: https://eck-elasticsearch-es-http.istio-system.svc:9200
       secretName: eck-elasticsearch-es-http-certs-public
 query:
-  image: harbor-cicd.taco-cat.xyz/tks/jaeger-query:1.35.0
+  image: harbor.taco-cat.xyz/tks/jaeger-query:1.35.0
   basePath: /
   affinity:
     nodeAffinity:
@@ -62,14 +62,14 @@ query:
             values:
             - enabled
 agent:
-  image: harbor-cicd.taco-cat.xyz/tks/jaeger-agent:1.35.0
+  image: harbor.taco-cat.xyz/tks/jaeger-agent:1.35.0
 
 cassandra:
   user:
     enabled: true
     username: tks
     password: tksword
-  image: harbor-cicd.taco-cat.xyz/tks/shyaml_jq_kubectl_python:3.11
+  image: harbor.taco-cat.xyz/tks/shyaml_jq_kubectl_python:3.11
   imagePullPolicy: IfNotPresent
   passwordSecret: cassandra-superuser
   nodeSelector:

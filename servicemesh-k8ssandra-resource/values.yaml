@@ -8,23 +8,23 @@ cassandra:
       enabled: true
   jmxInitContainerImage:
     name: busybox
-    registry: harbor-cicd.taco-cat.xyz/tks
+    registry: harbor.taco-cat.xyz/tks
     tag: 1.34.1
   datacenters:
     name: dc
     size: 2
-    perNodeConfigInitContainerImage: harbor-cicd.taco-cat.xyz/tks/yq:4
+    perNodeConfigInitContainerImage: harbor.taco-cat.xyz/tks/yq:4
     initContainers:
-      serverConfigInitImage: harbor-cicd.taco-cat.xyz/tks/cass-config-builder:1.0-ubi7
+      serverConfigInitImage: harbor.taco-cat.xyz/tks/cass-config-builder:1.0-ubi7
     jmxInitContainerImage:
       name: busybox
-      registry: harbor-cicd.taco-cat.xyz/tks
+      registry: harbor.taco-cat.xyz/tks
       tag: 1.34.1
     containers:
     - name: cassandra
-      image: harbor-cicd.taco-cat.xyz/tks/cass-management-api:4.0.6
+      image: harbor.taco-cat.xyz/tks/cass-management-api:4.0.6
     - name: server-system-logger
-      image: harbor-cicd.taco-cat.xyz/tks/system-logger:v1.14.0
+      image: harbor.taco-cat.xyz/tks/system-logger:v1.14.0
     config:
       heapSize: 2048M
     storageConfig:
@@ -52,7 +52,7 @@ cassandra:
         prometheus:
           enabled: true
       containerImage:
-        registry: harbor-cicd.taco-cat.xyz
+        registry: harbor.taco-cat.xyz
         repository: tks
         tag: v1.0.67
       nodeSelector:
