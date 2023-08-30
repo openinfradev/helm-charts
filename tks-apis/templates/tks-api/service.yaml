@@ -3,13 +3,11 @@ kind: Service
 metadata:
   name: {{ include "tks-api.fullname" . }}
   namespace: {{ .Values.namespace }}
-  labels:
-    {{- include "tks-api.labels" . | nindent 4 }}
+  labels: {{- include "tks-api.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.tksapi.service.type }}
   ports:
     - port: {{ .Values.tksapi.service.port }}
       targetPort: {{ .Values.tksapi.args.port }}
       protocol: TCP
-  selector:
-    {{- include "tks-api.selectorLabels" . | nindent 4 }}
+  selector: {{- include "tks-api.selectorLabels" . | nindent 4 }}

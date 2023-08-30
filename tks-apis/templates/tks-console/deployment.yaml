@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tks-console.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "tks-console.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.tksconsole.autoscaling.enabled }}
+  replicas: {{ .Values.tksconsole.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "tks-console.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.tksconsole.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "tks-console.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.tksconsole.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "tks-console.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.tksconsole.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.tksconsole.securityContext | nindent 12 }}
+          image: "{{ .Values.tksconsole.image.repository }}:{{ .Values.tksconsole.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.tksconsole.image.pullPolicy }}
+          ports:
+            - name: tks-console
+              containerPort: {{ .Values.tksconsole.args.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.tksconsole.resources | nindent 12 }}
+      {{- with .Values.tksconsole.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tksconsole.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tksconsole.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

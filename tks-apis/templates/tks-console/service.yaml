@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "tks-console.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels: {{- include "tks-console.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.tksconsole.service.type }}
+  ports:
+    - port: {{ .Values.tksconsole.service.port }}
+      targetPort: {{ .Values.tksconsole.args.port }}
+      protocol: TCP
+  selector: {{- include "tks-console.selectorLabels" . | nindent 4 }}
