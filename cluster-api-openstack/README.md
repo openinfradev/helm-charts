@@ -34,3 +34,5 @@ And then you can either helm cli or argoCD to install the chart.
 Check the contents of values.yaml. Also refer to the [Provider OpenStack document](https://github.com/kubernetes-sigs/cluster-api-provider-openstack/blob/master/docs/configuration.md)
 
 *This chart is inspired by [Katie Gamanji's Cluster API Helm Chart](https://github.com/kgamanji/cluster-api-helm-chart)*
+
+TEST

@@ -7,7 +7,7 @@ keywords:
 - bootstrapping 
 - kubernetes
 type: application
-version: 1.0.0
+version: 1.0.1
 appVersion: 0.0.1
 maintainers:
 - name: Jugwan Eom
