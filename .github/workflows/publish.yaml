@@ -18,19 +18,12 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      - name: Publish Helm chart
-        uses: stefanprodan/helm-gh-pages@master
+      - name: Push Helm Chart to ChartMuseum
+        uses: bsord/helm-push@4.2.0
         with:
-          token: ${{ secrets.HANU }}
-          charts_dir: .
-          charts_url:  https://openinfradev.github.io/helm-repo
-          owner: openinfradev
-          repository: helm-repo
-          branch: main
-          linting: off
-          commit_username: hanu-jenkins
-          commit_email: hanu-jenkins@sk.com
+          username: ${{ secrets.HARBOR_USER }}
+          password: ${{ secrets.HARBOR_USER_SECRET }}
+          registry-url: 'https://harbor.taco-cat.xyz/harbor/projects/5'
+          force: true
+          chart-folder: helm-charts
