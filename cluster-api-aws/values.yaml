@@ -67,6 +67,13 @@ kubeadmControlPlane:
     enabled: false
     maxPrice: ''
     # MaxPrice defines the maximum price the user is willing to pay for Spot VM instances
+  clusterConfiguration:
+    apiServer:
+      extraArgs:
+        cloud-provider: aws # must be defined
+    controllerManager:
+      extraArgs:
+        cloud-provider: aws # must be defined
 
 machinePool: []
 # You can define machinePool. referce the belows.
