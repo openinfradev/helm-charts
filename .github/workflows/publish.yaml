@@ -27,6 +27,6 @@ jobs:
         with:
           username: ${{ secrets.HARBOR_USER }}
           password: ${{ secrets.HARBOR_USER_SECRET}}
-          registry-url: 'https://harbor.taco-cat.xyz/chartrepo'
+          registry-url: 'https://harbor.taco-cat.xyz/chartrepo/tks'
           force: false
           charts-dir: .
