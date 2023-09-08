@@ -22,15 +22,11 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - name: Publish Helm chart
-        uses: stefanprodan/helm-gh-pages@master
+      - name: Publish Helm charts
+        uses: openinfradev/helm-push-cm@main
         with:
-          token: ${{ secrets.HANU }}
-          charts_dir: .
-          charts_url:  https://openinfradev.github.io/helm-repo
-          owner: openinfradev
-          repository: helm-repo
-          branch: main
-          linting: off
-          commit_username: hanu-jenkins
-          commit_email: hanu-jenkins@sk.com
+          username: ${{ secrets.HARBOR_USER }}
+          password: ${{ secrets.HARBOR_USER_SECRET}}
+          registry-url: 'https://harbor.taco-cat.xyz/chartrepo'
+          force: false
+          charts-dir: .
