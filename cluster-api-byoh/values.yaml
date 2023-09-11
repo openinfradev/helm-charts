@@ -8,9 +8,10 @@ cluster:
 
 kubeVip:
   enabled: false
+  image: ghcr.io/kube-vip/kube-vip:v0.4.1
 
 byoCluster:
-  bundleLookupBaseRegistry: projects.registry.vmware.com/cluster_api_provider_bringyourownhost
+  bundleLookupBaseRegistry: harbor.taco-cat.xyz/cluster_api_provider_bringyourownhost
   controlPlaneEndpoint:
     host: 192.168.0.1
     port: 6443
@@ -25,6 +26,24 @@ api:
 
 kubeadmControlPlane:
   replicas: 3
+  selector:
+    matchLabels:
+      role: control-plane
+  clusterConfiguration:
+    apiServer:
+      certSANs:
+      - localhost
+      - 127.0.0.1
+      - 0.0.0.0
+      extraArgs:
+        oidc-client-id: kubernetes
+        oidc-groups-claim: groups
+        oidc-issuer-url: https://keycloak.domain.com/auth/realms/kubernetes
+        oidc-username-claim: preferred_username
+        oidc-username-prefix: "-"
+    controllerManager:
+      extraArgs:
+        enable-hostpath-provisioner: "false" # if kube-vip is enabled, this should also be true.
 
 machineDeployment:
 - name: tks

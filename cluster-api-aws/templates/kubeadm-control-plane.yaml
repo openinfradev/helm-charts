@@ -11,18 +11,24 @@ spec:
       apiVersion: {{ .Values.api.group.infrastructure }}/v1beta2
       kind: AWSMachineTemplate
       name: "{{ .Values.cluster.name }}-control-plane"
+  rolloutBefore:
+    certificatesExpiryDays: 21 # trigger a rollout if certificates expire within 21 days
   kubeadmConfigSpec:
+    {{- with .Values.kubeadmControlPlane.clusterConfiguration }}
+    clusterConfiguration:
+      {{- with .apiServer }}
+      apiServer:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .controllerManager }}
+      controllerManager:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
     initConfiguration:
       nodeRegistration:
         name: '{{`{{ ds.meta_data.local_hostname }}`}}'
         kubeletExtraArgs:
-          cloud-provider: aws
-    clusterConfiguration:
-      apiServer:
-        extraArgs:
-          cloud-provider: aws
-      controllerManager:
-        extraArgs:
           cloud-provider: aws
     joinConfiguration:
       nodeRegistration:

@@ -1,20 +1,13 @@
 apiVersion: {{ .Values.api.group.controlplane }}/{{ .Values.api.version }}
 kind: KubeadmControlPlane
 metadata:
-  name: {{ .Values.cluster.name }}-control-plane
+  name: {{ .Values.cluster.name }}
   namespace: {{ .Release.Namespace }}
 spec:
+  rolloutBefore:
+    certificatesExpiryDays: 21 # trigger a rollout if certificates expire within 21 days
   kubeadmConfigSpec:
-    clusterConfiguration:
-      apiServer:
-        certSANs:
-        - localhost
-        - 127.0.0.1
-        - 0.0.0.0
-      controllerManager:
-        extraArgs:
-          enable-hostpath-provisioner: "true"
-    {{- if .Values.kubeVip.enabled }}
+   {{- if .Values.kubeVip.enabled }}
     files:
     - content: |
         apiVersion: v1
@@ -44,7 +37,7 @@ spec:
               value: "10"
             - name: vip_retryperiod
               value: "2"
-            image: ghcr.io/kube-vip/kube-vip:v0.4.1
+            image: {{ .Values.kubeVip.image }}
             imagePullPolicy: IfNotPresent
             name: kube-vip
             resources: {}
@@ -70,16 +63,27 @@ spec:
       owner: root:root
       path: /etc/kubernetes/manifests/kube-vip.yaml
     {{- end }}
+    {{- with .Values.kubeadmControlPlane.clusterConfiguration }}
+    clusterConfiguration:
+      {{- with .apiServer }}
+      apiServer:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .controllerManager }}
+      controllerManager:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
     initConfiguration:
       nodeRegistration:
-        criSocket: /var/run/containerd/containerd.sock
+        criSocket: unix:///var/run/containerd/containerd.sock
         ignorePreflightErrors:
         - Swap
         - DirAvailable--etc-kubernetes-manifests
         - FileAvailable--etc-kubernetes-kubelet.conf
     joinConfiguration:
       nodeRegistration:
-        criSocket: /var/run/containerd/containerd.sock
+        criSocket: unix:///var/run/containerd/containerd.sock
         ignorePreflightErrors:
         - Swap
         - DirAvailable--etc-kubernetes-manifests
@@ -91,3 +95,32 @@ spec:
       name: {{ .Values.cluster.name }}-control-plane
   replicas: {{ .Values.kubeadmControlPlane.replicas }}
   version: {{ .Values.cluster.kubernetesVersion }}
+---
+apiVersion: {{ .Values.api.group.infrastructure }}/{{ .Values.api.version }}
+kind: ByoMachineTemplate
+metadata:
+  name: {{ .Values.cluster.name }}-control-plane
+  namespace: {{ .Release.Namespace }}
+spec:
+  template:
+    spec:
+      {{- with .Values.kubeadmControlPlane.selector }}
+      selector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      installerRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+        kind: K8sInstallerConfigTemplate
+        name: {{ .Values.cluster.name }}-control-plane
+        namespace: {{ .Release.Namespace }}
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: K8sInstallerConfigTemplate
+metadata:
+  name: {{ .Values.cluster.name }}-control-plane
+  namespace: {{ .Release.Namespace }}
+spec:
+  template:
+    spec:
+      bundleRepo: {{ .Values.byoCluster.bundleLookupBaseRegistry }}
+      bundleType: k8s
