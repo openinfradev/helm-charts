@@ -6,12 +6,12 @@ revision: main
 
 db:
   adminUser: postgres
-  adminPassword: tacopassword
+  adminPassword: secretPassword
   dbName: tks
   dbHost: postgresql.decapod-db.svc
   dbPort: 5432
   dbUser: tksuser
-  dbPassword: tacopassword
+  dbPassword: secretPassword
 
 ## services
 tksapi:
