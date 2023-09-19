@@ -6,12 +6,12 @@ revision: main
 
 db:
   adminUser: postgres
-  adminPassword: tacopassword
+  adminPassword: secretPassword
   dbName: tks
   dbHost: postgresql.decapod-db.svc
   dbPort: 5432
   dbUser: tksuser
-  dbPassword: tkspassword
+  dbPassword: secretPassword
 
 ## services
 tksapi:
@@ -19,9 +19,9 @@ tksapi:
   fullnameOverride: "tks-api"
   replicaCount: 1
   image:
-    repository: docker.io/sktcloud/tks-api
+    repository: harbor.taco-cat.xyz/tks/tks-api
     pullPolicy: Always
-    tag: 14354d15064195dc2e30feb46170c1e2ce1adb0f
+    tag: v3.0.1
   imagePullSecrets: []
 
   service:
@@ -33,14 +33,19 @@ tksapi:
     annotations: {}
     name: "tks-api"
 
+  tksAccount:
+    accountId: admin
+    organizationId: master
+    password: admin
+
   args:
     port: 9110
     argoAddress: http://argo-workflows-operator-server.argo.svc
     argoPort: 2746
-    imageRegistryUrl: "harbor-dev.taco-cat.xyz/appserving"
+    imageRegistryUrl: "harbor.taco-cat.xyz/appserving"
     harborPwSecret: "harbor-core"
     gitRepositoryUrl: "github.com/openinfradev"
-    keycloakAddress: "http://tks-console.taco-cat.xyz"
+    keycloakAddress: http://keycloak.keycloak.svc:80/auth
 
   ingress:
     enabled: false
@@ -53,9 +58,9 @@ tksbatch:
   fullnameOverride: "tks-batch"
   replicaCount: 1
   image:
-    repository: docker.io/sktcloud/tks-batch
+    repository: harbor.taco-cat.xyz/tks/tks-batch
     pullPolicy: Always
-    tag: e34cff9726ad86301dcd2c87825ac2c19fb4b3ed
+    tag: v3.0.0
   imagePullSecrets: []
 
   service:
@@ -69,8 +74,36 @@ tksbatch:
 
   args:
     port: 9110
-    argoAddress: argo-workflows-operator-server.argo.svc
+    argoAddress: http://argo-workflows-operator-server.argo.svc
     argoPort: 2746
+
+  ingress:
+    enabled: false
+
+  autoscaling:
+    enabled: false
+
+tksconsole:
+  nameOverride: "tks-console"
+  fullnameOverride: "tks-console"
+  replicaCount: 1
+  image:
+    repository: harbor.taco-cat.xyz/tks/tks-console
+    pullPolicy: Always
+    tag: v3.0.1
+  imagePullSecrets: []
+
+  service:
+    type: ClusterIP
+    port: 8080
+
+  serviceAccount:
+    create: true
+    annotations: {}
+    name: "tks-console"
+
+  args:
+    port: 80
 
   ingress:
     enabled: false
