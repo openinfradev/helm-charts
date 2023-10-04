@@ -1,0 +1,17 @@
+apiVersion: v2
+name: policy-resources
+description: A Helm chart for gatekeeper policy-resources (CAUTION. do not use helm install. This is not a normal helm chart. It's only for the Decapod.)
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+
+home: https://github.com/openinfradev/helm-charts/policy-resources
+icon: https://open-policy-agent.github.io/gatekeeper/website/img/logo.svg
+keywords:
+- open policy agent
+- tks
+
+# dependencies:
+# - name: gatekeeper
+#   repository: https://open-policy-agent.github.io/gatekeeper/charts  
+#   version: 3.x.x

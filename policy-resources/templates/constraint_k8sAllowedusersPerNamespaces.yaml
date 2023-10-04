@@ -1,0 +1,24 @@
+{{- if .Values.policies.protectPerNamespace.enabled }}
+{{- $envAll := . }}
+{{- range .Values.policies.protectPerNamespace.constraints }}
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: ProtectPerNamespace
+metadata:
+  name: {{.name | lower }}
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    argocd.argoproj.io/sync-wave: "1"  
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["*"]
+  parameters:
+    namespaces:
+      {{- toYaml .parameters.namespaces | nindent 6 }}
+    allowedUsers: 
+      {{- toYaml .parameters.allowedUsers | nindent 6 }}
+    allowedGroup: {{ .parameters.allowedGroup }}
+{{- end}}
+{{- end}}
