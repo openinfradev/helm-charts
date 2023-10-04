@@ -1,0 +1,13 @@
+constraints:
+  protectbynamespace:
+    enabled: true
+    parameters:
+      namespaces: 
+      - "taco-system"
+      - "kube-system"
+      - "lma"
+      - "tks-msa"
+      allowedUsers: 
+      - "kubernetes-admin"
+      - "system:serviceaccount:kube-system:argocd-manager"
+      allowedGroup: "system:masters"

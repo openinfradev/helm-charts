@@ -1,0 +1,22 @@
+{{- if .Values.constraints.protectbynamespace.enabled }}
+{{- $envAll := . }}
+{{- with .Values.constraints.protectbynamespace }}
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: protectbynamespace
+metadata:
+  name: allowed-users-example
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["*"]
+  parameters:
+    namespaces:
+      {{- toYaml .parameters.namespaces | nindent 6 }}
+    allowedUsers: 
+      {{- toYaml .parameters.allowedUsers | nindent 6 }}
+    allowedGroup: {{ .parameters.allowedGroup }}
+      
+{{- end}}
+{{- end}}

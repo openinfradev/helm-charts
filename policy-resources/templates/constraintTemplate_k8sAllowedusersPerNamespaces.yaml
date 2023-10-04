@@ -1,0 +1,39 @@
+{{- if .Values.constraints.protectbynamespace.enabled }}
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: protectbynamespace
+spec:
+  crd:
+    spec:
+      names:
+        kind: protectbynamespace
+      validation:
+        # Schema for the `parameters` field
+        openAPIV3Schema:
+          properties:
+            users:
+              type: array
+              items: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8sallowedusers4namespaces
+
+        violation[{"msg": msg}] {
+          is_in_list(input.review.object.metadata.namespace, input.parameters.namespaces)
+          not is_in_list(input.review.userInfo.username, input.parameters.allowedUsers)
+          not is_in_the_namespace(input.review.object.metadata.namespace, input.review.userInfo.username)
+          not is_in_list(input.parameters.allowedGroup, input.review.userInfo.groups)
+            
+          msg := sprintf("user %v is not allowed to create and modify resources in the namespace %v", [input.review.userInfo.username, input.review.object.metadata.namespace])
+        }
+
+        is_in_list(target, targetlist) {
+          target == targetlist[_]
+        } else = false
+
+        is_in_the_namespace(namespace, user) {
+          startswith(user, concat(":", ["system", "serviceaccount", namespace])) 
+        }
+{{- end}}
