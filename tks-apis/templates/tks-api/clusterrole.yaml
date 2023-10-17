@@ -3,16 +3,49 @@ kind: ClusterRole
 metadata:
   name: tks-api
 rules:
-- apiGroups:
-  - ""
-  resources:
-  - nodes
-  - secrets
-  - services
-  - pods
-  - namespaces
-  - events
-  verbs:
-  - get
-  - watch
-  - list
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+      - secrets
+      - services
+      - pods
+      - namespaces
+      - events
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - infrastructure.cluster.x-k8s.io
+    resources:
+      - byohosts
+      - bootstrapkubeconfigs
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - infrastructure.cluster.x-k8s.io
+    resources:
+      - byohosts/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - ""
+      - byohosts
+    resources:
+      - events
+    verbs:
+      - create
+      - get
+      - list
+      - patch
+      - update
+      - watch
