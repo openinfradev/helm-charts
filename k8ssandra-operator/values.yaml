@@ -55,6 +55,9 @@ securityContext:
 # `requests` and `limits` for `cpu` and `memory` while removing the existing
 # `{}`
 resources: {}
+
+nodeSelector: {}
+
 # -- The cleaner is a pre-delete hook that that ensures objects with finalizers
 # get deleted. For example, cass-operator sets a finalizer on the
 # CassandraDatacenter. Kubernetes blocks deletion of an object until all of its
