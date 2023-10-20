@@ -53,6 +53,7 @@ spec:
         password: {{ .Values.cassandra.user.password }}
         keyspace: {{ .Values.storage.cassandra.options.keyspace }}
     cassandraCreateSchema:
+      image: {{ .Values.storage.cassandra.cassandraCreateSchema.image }}
       datacenter: {{ .Values.storage.cassandra.cassandraCreateSchema.datacenter }}
       mode: {{ .Values.storage.cassandra.cassandraCreateSchema.mode }}
       timeout: {{ .Values.storage.cassandra.cassandraCreateSchema.timeout }}

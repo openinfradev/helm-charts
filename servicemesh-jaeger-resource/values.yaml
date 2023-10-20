@@ -30,6 +30,7 @@ storage:
       servers: cassandra-dc-service.tks-msa.svc
       keyspace: jaeger_v1_datacenter
     cassandraCreateSchema:
+      image: harbor.taco-cat.xyz/tks/jaeger-cassandra-schema:1.35.0
       datacenter: "dc"
       mode: "prod"
       timeout: "3m"
