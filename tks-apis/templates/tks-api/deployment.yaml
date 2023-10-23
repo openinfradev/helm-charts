@@ -51,10 +51,27 @@ spec:
             "-dbpassword", "{{ .Values.db.dbPassword }}",
             "-argo-address", "{{ .Values.tksapi.args.argoAddress }}",
             "-argo-port", "{{ .Values.tksapi.args.argoPort }}",
+            "-external-gitea-url", "{{ .Values.tksapi.args.externalGiteaUrl }}",
+
             "-image-registry-url", "{{ .Values.tksapi.args.imageRegistryUrl }}",
             "-harbor-pw-secret", "{{ .Values.tksapi.args.harborPwSecret }}",
             "-git-repository-url", "{{ .Values.tksapi.args.gitRepositoryUrl }}",
+
             "-keycloak-address", "{{ .Values.tksapi.args.keycloakAddress }}",
+            "-keycloak-admin", "{{ .Values.tksapi.args.keycloakAdmin }}",
+            "-keycloak-password", "{{ .Values.tksapi.args.keycloakPassword }}",
+            "-keycloak-client-secret", "{{ .Values.tksapi.args.keycloakClientSecret }}",
+
+            "-mail-provider", "{{ .Values.tksapi.args.mailProvider }}",
+            "-smtp-host", "{{ .Values.tksapi.args.smtpHost }}",
+            "-smtp-port", "{{ .Values.tksapi.args.smtpPort }}",
+            "-smtp-username", "{{ .Values.tksapi.args.smtpUsername }}",
+            "-smtp-password", "{{ .Values.tksapi.args.smtpPassword }}",
+            "-smtp-from-email", "{{ .Values.tksapi.args.smtpFromEmail }}",
+
+            "-aws-region", "{{ .Values.tksapi.args.awsRegion }}",
+            "-aws-access-key-id", "{{ .Values.tksapi.args.awsAccesssKeyId }}",
+            "-aws-secret-access-key", "{{ .Values.tksapi.args.awsSecretAccessKey }}"
           ]
           resources:
             {{- toYaml .Values.tksapi.resources | nindent 12 }}

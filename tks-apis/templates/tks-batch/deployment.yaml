@@ -47,7 +47,11 @@ spec:
             "-dbhost", "{{ .Values.db.dbHost }}",
             "-dbport", "{{ .Values.db.dbPort }}",
             "-dbuser", "{{ .Values.db.dbUser }}",
-            "-dbpassword", "{{ .Values.db.dbPassword }}"
+            "-dbpassword", "{{ .Values.db.dbPassword }}",
+            "-tks-api-address", "{{ .Values.tksbatch.args.tksApiAddress }}",
+            "-tks-api-port", "{{ .Values.tksbatch.args.tksApiPort }}",
+            "-tks-api-account", "{{ .Values.tksbatch.args.tksApiAccount }}",
+            "-tks-api-password", "{{ .Values.tksbatch.args.tksApiPassword }}"
           ]
           resources:
             {{- toYaml .Values.tksbatch.resources | nindent 12 }}

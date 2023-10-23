@@ -42,10 +42,29 @@ tksapi:
     port: 9110
     argoAddress: http://argo-workflows-operator-server.argo.svc
     argoPort: 2746
-    imageRegistryUrl: "harbor.taco-cat.xyz/appserving"
-    harborPwSecret: "harbor-core"
-    gitRepositoryUrl: "github.com/openinfradev"
-    keycloakAddress: http://keycloak.keycloak.svc:80/auth
+
+    externalGiteaUrl: http://localhost:30303
+
+    imageRegistryUrl: harbor-dev.taco-cat.xyz/appserving
+    harborPwSecret: harbor-core
+    gitRepositoryUrl: github.com/openinfradev
+
+    keycloakAddress: https://keycloak.taco-cat.xyz/auth
+    keycloakAdmin: admin
+    keycloakPassword: admin
+    keycloakClientSecret: secret
+
+    mailProvider: aws
+    smtpHost: localhost
+    smtpPort: 0
+    smtpUsername: admin
+    smtpPassword: admin
+    smtpFromEmail: admin
+
+    awsRegion: ap-northeast-2
+    awsAccesssKeyId: AWS_SECRET_KEY
+    awsSecretAccessKey: AWS_SECRET_ACCESS_KEY
+
 
   ingress:
     enabled: false
@@ -76,6 +95,10 @@ tksbatch:
     port: 9110
     argoAddress: http://argo-workflows-operator-server.argo.svc
     argoPort: 2746
+    tksApiAddress: http://tks-api.tks.svc
+    tksApiPort: 9110
+    tksApiAccount: admin
+    tksApiPassword: admin
 
   ingress:
     enabled: false
