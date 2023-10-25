@@ -19,9 +19,9 @@ tksapi:
   fullnameOverride: "tks-api"
   replicaCount: 1
   image:
-    repository: harbor.taco-cat.xyz/tks/tks-api
+    repository: docker.io/sktcloud/tks-api
     pullPolicy: Always
-    tag: v3.0.1
+    tag: 0063468fce1ee54cee41d4aae225b3eaa5476ace
   imagePullSecrets: []
 
   service:
@@ -65,7 +65,6 @@ tksapi:
     awsAccesssKeyId: AWS_SECRET_KEY
     awsSecretAccessKey: AWS_SECRET_ACCESS_KEY
 
-
   ingress:
     enabled: false
 
@@ -77,9 +76,9 @@ tksbatch:
   fullnameOverride: "tks-batch"
   replicaCount: 1
   image:
-    repository: harbor.taco-cat.xyz/tks/tks-batch
+    repository: docker.io/sktcloud/tks-batch
     pullPolicy: Always
-    tag: v3.0.0
+    tag: 17e60c2e177944ba93b10c7f9a67f8d10f7c3abb
   imagePullSecrets: []
 
   service:
@@ -111,9 +110,9 @@ tksconsole:
   fullnameOverride: "tks-console"
   replicaCount: 1
   image:
-    repository: harbor.taco-cat.xyz/tks/tks-console
+    repository: docker.io/sktcloud/tks-console
     pullPolicy: Always
-    tag: v3.0.1
+    tag: 17e60c2e177944ba93b10c7f9a67f8d10f7c3abb
   imagePullSecrets: []
 
   service:
