@@ -21,7 +21,7 @@ tksapi:
   image:
     repository: docker.io/sktcloud/tks-api
     pullPolicy: Always
-    tag: 0063468fce1ee54cee41d4aae225b3eaa5476ace
+    tag: 51034edc71aa6268fa5a575d1ad210caf2e5db85
   imagePullSecrets: []
 
   service:
@@ -78,7 +78,7 @@ tksbatch:
   image:
     repository: docker.io/sktcloud/tks-batch
     pullPolicy: Always
-    tag: 17e60c2e177944ba93b10c7f9a67f8d10f7c3abb
+    tag: 4d11e054e03256bce3b505b911b3a4b00d4e1f88
   imagePullSecrets: []
 
   service:
@@ -112,7 +112,7 @@ tksconsole:
   image:
     repository: docker.io/sktcloud/tks-console
     pullPolicy: Always
-    tag: 17e60c2e177944ba93b10c7f9a67f8d10f7c3abb
+    tag: 7f0cfd0acd1e451fb44c417246e62c3d53b0e8b8 
   imagePullSecrets: []
 
   service:
