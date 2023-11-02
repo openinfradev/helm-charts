@@ -19,9 +19,9 @@ tksapi:
   fullnameOverride: "tks-api"
   replicaCount: 1
   image:
-    repository: docker.io/sktcloud/tks-api
+    repository: harbor.taco-cat.xyz/tks/tks-api
     pullPolicy: Always
-    tag: 51034edc71aa6268fa5a575d1ad210caf2e5db85
+    tag: v3.0.0
   imagePullSecrets: []
 
   service:
@@ -42,6 +42,7 @@ tksapi:
     port: 9110
     argoAddress: http://argo-workflows-operator-server.argo.svc
     argoPort: 2746
+    revision: main
 
     externalGiteaUrl: http://localhost:30303
 
@@ -76,9 +77,9 @@ tksbatch:
   fullnameOverride: "tks-batch"
   replicaCount: 1
   image:
-    repository: docker.io/sktcloud/tks-batch
+    repository: harbor.taco-cat.xyz/tks/tks-batch
     pullPolicy: Always
-    tag: 4d11e054e03256bce3b505b911b3a4b00d4e1f88
+    tag: v3.0.0
   imagePullSecrets: []
 
   service:
@@ -110,9 +111,9 @@ tksconsole:
   fullnameOverride: "tks-console"
   replicaCount: 1
   image:
-    repository: docker.io/sktcloud/tks-console
+    repository: harbor.taco-cat.xyz/tks/tks-console
     pullPolicy: Always
-    tag: 7f0cfd0acd1e451fb44c417246e62c3d53b0e8b8 
+    tag: v3.0.0
   imagePullSecrets: []
 
   service:
