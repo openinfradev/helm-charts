@@ -33,6 +33,14 @@ spec:
     {{- end }}
   auth:
     strategy: {{ .Values.auth.strategy }}
+    {{- with .Values.auth.openid }}
+    openid:
+      client_id: {{ .client_id }}
+      issuer_uri: {{ .issuer_uri }}
+      username_claim: {{ .username_claim }}
+      scopes: {{ .scopes | toYaml | nindent 6 }}
+      disable_rbac: {{ .disable_rbac }}
+    {{- end }}
   external_services:
     custom_dashboards:
       enabled: {{ .Values.externalServices.customDashboards.enabled }}
