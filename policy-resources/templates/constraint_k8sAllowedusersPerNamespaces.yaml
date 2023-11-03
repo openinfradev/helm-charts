@@ -13,10 +13,18 @@ spec:
   match:
     kinds:
       - apiGroups: [""]
-        kinds: ["*"]
-  parameters:
+        kinds: 
+        - Pods
+        - Configmaps
+        - Secrets
+        - Deployments
+        - Statefulsets
+        - Daemonsets
+        - Services
+        - Ingresses
     namespaces:
       {{- toYaml .parameters.namespaces | nindent 6 }}
+  parameters:
     allowedUsers: 
       {{- toYaml .parameters.allowedUsers | nindent 6 }}
     allowedGroup: {{ .parameters.allowedGroup }}

@@ -29,44 +29,21 @@ spec:
     - target: admission.k8s.gatekeeper.sh
       rego: |
         package protectpernamespace
-
-        import data.lib.protectpernamespace.is_in_list
-        import data.lib.protectpernamespace.is_in_the_namespace
         
         violation[{"msg": msg}] {
-          is_in_list(input.review.object.metadata.namespace, input.parameters.namespaces)
+          not is_in_list(input.review.userInfo.username, input.parameters.allowedUsers)
+          not is_in_the_namespace(input.review.object.metadata.namespace, input.review.userInfo.username)
+          not is_in_list(input.parameters.allowedGroup, input.review.userInfo.groups)
 
           msg := sprintf("user %v is not allowed to operate on the namespace '%v'\n",
-           [input.review.object.metadata.namespace])
+           [input.review.userInfo.username, input.review.object.metadata.namespace])
         }
 
-        violation[{"msg": msg}] {
-          not is_in_list(input.review.userInfo.username, input.parameters.allowedUsers)
-          msg := sprintf("user '%v' is not allowed user\n", [input.review.userInfo.username])
-        }
-
-        violation[{"msg": msg}] {
-          not is_in_the_namespace(input.review.object.metadata.namespace, input.review.userInfo.username)
-
-          msg := sprintf("user '%v' is not starts with '%v'\n", 
-          [input.review.userInfo.username, input.review.object.metadata.namespace])
-        }
-
-        violation[{"msg": msg}] {
-          not is_in_list(input.parameters.allowedGroup, input.review.userInfo.groups)
-          msg := sprintf("user %v is not have allowedGroup '%v'",
-            [input.review.userInfo.username, input.parameters.allowedGroup])
-        }
-
-      libs:
-        - |
-          package lib.protectpernamespace  
-  
-          is_in_list(target, targetlist) {
-            target == targetlist[_]
-          } else = false
-          
-          is_in_the_namespace(namespace, user) {
-            startswith(user, concat(":", ["system", "serviceaccount", namespace]))
+        is_in_list(target, targetlist) {
+          target == targetlist[_]
+        } else = false
+        
+        is_in_the_namespace(namespace, user) {
+          startswith(user, concat(":", ["system", "serviceaccount", namespace]))
           }
 {{- end}}
