@@ -40,4 +40,13 @@ kind: ServiceAccount
 metadata:
   name: cluster-autoscaler
   namespace: {{ .Values.deployMgmtRbacOnly.targetNamespace }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cluster-autoscaler-token
+  namespace: {{ .Values.deployMgmtRbacOnly.targetNamespace }}
+  annotations:
+    kubernetes.io/service-account.name: cluster-autoscaler
+type: kubernetes.io/service-account-token
 {{- end }}
