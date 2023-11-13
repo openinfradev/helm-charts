@@ -21,7 +21,7 @@ tksapi:
   image:
     repository: harbor.taco-cat.xyz/tks/tks-api
     pullPolicy: Always
-    tag: v3.0.0
+    tag: v3.1.2
   imagePullSecrets: []
 
   service:
@@ -42,7 +42,6 @@ tksapi:
     port: 9110
     argoAddress: http://argo-workflows-operator-server.argo.svc
     argoPort: 2746
-    revision: main
 
     externalGiteaUrl: http://localhost:30303
 
@@ -79,7 +78,7 @@ tksbatch:
   image:
     repository: harbor.taco-cat.xyz/tks/tks-batch
     pullPolicy: Always
-    tag: v3.0.0
+    tag: v3.1.2
   imagePullSecrets: []
 
   service:
@@ -113,7 +112,7 @@ tksconsole:
   image:
     repository: harbor.taco-cat.xyz/tks/tks-console
     pullPolicy: Always
-    tag: v3.0.0
+    tag: v3.1.2
   imagePullSecrets: []
 
   service:
