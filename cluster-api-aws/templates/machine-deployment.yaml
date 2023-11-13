@@ -75,7 +75,7 @@ spec:
         - name: "tag:sigs.k8s.io/cluster-api-provider-aws/role"
           values:
           - "private"
-        - name: "tag:Name"
+        - name: "tag-key"
           values:
           - "*{{ $envAll.Values.cluster.name }}*"
 ---
