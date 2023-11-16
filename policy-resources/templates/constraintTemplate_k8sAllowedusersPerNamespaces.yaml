@@ -1,0 +1,49 @@
+{{- if .Values.policies.protectPerNamespace.enabled }}
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: protectpernamespace
+spec:
+  crd:
+    spec:
+      names:
+        kind: ProtectPerNamespace
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            allowedGroup:
+              type: string
+              description: allowedGroup
+            allowedUsers:
+              type: array
+              description: allowedUsers
+              items: 
+                type: string
+            namespaces:
+              type: array
+              description: namespaces
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package protectpernamespace
+        
+        violation[{"msg": msg}] {
+          not is_in_list(input.review.userInfo.username, input.parameters.allowedUsers)
+          not is_in_the_namespace(input.review.object.metadata.namespace, input.review.userInfo.username)
+          not is_in_list(input.parameters.allowedGroup, input.review.userInfo.groups)
+
+          msg := sprintf("user %v is not allowed to operate on the namespace '%v'\n",
+           [input.review.userInfo.username, input.review.object.metadata.namespace])
+        }
+
+        is_in_list(target, targetlist) {
+          target == targetlist[_]
+        } else = false
+        
+        is_in_the_namespace(namespace, user) {
+          startswith(user, concat(":", ["system", "serviceaccount", namespace]))
+          }
+{{- end}}

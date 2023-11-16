@@ -1,0 +1,5 @@
+*.tz
+*.tgz
+*.vo
+*.vo.yaml
+.personal
