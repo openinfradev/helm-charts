@@ -74,6 +74,10 @@ kubeadmControlPlane:
     controllerManager:
       extraArgs:
         cloud-provider: aws # must be defined
+    etcd:
+      local:
+        extraArgs:
+          listen-metrics-urls: "http://0.0.0.0:2381"
 
 machinePool: []
 # You can define machinePool. referce the belows.

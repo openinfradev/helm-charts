@@ -44,6 +44,10 @@ kubeadmControlPlane:
     controllerManager:
       extraArgs:
         enable-hostpath-provisioner: "false" # if kube-vip is enabled, this should also be true.
+    etcd:
+      local:
+        extraArgs:
+          listen-metrics-urls: "http://0.0.0.0:2381"
 
 machineDeployment:
 - name: tks
