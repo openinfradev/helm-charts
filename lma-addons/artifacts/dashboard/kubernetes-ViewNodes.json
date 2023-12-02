@@ -835,7 +835,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "exemplar": true,
-          "expr": "sum by (instance) (irate(node_network_transmit_bytes_total{device=~\"eth0\", taco_cluster=~\"$taco_cluster\"}[5m])) * 8 + on(instance) group_left(nodename) \nnode_uname_info{taco_cluster=~\"$taco_cluster\"}",
+          "expr": "sum by (instance) (irate(node_network_transmit_bytes_total{device=~\"eth.*|enp.*|ens.*\", taco_cluster=~\"$taco_cluster\"}[5m])) * 8 + on(instance) group_left(nodename) \nnode_uname_info{taco_cluster=~\"$taco_cluster\"}",
           "interval": "",
           "legendFormat": "{{nodename}}",
           "refId": "A"
@@ -923,7 +923,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "exemplar": true,
-          "expr": "sum by (instance) (irate(node_network_receive_bytes_total{device=~\"eth0\", taco_cluster=~\"$taco_cluster\"}[5m])) * 8 + on(instance) group_left(nodename) \nnode_uname_info{taco_cluster=~\"$taco_cluster\"}",
+          "expr": "sum by (instance) (irate(node_network_receive_bytes_total{device=~\"eth.*|enp.*|ens.*\", taco_cluster=~\"$taco_cluster\"}[5m])) * 8 + on(instance) group_left(nodename) \nnode_uname_info{taco_cluster=~\"$taco_cluster\"}",
           "interval": "",
           "legendFormat": "{{nodename}}",
           "refId": "A"
@@ -3194,7 +3194,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "exemplar": true,
-          "expr": "irate(node_network_transmit_bytes_total{instance=~'$node',device=~\"eth[0-9]*\"}[5m])*8",
+          "expr": "irate(node_network_transmit_bytes_total{instance=~'$node',device=~\"eth.*|enp.*|ens.*\"}[5m])*8",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -3208,7 +3208,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "exemplar": true,
-          "expr": "irate(node_network_receive_bytes_total{instance=~'$node', device=~\"eth[0-9]*\"}[5m])*8*-1",
+          "expr": "irate(node_network_receive_bytes_total{instance=~'$node', device=~\"eth.*|enp.*|ens.*\"}[5m])*8*-1",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -3317,7 +3317,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "exemplar": true,
-          "expr": "irate(node_network_transmit_packets_total{instance=~'$node',device=~\"eth[0-9]*\"}[5m])",
+          "expr": "irate(node_network_transmit_packets_total{instance=~'$node',device=~\"eth.*|enp.*|ens.*\"}[5m])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -3331,7 +3331,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "exemplar": true,
-          "expr": "irate(node_network_receive_packets_total{instance=~'$node',device=~\"eth[0-9]*\"}[5m]) * -1",
+          "expr": "irate(node_network_receive_packets_total{instance=~'$node',device=~\"eth.*|enp.*|ens.*\"}[5m]) * -1",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -3440,7 +3440,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "exemplar": true,
-          "expr": "irate(node_network_receive_drop_total{instance=~\"$node\", device=~\"eth[0-9]*\"}[5m])",
+          "expr": "irate(node_network_receive_drop_total{instance=~\"$node\", device=~\"eth.*|enp.*|ens.*\"}[5m])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
