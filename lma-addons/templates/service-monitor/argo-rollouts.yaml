@@ -1,0 +1,37 @@
+{{- if and .Values.serviceMonitor.enabled .Values.serviceMonitor.argoRollout.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/component: rollouts-controller
+    app.kubernetes.io/instance: argo-rollouts
+    app.kubernetes.io/name: argo-rollouts
+  name: argo-rollouts
+  namespace: {{ .Release.Namespace }}
+spec:
+  jobLabel: argo-rollouts
+  namespaceSelector:
+    {{- if .Values.serviceMonitor.argoRollout.targetNamespace }}
+    matchNames:
+    - {{.Values.serviceMonitor.argoRollout.targetNamespace }}
+    {{- else}}
+    any: true
+    {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: rollouts-controller
+      app.kubernetes.io/instance: argo-rollouts
+      app.kubernetes.io/name: argo-rollouts
+  endpoints:
+  - port: metrics
+    {{- if .Values.serviceMonitor.argoRollout.interval }}
+    interval: {{ .Values.serviceMonitor.argoRollout.interval }}
+    {{- end }}
+{{- if .Values.serviceMonitor.argoRollout.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.serviceMonitor.argoRollout.metricRelabelings | indent 6) . }}
+{{- end }}
+{{- if .Values.serviceMonitor.argoRollout.relabelings }}
+    relabelings:
+{{ toYaml .Values.serviceMonitor.argoRollout.relabelings | indent 6 }}
+{{- end }}
