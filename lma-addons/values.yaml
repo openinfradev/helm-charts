@@ -58,6 +58,13 @@ serviceMonitor:
     metricRelabelings: []
     relabelings: []
 
+  argoRollout:
+    enabled: false
+    targetNamespace: taco-system
+    # interval: "30s"
+    metricRelabelings: []
+    relabelings: []
+
   argocd:
     enabled: false
     ### interval for scrape
