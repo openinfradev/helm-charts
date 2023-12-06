@@ -35,3 +35,5 @@ spec:
     relabelings:
 {{ toYaml .Values.serviceMonitor.argoRollout.relabelings | indent 6 }}
 {{- end }}
+
+{{- end }}
