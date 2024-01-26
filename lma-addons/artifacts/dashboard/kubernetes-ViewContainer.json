@@ -23,8 +23,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": 12611,
   "graphTooltip": 0,
-  "id": 16,
-  "iteration": 1688092237709,
+  "id": 17,
+  "iteration": 1706234186760,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -173,7 +173,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "exemplar": true,
-          "expr": "count((kube_pod_status_ready{condition=\"true\"} == 0) and ON(taco_cluster, namespace, pod) kube_pod_info{taco_cluster=~\"$cluster\", namespace=~\"$kubernetes_namespace_name\", pod=~\"$kubernetes_pod_name\"}) or vector(0)",
+          "expr": "count((kube_pod_status_reason != 0) and ON(taco_cluster, namespace, pod) kube_pod_info{taco_cluster=~\"$cluster\", namespace=~\"$kubernetes_namespace_name\", pod=~\"$kubernetes_pod_name\"}) or vector(0)",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -299,7 +299,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "exemplar": true,
-          "expr": "count(kube_pod_container_status_ready == 0 and ON(namespace, pod, container) kube_pod_container_info{taco_cluster=~\"$cluster\", namespace=~\"$kubernetes_namespace_name\", pod=~\"$kubernetes_pod_name\"}) or vector(0)",
+          "expr": "count(kube_pod_container_status_terminated_reason{reason!='Completed'} and ON(namespace, pod, container) kube_pod_container_info{taco_cluster=~\"$cluster\", namespace=~\"$kubernetes_namespace_name\", pod=~\"$kubernetes_pod_name\"}) or vector(0)",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -344,32 +344,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Restart (1h)"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 100
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Running"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 100
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 5,
@@ -400,11 +375,25 @@
           "exemplar": false,
           "expr": "label_join((kube_pod_container_status_running == 0 or ON(namespace, pod, container) (increase(kube_pod_container_status_restarts_total[1h]) > 0)), \"key\", \"/\", \"namespace\", \"pod\") and ON(taco_cluster, namespace, pod, container) kube_pod_container_info{taco_cluster=~\"$cluster\", namespace=~\"$kubernetes_namespace_name\", pod=~\"$kubernetes_pod_name\"}",
           "format": "table",
-          "hide": false,
+          "hide": true,
           "instant": true,
           "interval": "",
           "legendFormat": "",
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "exemplar": false,
+          "expr": "sum((kube_pod_container_status_terminated_reason == 1 or ON(taco_cluster, namespace, pod, container) (increase(kube_pod_container_status_restarts_total[1h]) > 0)) and ON(taco_cluster, namespace, pod, container) kube_pod_container_info{taco_cluster=~\"$cluster\", namespace=~\"$kubernetes_namespace_name\", pod=~\"$kubernetes_pod_name\"}) by (taco_cluster, namespace, pod, container, reason)",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "B"
         },
         {
           "datasource": {
@@ -421,7 +410,7 @@
           "refId": "C"
         }
       ],
-      "title": "Abnormal Containers",
+      "title": "Terminated Containers",
       "transformations": [
         {
           "id": "seriesToColumns",
@@ -436,6 +425,7 @@
               "Time": true,
               "Time 1": true,
               "Time 2": true,
+              "Value #B": true,
               "__name__": true,
               "container 1": false,
               "container 2": true,
@@ -445,30 +435,21 @@
               "job": true,
               "job 1": true,
               "job 2": true,
-              "namespace": true,
+              "namespace": false,
               "namespace 1": true,
               "namespace 2": true,
-              "pod": true,
+              "pod": false,
               "pod 1": true,
               "pod 2": true
             },
             "indexByName": {
-              "Time 1": 4,
-              "Time 2": 10,
-              "Value #A": 2,
-              "Value #C": 3,
-              "__name__": 5,
-              "container 1": 1,
-              "container 2": 11,
-              "instance 1": 6,
-              "instance 2": 12,
-              "job 1": 7,
-              "job 2": 13,
-              "key": 0,
-              "namespace 1": 8,
-              "namespace 2": 14,
-              "pod 1": 9,
-              "pod 2": 15
+              "Time": 0,
+              "Value #B": 6,
+              "container": 4,
+              "namespace": 2,
+              "pod": 3,
+              "reason": 5,
+              "taco_cluster": 1
             },
             "renameByName": {
               "Time 1": "",
@@ -829,7 +810,7 @@
             "h": 10,
             "w": 8,
             "x": 0,
-            "y": 17
+            "y": 28
           },
           "hiddenSeries": false,
           "id": 35,
@@ -919,7 +900,7 @@
             "h": 10,
             "w": 8,
             "x": 8,
-            "y": 17
+            "y": 28
           },
           "hiddenSeries": false,
           "id": 37,
@@ -1009,7 +990,7 @@
             "h": 10,
             "w": 8,
             "x": 16,
-            "y": 17
+            "y": 28
           },
           "hiddenSeries": false,
           "id": 43,
@@ -1744,7 +1725,7 @@
       {
         "allValue": ".+",
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "All",
           "value": "$__all"
         },
@@ -1922,7 +1903,7 @@
     ]
   },
   "timezone": "",
-  "title": "[TKS] Kubernetes / View / Container",
+  "title": "[TKS] Kubernetes / Container",
   "uid": "tks_container_dashboard",
   "version": 1,
   "weekStart": ""
