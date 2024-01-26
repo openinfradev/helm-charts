@@ -24,7 +24,7 @@
   "gnetId": 12611,
   "graphTooltip": 0,
   "id": 17,
-  "iteration": 1706234186760,
+  "iteration": 1706252541414,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -1725,22 +1725,21 @@
       {
         "allValue": ".+",
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "All",
           "value": "$__all"
         },
-        "datasource": {
-          "type": "loki",
-          "uid": "P8E80F9AEF21F6940"
-        },
-        "definition": "label_values(cluster)",
+        "definition": "label_values(up, taco_cluster)",
         "hide": 0,
         "includeAll": true,
         "label": "Cluster",
         "multi": false,
         "name": "cluster",
         "options": [],
-        "query": "label_values(cluster)",
+        "query": {
+          "query": "label_values(up, taco_cluster)",
+          "refId": "StandardVariableQuery"
+        },
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -1750,23 +1749,22 @@
       {
         "allValue": ".+",
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "All",
           "value": "$__all"
         },
-        "datasource": {
-          "type": "loki",
-          "uid": "P8E80F9AEF21F6940"
-        },
-        "definition": "label_values({cluster=\"$cluster\"}, kubernetes_namespace_name)",
+        "definition": "label_values(kube_pod_info{taco_cluster=~\"$cluster\"}, namespace)",
         "hide": 0,
         "includeAll": true,
         "label": "Namespace",
         "multi": false,
         "name": "kubernetes_namespace_name",
         "options": [],
-        "query": "label_values({cluster=\"$cluster\"}, kubernetes_namespace_name)",
-        "refresh": 2,
+        "query": {
+          "query": "label_values(kube_pod_info{taco_cluster=~\"$cluster\"}, namespace)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
         "sort": 1,
@@ -1778,22 +1776,25 @@
       {
         "allValue": ".+",
         "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
         },
-        "datasource": {
-          "type": "loki",
-          "uid": "P8E80F9AEF21F6940"
-        },
-        "definition": "label_values({cluster=~\"$cluster\", kubernetes_namespace_name=\"$kubernetes_namespace_name\"}, kubernetes_pod_name)",
+        "definition": "label_values(kube_pod_info{taco_cluster=~\"$cluster\", namespace=~\"$kubernetes_namespace_name\"}, pod)",
         "hide": 0,
         "includeAll": true,
         "label": "Pod",
         "multi": true,
         "name": "kubernetes_pod_name",
         "options": [],
-        "query": "label_values({cluster=~\"$cluster\", kubernetes_namespace_name=\"$kubernetes_namespace_name\"}, kubernetes_pod_name)",
+        "query": {
+          "query": "label_values(kube_pod_info{taco_cluster=~\"$cluster\", namespace=~\"$kubernetes_namespace_name\"}, pod)",
+          "refId": "StandardVariableQuery"
+        },
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -1810,18 +1811,17 @@
           "text": "All",
           "value": "$__all"
         },
-        "datasource": {
-          "type": "loki",
-          "uid": "P8E80F9AEF21F6940"
-        },
-        "definition": "label_values({cluster=~\"$cluster\", kubernetes_namespace_name=\"$kubernetes_namespace_name\",kubernetes_pod_name=\"$kubernetes_pod_name\"}, kubernetes_container_name)",
+        "definition": "label_values(kube_pod_container_info{taco_cluster=~\"$cluster\", namespace=~\"$kubernetes_namespace_name\", pod=~\"$kubernetes_pod_name\"}, container)",
         "hide": 0,
         "includeAll": true,
         "label": "Container",
         "multi": false,
         "name": "kubernetes_container_name",
         "options": [],
-        "query": "label_values({cluster=~\"$cluster\", kubernetes_namespace_name=\"$kubernetes_namespace_name\",kubernetes_pod_name=\"$kubernetes_pod_name\"}, kubernetes_container_name)",
+        "query": {
+          "query": "label_values(kube_pod_container_info{taco_cluster=~\"$cluster\", namespace=~\"$kubernetes_namespace_name\", pod=~\"$kubernetes_pod_name\"}, container)",
+          "refId": "StandardVariableQuery"
+        },
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
