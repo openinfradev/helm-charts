@@ -28,25 +28,26 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}-exporter
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - name: metrics
-              containerPort: 9141 # 컨테이너 이미지에서 고정된 포트이므로 변경 불가
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: metrics
-          readinessProbe:
-            httpGet:
-              path: /
-              port: metrics
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+      - name: {{ .Chart.Name }}-exporter
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 10 }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - port: {{ .Values.service.port }}
+          containerPort: 9141 # 컨테이너 이미지에서 고정된 포트이므로 변경 불가
+          protocol: TCP
+          name: metrics
+        livenessProbe:
+          httpGet:
+            path: /
+            port: metrics
+        readinessProbe:
+          httpGet:
+            path: /
+            port: metrics
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

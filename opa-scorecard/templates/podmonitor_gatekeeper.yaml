@@ -1,3 +1,4 @@
+{{- if .Values.metrics.servicemonitor.enabled -}}
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
@@ -16,3 +17,4 @@ spec:
     scheme: http
     path: /metrics
     interval: {{ .Values.metrics.interval }}
+ {{- end }}
