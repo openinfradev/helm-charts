@@ -83,6 +83,10 @@ affinity: {}
 
 metrics:
   interval: 10s
+  servicemonitor: 
+    enabled: false
+  podminotor:
+    enabled: false
 
 gatekeeper:
   namespace: gatekeeper-system
