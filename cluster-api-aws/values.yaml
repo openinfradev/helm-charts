@@ -60,7 +60,7 @@ kubeadmControlPlane:
   controlPlaneMachineType: t3.large
   rootVolume:
     size: 8
-    type: gp2
+    type: gp3
   # ami:
   #   id: ami-xxxxxxxxxxxxxxxxx
   useSpotInstance:  #spotMarketOptions:
@@ -118,7 +118,7 @@ machineDeployment: []
 #   machineType: t3.large
 #   rootVolume:
 #     size: 20
-#     type: gp2
+#     type: gp3
 #   useSpotInstance:  #spotMarketOptions:
 #     enabled: true
 #     maxPrice: ''
