@@ -1,4 +1,3 @@
-
 # aws ssh key name
 sshKeyName: default
 
@@ -18,29 +17,29 @@ cluster:
   #    version: "v1.10.1-eksbuild.1"
   #    conflictResolution: "overwrite"
   # network:
-    # vpc:
-      # id: vpc-id
-      # tags:
-      #  string: string
-      # cidrBlock: 10.0.0.0/16 
-      # availabilityZoneUsageLimit: 3 # default 3
-    # list of subnets in vpc including both private and public
-    # subnets: 
-    # - id: subnet-0c41662a89d7878a2
-    # - id: subnet-03d16e2084d9f392b
-    # - id: subnet-03ad0968f68bfa639
+  #   vpc:
+  #   id: vpc-id
+  #   tags:
+  #    string: string
+  #   cidrBlock: 10.0.0.0/16
+  #   availabilityZoneUsageLimit: 3 # default 3
+  #   list of subnets in vpc including both private and public
+  #   subnets:
+  #   - id: subnet-0c41662a89d7878a2
+  #   - id: subnet-03d16e2084d9f392b
+  #   - id: subnet-03ad0968f68bfa639
   kubernetesVersion: v1.22.5
   podCidrBlocks:
-  - 192.168.0.0/16
+    - 192.168.0.0/16
   bastion:
     enabled: false
     instanceType: t3.micro
     # disableIngressRules: false
     # allowedCIDRBlocks:
     # - 0.0.0.0/0
-    useSpotInstance:  #spotMarketOptions:
+    useSpotInstance: #spotMarketOptions:
       enabled: true
-      maxPrice: ''
+      maxPrice: ""
       # MaxPrice defines the maximum price the user is willing to pay for Spot VM instances
   # baseOS is the name of the base operating system to use for image lookup the
   # AMI is not set. (default: "ubuntu-18.04")
@@ -63,9 +62,9 @@ kubeadmControlPlane:
     type: gp3
   # ami:
   #   id: ami-xxxxxxxxxxxxxxxxx
-  useSpotInstance:  #spotMarketOptions:
+  useSpotInstance: #spotMarketOptions:
     enabled: false
-    maxPrice: ''
+    maxPrice: ""
     # MaxPrice defines the maximum price the user is willing to pay for Spot VM instances
   clusterConfiguration:
     apiServer:
@@ -97,7 +96,7 @@ machinePool: []
 #   enabled: false
 #   maxPrice: ''
 #   # MaxPrice defines the maximum price the user is willing to pay for Spot VM instances
-# - name: normal  
+# - name: normal
 #   machineType: t3.large
 #   replicas: 1
 #   minSize: 1
