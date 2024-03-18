@@ -78,6 +78,10 @@ spec:
     ami:
       {{- toYaml . | nindent 8 }}
     {{- end }}
+    {{- with .additionalSecurityGroups }}
+    additionalSecurityGroups:
+      {{- toYaml . | nindent 8 }}
+    {{- end }}
   maxSize: {{ .maxSize }}
   minSize: {{ .minSize }}
   subnets:
