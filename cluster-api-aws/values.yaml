@@ -92,6 +92,7 @@ machinePool: []
 #   labels: []
 #   roleAdditionalPolicies:
 #   - "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+#   additionalSecurityGroups: []
 # **this version dosen't support the spot instance, because the aws cluster api provider doesn't support it in awsmachinpool**
 # useSpotInstance:  #spotMarketOptions:
 #   enabled: false
@@ -106,6 +107,7 @@ machinePool: []
 #     size: 8
 #   subnets: []
 #   labels: []
+#   additionalSecurityGroups: []
 
 machineDeployment: []
 # You can define machineDeployment to use cluster-autoscaler on aws. referce the belows.
@@ -123,6 +125,7 @@ machineDeployment: []
 #     enabled: true
 #     maxPrice: ''
 #     # MaxPrice defines the maximum price the user is willing to pay for Spot VM instances
+#   additionalSecurityGroups: []
 
 nameOverride: ""
 fullnameOverride: ""
