@@ -17,7 +17,7 @@ jobs:
         uses: azure/setup-helm@v1
       - name: Lint charts
         run: |
-            for dir in $(find . -type d -mindepth 1 -maxdepth 1); do
+            for dir in $(find . -mindepth 1 -maxdepth 1 -type d \( -name '.*' -prune -o -print \)); do
               if [[ -f "${dir}/Chart.yaml" ]]; then
                 CHARTS+=("${dir}")
                 echo "Found chart directory ${dir}"
