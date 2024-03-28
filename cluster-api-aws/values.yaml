@@ -62,6 +62,7 @@ kubeadmControlPlane:
     type: gp3
   # ami:
   #   id: ami-xxxxxxxxxxxxxxxxx
+  # additionalSecurityGroups: []
   useSpotInstance: #spotMarketOptions:
     enabled: false
     maxPrice: ""

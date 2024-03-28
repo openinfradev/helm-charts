@@ -59,4 +59,8 @@ spec:
       ami:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.kubeadmControlPlane.additionalSecurityGroups }}
+      additionalSecurityGroups:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 {{- end }}
