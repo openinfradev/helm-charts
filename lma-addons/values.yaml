@@ -184,6 +184,7 @@ grafanaDashboard:
   include:
   - kubernetes
   - node
+  - policy
   namespace: lma
   sidecar:
     label: grafana_dashboard
