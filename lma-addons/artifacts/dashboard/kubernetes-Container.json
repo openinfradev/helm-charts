@@ -24,7 +24,7 @@
   "gnetId": 12611,
   "graphTooltip": 0,
   "id": 17,
-  "iteration": 1706252541414,
+  "iteration": 1707735397386,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -318,7 +318,8 @@
           "custom": {
             "align": "auto",
             "displayMode": "auto",
-            "filterable": false
+            "filterable": false,
+            "minWidth": 30
           },
           "mappings": [
             {
@@ -422,7 +423,7 @@
           "id": "organize",
           "options": {
             "excludeByName": {
-              "Time": true,
+              "Time": false,
               "Time 1": true,
               "Time 2": true,
               "Value #B": true,
@@ -443,15 +444,16 @@
               "pod 2": true
             },
             "indexByName": {
-              "Time": 0,
+              "Time": 5,
               "Value #B": 6,
-              "container": 4,
-              "namespace": 2,
-              "pod": 3,
-              "reason": 5,
-              "taco_cluster": 1
+              "container": 3,
+              "namespace": 1,
+              "pod": 2,
+              "reason": 4,
+              "taco_cluster": 0
             },
             "renameByName": {
+              "Time": "",
               "Time 1": "",
               "Value #A": "Running",
               "Value #C": "Restart (1h)",
@@ -1725,7 +1727,7 @@
       {
         "allValue": ".+",
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "All",
           "value": "$__all"
         },
@@ -1749,7 +1751,7 @@
       {
         "allValue": ".+",
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "All",
           "value": "$__all"
         },
@@ -1776,13 +1778,9 @@
       {
         "allValue": ".+",
         "current": {
-          "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
         },
         "definition": "label_values(kube_pod_info{taco_cluster=~\"$cluster\", namespace=~\"$kubernetes_namespace_name\"}, pod)",
         "hide": 0,
@@ -1904,7 +1902,7 @@
   },
   "timezone": "",
   "title": "[TKS] Kubernetes / Container",
-  "uid": "tks_container_dashboard",
+  "uid": "tks_kube_container",
   "version": 1,
   "weekStart": ""
 }
