@@ -10,6 +10,7 @@
 {{- $mdRootVolumeSize := .rootVolume.size }}
 {{- $mdRootVolumeType := .rootVolume.type }}
 {{- $spot := .spotInstance }}
+{{- $additionalSecurityGroups := .additionalSecurityGroups }}
 {{- range untilStep 0 $numAZ 1 }}
 apiVersion: {{ $envAll.Values.api.group.cluster }}/{{ $envAll.Values.api.version }}
 kind: MachineDeployment
@@ -78,6 +79,11 @@ spec:
         - name: "tag-key"
           values:
           - "*{{ $envAll.Values.cluster.name }}*"
+      {{- with .additionalSecurityGroups }}
+      additionalSecurityGroups:
+        {{- toYaml . | nindent 10 }}
+      {{- end }}
+
 ---
 {{- if $envAll.Values.cluster.eksEnabled }}
 apiVersion: {{ $envAll.Values.api.group.bootstrap }}/{{ $envAll.Values.api.version }}
