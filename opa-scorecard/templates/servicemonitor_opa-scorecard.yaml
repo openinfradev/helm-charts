@@ -1,0 +1,20 @@
+{{- if .Values.metrics.servicemonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    {{- include "opa-scorecard.labels" . | nindent 4 }}
+  name: gatekeeper-metrics
+spec:
+  endpoints:
+  - honorLabels: true
+    interval: {{ .Values.metrics.interval }}
+    port: metrics
+  jobLabel: app.kubernetes.io/name
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      {{- include "opa-scorecard.selectorLabels" . | nindent 6 }}
+ {{- end }}
