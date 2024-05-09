@@ -1,0 +1,20 @@
+{{- if .Values.metrics.servicemonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: gatekeeper-audit
+  labels:
+    {{- include "opa-scorecard.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: gatekeeper
+  namespaceSelector:
+    matchNames:
+    - {{ .Values.gatekeeper.namespace }}
+  podMetricsEndpoints:
+  - port: metrics
+    scheme: http
+    path: /metrics
+    interval: {{ .Values.metrics.interval }}
+ {{- end }}
