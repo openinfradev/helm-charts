@@ -1,9 +1,9 @@
 cluster:
   name: byoh-cluster
   podCidrBlocks:
-  - 10.233.64.0/18
+    - 10.233.64.0/18
   serviceCidrBlocks:
-  - 10.233.0.0/18
+    - 10.233.0.0/18
   kubernetesVersion: v1.23.5
 
 kubeVip:
@@ -32,9 +32,9 @@ kubeadmControlPlane:
   clusterConfiguration:
     apiServer:
       certSANs:
-      - localhost
-      - 127.0.0.1
-      - 0.0.0.0
+        - localhost
+        - 127.0.0.1
+        - 0.0.0.0
       extraArgs:
         oidc-client-id: kubernetes
         oidc-groups-claim: groups
@@ -48,27 +48,30 @@ kubeadmControlPlane:
       local:
         extraArgs:
           listen-metrics-urls: "http://0.0.0.0:2381"
+        imageRepository: "registry.k8s.io"
+        imageTag: "3.5.10-0"
+    imageRepository: "registry.k8s.io"
 
 machineDeployment:
-- name: tks
-  replicas: 1
-  selector:
-    matchLabels:
-      role: tks
-  labels:
-    servicemesh: enabled
-    taco-egress-gateway: enabled
-    taco-ingress-gateway: enabled
-    taco-lma: enabled
+  - name: tks
+    replicas: 1
+    selector:
+      matchLabels:
+        role: tks
+    labels:
+      servicemesh: enabled
+      taco-egress-gateway: enabled
+      taco-ingress-gateway: enabled
+      taco-lma: enabled
 
-- name: normal
-  replicas: 1
-  autoscaling:
-    minSize: 1
-    maxSize: 5
-  selector:
-    matchLabels:
-      role: worker
+  - name: normal
+    replicas: 1
+    autoscaling:
+      minSize: 1
+      maxSize: 5
+    selector:
+      matchLabels:
+        role: worker
 
 nameOverride: ""
 fullnameOverride: ""
