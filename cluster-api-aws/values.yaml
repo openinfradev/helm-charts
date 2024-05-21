@@ -70,10 +70,10 @@ kubeadmControlPlane:
   clusterConfiguration:
     apiServer:
       extraArgs:
-        cloud-provider: aws # must be defined
+        cloud-provider: external # must be defined
     controllerManager:
       extraArgs:
-        cloud-provider: aws # must be defined
+        cloud-provider: external # must be defined
     etcd:
       local:
         extraArgs:
@@ -116,7 +116,7 @@ machineDeployment: []
 #   minSizePerAZ: 1
 #   maxSizePerAZ: 3
 #   selector:
-#     matchLabels:
+#     matchLabels: null
 #   machineType: t3.large
 #   rootVolume:
 #     size: 20

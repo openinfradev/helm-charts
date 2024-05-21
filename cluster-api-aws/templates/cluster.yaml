@@ -1,6 +1,9 @@
 apiVersion: {{ .Values.api.group.cluster }}/{{ .Values.api.version }}
 kind: Cluster
 metadata:
+  labels:
+    ccm: external
+    csi: external
   name: {{ .Values.cluster.name }}
   namespace: {{ .Release.Namespace }}
 spec:
