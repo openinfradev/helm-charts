@@ -33,12 +33,12 @@ spec:
       nodeRegistration:
         name: '{{`{{ ds.meta_data.local_hostname }}`}}'
         kubeletExtraArgs:
-          cloud-provider: aws
+          cloud-provider: external
     joinConfiguration:
       nodeRegistration:
         name: '{{`{{ ds.meta_data.local_hostname }}`}}'
         kubeletExtraArgs:
-          cloud-provider: aws
+          cloud-provider: external
   version: {{ .Values.cluster.kubernetesVersion }}
 ---
 apiVersion: {{ .Values.api.group.infrastructure }}/v1beta2
