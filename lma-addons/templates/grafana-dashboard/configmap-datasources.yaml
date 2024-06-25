@@ -26,6 +26,12 @@ data:
       url: http://{{ .Values.grafanaDatasource.loki.url}}
       access: proxy
 {{- end }}
+{{- if .Values.grafanaDatasource.lokiuser.enabled }}
+    - name: Loki-user
+      type: loki
+      url: http://{{ .Values.grafanaDatasource.lokiuser.url}}
+      access: proxy
+{{- end }}
 {{- if .Values.grafanaDatasource.additionalDataSources }}
 {{ toYaml .Values.grafanaDatasource.additionalDataSources | indent 4}}
 {{- end }}
