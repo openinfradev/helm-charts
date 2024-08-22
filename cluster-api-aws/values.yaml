@@ -80,7 +80,7 @@ kubeadmControlPlane:
           listen-metrics-urls: "http://0.0.0.0:2381"
 
 machinePool: []
-# You can define machinePool. referce the belows.
+# You can define machinePool. Refer to below.
 # - name: taco
 #   machineType: t3.2xlarge
 #   replicas: 3
@@ -110,7 +110,7 @@ machinePool: []
 #   additionalSecurityGroups: []
 
 machineDeployment: []
-# You can define machineDeployment to use cluster-autoscaler on aws. referce the belows.
+# You can define machineDeployment to use cluster-autoscaler on aws. Refer to below.
 # - name: normal
 #   numberOfAZ: 3
 #   minSizePerAZ: 1
@@ -129,3 +129,10 @@ machineDeployment: []
 
 nameOverride: ""
 fullnameOverride: ""
+
+# Extra args for kubelet except 'cloud-provider'. Refer to the example below.
+# kubeletExtraArgs:
+#   feature-gates: "InPlacePodVerticalScaling=true"
+#   max-pods: "110"
+kubeadmConfig:
+  kubeletExtraArgs: {}

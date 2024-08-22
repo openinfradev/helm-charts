@@ -104,8 +104,11 @@ spec:
     spec:
       joinConfiguration:
         nodeRegistration:
+          {{- with $envAll.Values.kubeadmConfig.kubeletExtraArgs }}
           kubeletExtraArgs:
             cloud-provider: aws
+            {{ toYaml . }}
           name: '{{`{{ ds.meta_data.local_hostname }}`}}'
+          {{- end }}
 {{- end }}
 {{- end }}
