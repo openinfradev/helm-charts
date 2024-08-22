@@ -142,6 +142,9 @@ grafanaDatasource:
   loki:
     enabled: true
     url: "loki-loki-distributed-gateway:80"
+  lokiuser:
+    enabled: true
+    url: "loki-user-loki-distributed-gateway:80"
 
 kibanaInit:
   enabled: false
