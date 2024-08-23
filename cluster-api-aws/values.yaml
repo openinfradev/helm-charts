@@ -127,6 +127,10 @@ machineDeployment: []
 #     # MaxPrice defines the maximum price the user is willing to pay for Spot VM instances
 #   additionalSecurityGroups: []
 
+awsCloudControllerManager:
+  image:
+    repository: registry.k8s.io/provider-aws/cloud-controller-manager
+    tag: v1.28.3
 nameOverride: ""
 fullnameOverride: ""
 

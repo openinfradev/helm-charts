@@ -42,7 +42,7 @@ spec:
       clusterName: {{ $envAll.Values.cluster.name }}
       failureDomain: {{ $envAll.Values.cluster.region }}{{ index $azPostfixList . }}
       infrastructureRef:
-        apiVersion: {{ $envAll.Values.api.group.infrastructure }}/{{ $envAll.Values.api.version }}
+        apiVersion: {{ $envAll.Values.api.group.infrastructure }}/v1beta2
         kind: AWSMachineTemplate
         name: {{ $envAll.Values.cluster.name }}-md-{{ $mdName }}
       version: {{ $envAll.Values.cluster.kubernetesVersion }}
@@ -53,7 +53,7 @@ spec:
 ---
 {{- end }}
 ---
-apiVersion: {{ $envAll.Values.api.group.infrastructure }}/{{ $envAll.Values.api.version }}
+apiVersion: {{ $envAll.Values.api.group.infrastructure }}/v1beta2
 kind: AWSMachineTemplate
 metadata:
   name: {{ $envAll.Values.cluster.name }}-md-{{ $mdName }}
@@ -106,7 +106,7 @@ spec:
         nodeRegistration:
           {{- with $envAll.Values.kubeadmConfig.kubeletExtraArgs }}
           kubeletExtraArgs:
-            cloud-provider: aws
+            cloud-provider: external
             {{ toYaml . }}
           name: '{{`{{ ds.meta_data.local_hostname }}`}}'
           {{- end }}
