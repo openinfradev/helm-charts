@@ -104,11 +104,11 @@ spec:
     spec:
       joinConfiguration:
         nodeRegistration:
-          {{- with $envAll.Values.kubeadmConfig.kubeletExtraArgs }}
           kubeletExtraArgs:
             cloud-provider: external
-            {{ toYaml . }}
+            {{- with $envAll.Values.machineKubeadmConfig.kubeletExtraArgs }}
+            {{- toYaml . | nindent 12}}
+            {{- end }}
           name: '{{`{{ ds.meta_data.local_hostname }}`}}'
-          {{- end }}
 {{- end }}
 {{- end }}
