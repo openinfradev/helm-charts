@@ -55,7 +55,7 @@ spec:
       rootVolume:
         size: {{ .Values.kubeadmControlPlane.rootVolume.size }}
         type: {{ .Values.kubeadmControlPlane.rootVolume.type }}
-      {{- if .Values.kubeadmControlPlane.ami }}
+      {{- with .Values.kubeadmControlPlane.ami }}
       ami:
         {{- toYaml . | nindent 8 }}
       {{- end }}

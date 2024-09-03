@@ -74,7 +74,7 @@ spec:
     rootVolume:
       size: {{ .rootVolume.size }}
       type: {{ .rootVolume.type }}
-    {{- if .ami }}
+    {{- with .ami }}
     ami:
       {{- toYaml . | nindent 8 }}
     {{- end }}
