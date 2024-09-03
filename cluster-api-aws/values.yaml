@@ -61,7 +61,7 @@ kubeadmControlPlane:
     size: 8
     type: gp3
   # ami:
-  #   id: ami-xxxxxxxxxxxxxxxxx
+  #   id: ami-02e4e8f09921cfe97
   # additionalSecurityGroups: []
   useSpotInstance: #spotMarketOptions:
     enabled: false
@@ -93,6 +93,7 @@ machinePool: []
 #   roleAdditionalPolicies:
 #   - "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 #   additionalSecurityGroups: []
+#   ami: ami-02e4e8f09921cfe97
 # **this version dosen't support the spot instance, because the aws cluster api provider doesn't support it in awsmachinpool**
 # useSpotInstance:  #spotMarketOptions:
 #   enabled: false
@@ -108,6 +109,7 @@ machinePool: []
 #   subnets: []
 #   labels: []
 #   additionalSecurityGroups: []
+#   ami: ami-02e4e8f09921cfe97
 
 machineDeployment: []
 # You can define machineDeployment to use cluster-autoscaler on aws. Refer to below.
@@ -126,6 +128,7 @@ machineDeployment: []
 #     maxPrice: ''
 #     # MaxPrice defines the maximum price the user is willing to pay for Spot VM instances
 #   additionalSecurityGroups: []
+#   ami: ami-02e4e8f09921cfe97
 
 machineKubeadmConfig:
   kubeletExtraArgs: {}
